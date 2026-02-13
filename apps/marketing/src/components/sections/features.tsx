@@ -12,17 +12,17 @@ const Steps = () => {
       title: 'Chat',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl">Conversational Chat bot</p>
+          <p className="mb-2 text-lg md:text-2xl">Conversational Chat Bot</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Interact with an AI-powered chatbot that remembers your conversation
+            and provides contextual responses.
           </p>
           <Link href={`http://localhost:3000/`}>
             <Button className="rounded-full">Start Chat</Button>
           </Link>
           <Image
-            src="/empty.png"
-            alt={'how.step3.title'}
+            src="/chat.png"
+            alt="Chat Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -34,19 +34,17 @@ const Steps = () => {
       title: 'Autocomplete',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Autocomplete Text, Email..
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Text Autocomplete</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Enhance your writing experience with AI suggestions for text,
+            emails, or documents.
           </p>
           <Link href={`http://localhost:3000/autocomplete/`}>
             <Button className="rounded-full">Try Autocomplete</Button>
           </Link>
           <Image
-            src="/error.png"
-            alt={'how.step1.title'}
+            src="/autocomplete.png"
+            alt="Autocomplete Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -58,19 +56,17 @@ const Steps = () => {
       title: 'Debug Code',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Code Debugging.
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Code Debugging</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Identify and fix errors in your code efficiently using AI-powered
+            debugging suggestions.
           </p>
           <Link href={`http://localhost:3000/code-debug`}>
             <Button className="rounded-full">Try Debugging</Button>
           </Link>
           <Image
-            src="/empty.png"
-            alt={'how.step2.title'}
+            src="/debug.png"
+            alt="Debug Code Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -82,19 +78,17 @@ const Steps = () => {
       title: 'Generate Code',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Generate Code
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Generate Code</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Quickly generate boilerplate or complex code snippets using AI based
+            on your requirements.
           </p>
           <Link href={`http://localhost:3000/code-gen`}>
             <Button className="rounded-full">Try Coding</Button>
           </Link>
           <Image
-            src="/error.png"
-            alt={'how.step3.title'}
+            src="/generate.png"
+            alt="Generate Code Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -106,19 +100,17 @@ const Steps = () => {
       title: 'Image Caption',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Generate Caption by Analyzing Image
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Image Caption Generator</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Upload an image and let AI generate a descriptive caption
+            automatically.
           </p>
           <Link href={`http://localhost:3000/image-caption`}>
             <Button className="rounded-full">Try Captions</Button>
           </Link>
           <Image
-            src="/empty.png"
-            alt={'how.step2.title'}
+            src="/caption.png"
+            alt="Image Caption Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -130,19 +122,17 @@ const Steps = () => {
       title: 'Edit Image',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Edit Image, Remove Background...
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Image Editing</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Edit images, remove backgrounds, or apply AI-powered enhancements in
+            seconds.
           </p>
           <Link href={`http://localhost:3000/image-edit`}>
             <Button className="rounded-full">Try Editing</Button>
           </Link>
           <Image
-            src="/error.png"
-            alt={'how.step3.title'}
+            src="/edit.png"
+            alt="Edit Image Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -154,19 +144,17 @@ const Steps = () => {
       title: 'Generate Image',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Generate Image
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Image Generation</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Generate original images from text prompts using AI-powered image
+            generation.
           </p>
           <Link href={`http://localhost:3000/image-gen`}>
             <Button className="rounded-full">Try Images</Button>
           </Link>
           <Image
-            src="/empty.png"
-            alt={'how.step2.title'}
+            src="/generate-image.png"
+            alt="Generate Image Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -178,19 +166,17 @@ const Steps = () => {
       title: 'Learning Assistant',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Learning Assistant, Generate Lessons..
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Learning Assistant</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Create lessons, quizzes, and learning material automatically using
+            AI.
           </p>
           <Link href={`http://localhost:3000/learning`}>
             <Button className="rounded-full">Try Learning</Button>
           </Link>
           <Image
-            src="/error.png"
-            alt={'how.step3.title'}
+            src="/learning.png"
+            alt="Learning Assistant Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -202,19 +188,17 @@ const Steps = () => {
       title: 'Meeting Summarizer',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Summarize Meeting Audio, Generate Transcript..
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Meeting Summarizer</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Upload audio or video of meetings and generate transcripts and
+            summaries automatically.
           </p>
           <Link href={`http://localhost:3000/meeting`}>
             <Button className="rounded-full">Try Summary</Button>
           </Link>
           <Image
-            src="/empty.png"
-            alt={'how.step2.title'}
+            src="/meeting.png"
+            alt="Meeting Summarizer Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -226,19 +210,17 @@ const Steps = () => {
       title: 'Resume Analyzer',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Resume Analyzer...
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Resume Analyzer</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Analyze resumes to extract skills, experience, and suggestions for
+            improvement.
           </p>
           <Link href={`http://localhost:3000/resume`}>
             <Button className="rounded-full">Try Analyzing</Button>
           </Link>
           <Image
-            src="/error.png"
-            alt={'how.step3.title'}
+            src="/resume.png"
+            alt="Resume Analyzer Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -250,19 +232,17 @@ const Steps = () => {
       title: 'Sentiment',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Text Content Sentiment
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Sentiment Analysis</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Analyze text content to detect positive, negative, or neutral
+            sentiment automatically.
           </p>
           <Link href={`http://localhost:3000/sentiment`}>
             <Button className="rounded-full">Try Sentiment</Button>
           </Link>
           <Image
-            src="/empty.png"
-            alt={'how.step2.title'}
+            src="/sentiment.png"
+            alt="Sentiment Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -274,19 +254,16 @@ const Steps = () => {
       title: 'Speech To Text',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Convert Speech audio to text
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Speech to Text</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Convert audio speech into written text quickly and accurately.
           </p>
           <Link href={`http://localhost:3000/speech-to-text`}>
             <Button className="rounded-full">Try Converting</Button>
           </Link>
           <Image
-            src="/error.png"
-            alt={'how.step3.title'}
+            src="/speech-to-text.png"
+            alt="Speech to Text Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -298,19 +275,16 @@ const Steps = () => {
       title: 'Text To Speech',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Convert text to speech audio
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Text to Speech</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Convert written text into natural-sounding speech audio.
           </p>
           <Link href={`http://localhost:3000/text-to-speech`}>
             <Button className="rounded-full">Try Converting</Button>
           </Link>
           <Image
-            src="/empty.png"
-            alt={'how.step2.title'}
+            src="/text-to-speech.png"
+            alt="Text to Speech Feature"
             height={300}
             width={300}
             className="h-70 w-70"
@@ -322,19 +296,16 @@ const Steps = () => {
       title: 'Translate',
       content: (
         <div>
-          <p className="mb-2 text-lg md:text-2xl text-neutral-800 dark:text-neutral-200">
-            Translate Text to Multiple Languages
-          </p>{' '}
+          <p className="mb-2 text-lg md:text-2xl">Text Translation</p>
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
-            this is a sample summary or short description about the feature. and
-            it use what function in Microsoft.Extensions.AI
+            Translate text into multiple languages quickly and accurately.
           </p>
-          <Link href={`http://localhost:3000/`}>
+          <Link href={`http://localhost:3000/translate`}>
             <Button className="rounded-full">Try Translation</Button>
           </Link>
           <Image
-            src="/error.png"
-            alt={'how.step2.title'}
+            src="/translate.png"
+            alt="Translate Feature"
             height={300}
             width={300}
             className="h-70 w-70"
