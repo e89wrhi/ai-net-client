@@ -1,7 +1,14 @@
-export interface MeetingSummaryDto {
-  id: string;
-  title: string;
-  summary: string;
-  status: string;
-  createdAt: string;
+export interface AnalyzeMeetingTranscriptRequestDto {
+  Transcript: string;
+  IncludeActionItems: boolean;
+  IncludeDescisions: boolean;
+  Language: string;
+  ModelId: string | null;
+}
+export interface AnalyzeMeetingTranscriptResponseDto {
+  MeetingId: string;
+  TranscriptId: string;
+  Summary: string;
+  ModelId: string;
+  ProviderName: string | null;
 }

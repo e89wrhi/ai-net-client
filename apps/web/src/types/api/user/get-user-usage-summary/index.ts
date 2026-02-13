@@ -1,6 +1,6 @@
 export interface UserUsageSummaryDto {
-  id: string;
-  period: string;
-  tokenUsed: string;
-  requestsCount: number;
+  Id: string;
+  Period: string;
+  TokenUsed: string;
+  RequestsCount: number;
 }

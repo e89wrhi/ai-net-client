@@ -1,5 +1,8 @@
 export interface StartChatRequest {
-  userId: string; // GUID
-  title: string;
-  aiModelId: string; // e.g., "gpt-4"
+  UserId: string;
+  Title: string;
+  AiModelId: string;
+}
+export interface StartChatRequestResponse {
+  Id: string;
 }

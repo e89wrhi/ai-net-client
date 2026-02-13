@@ -1,7 +1,7 @@
 export interface UserActivityDto {
-  id: string;
-  module: string;
-  action: string;
-  resourceId: string;
-  timeStamp: string;
+  Id: string;
+  Module: string;
+  Action: string;
+  ResourceId: string;
+  TimeStamp: Date;
 }
