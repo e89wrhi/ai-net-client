@@ -40,7 +40,7 @@ export async function* streamMeetingAnalysis(
 
 export function useStreamMeetingAnalysis() {
     return useMutation({
-        mutationFn: (data: StreamMeetingAnalysisRequestDto) =>
+        mutationFn: async (data: StreamMeetingAnalysisRequestDto) =>
             streamMeetingAnalysis(data),
     });
 }

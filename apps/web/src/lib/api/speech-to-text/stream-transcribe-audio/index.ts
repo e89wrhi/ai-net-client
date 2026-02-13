@@ -40,7 +40,7 @@ export async function* streamTranscribeAudio(
 
 export function useStreamTranscribeAudio() {
     return useMutation({
-        mutationFn: (data: StreamTranscribeAudioRequestDto) =>
+        mutationFn: async (data: StreamTranscribeAudioRequestDto) =>
             streamTranscribeAudio(data),
     });
 }

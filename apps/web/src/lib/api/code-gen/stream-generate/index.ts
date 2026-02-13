@@ -40,7 +40,7 @@ export async function* streamGenerateCode(
 
 export function useStreamGenerateCode() {
     return useMutation({
-        mutationFn: (data: StreamGenerateCodeRequestDto) =>
+        mutationFn: async (data: StreamGenerateCodeRequestDto) =>
             streamGenerateCode(data),
     });
 }

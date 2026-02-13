@@ -40,6 +40,6 @@ export async function* streamAnalyzeCode(
 
 export function useStreamAnalyzeCode() {
     return useMutation({
-        mutationFn: (data: StreamAnalyzeCodeRequestDto) => streamAnalyzeCode(data),
+        mutationFn: async (data: StreamAnalyzeCodeRequestDto) => streamAnalyzeCode(data),
     });
 }

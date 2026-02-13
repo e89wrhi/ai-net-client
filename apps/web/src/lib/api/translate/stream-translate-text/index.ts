@@ -40,7 +40,7 @@ export async function* streamTranslateText(
 
 export function useStreamTranslateText() {
     return useMutation({
-        mutationFn: (data: StreamTranslateTextRequestDto) =>
+        mutationFn: async (data: StreamTranslateTextRequestDto) =>
             streamTranslateText(data),
     });
 }

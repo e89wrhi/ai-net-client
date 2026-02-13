@@ -40,6 +40,6 @@ export async function* streamLesson(
 
 export function useStreamLesson() {
     return useMutation({
-        mutationFn: (data: StreamAILessonRequestDto) => streamLesson(data),
+        mutationFn: async (data: StreamAILessonRequestDto) => streamLesson(data),
     });
 }

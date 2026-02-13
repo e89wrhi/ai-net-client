@@ -40,7 +40,7 @@ export async function* streamSummarizeText(
 
 export function useStreamSummarizeText() {
     return useMutation({
-        mutationFn: (data: StreamSummarizeTextRequestDto) =>
+        mutationFn: async (data: StreamSummarizeTextRequestDto) =>
             streamSummarizeText(data),
     });
 }

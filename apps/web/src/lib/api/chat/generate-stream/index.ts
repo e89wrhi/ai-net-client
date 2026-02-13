@@ -40,6 +40,6 @@ export async function* generateStream(
 
 export function useGenerateStream() {
     return useMutation({
-        mutationFn: (data: StreamAiResponseRequestDto) => generateStream(data),
+        mutationFn: async (data: StreamAiResponseRequestDto) => generateStream(data),
     });
 }
