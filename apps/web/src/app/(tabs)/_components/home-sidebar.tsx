@@ -15,14 +15,22 @@ import { NavGroupp } from './home-sidebar-items';
 import { NavGroup } from '@/types/sidebar';
 import { SidebarHeaderLayout } from './sidebar-header';
 import {
-  Flame,
-  House,
-  Search,
-  TrendingUp,
-  HousePlug,
   MessageCircle,
+  Home,
   Image,
+  Edit3,
+  FileText,
+  Speaker,
+  Mic,
+  AlignJustify,
+  Globe,
+  Smile,
   FileQuestion,
+  Code,
+  Bug,
+  Users,
+  FileDigit,
+  Plug,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -32,61 +40,45 @@ const profile = {
   name: 'Sample name',
   image: '/ai.png',
 };
-
-// featured
+// Featured
 const featuredGroup: NavGroup = {
   title: 'Featured',
   items: [
     { title: 'Chat', icon: MessageCircle, url: '/', enabled: true },
-    {
-      title: 'Home',
-      icon: HousePlug,
-      url: 'http://localhost:3001/',
-      enabled: true,
-    },
+    { title: 'Home', icon: Home, url: 'http://localhost:3001/', enabled: true },
   ],
 };
 
-// images
+// Images
 const imagesGroup: NavGroup = {
   title: 'Image',
   items: [
-    { title: 'Edit', icon: Image, url: '/image-edit', enabled: true },
-    { title: 'Caption', icon: Image, url: '/image-caption', enabled: true },
-    {
-      title: 'Generate',
-      icon: Image,
-      url: '/image-gen',
-      enabled: true,
-    },
+    { title: 'Edit', icon: Edit3, url: '/image-edit', enabled: true },
+    { title: 'Caption', icon: FileText, url: '/image-caption', enabled: true },
+    { title: 'Generate', icon: Image, url: '/image-gen', enabled: true },
   ],
 };
 
-// text
+// Text
 const textGroup: NavGroup = {
   title: 'Text',
   items: [
-    { title: 'Generate', icon: House, url: '/text-gen', enabled: true },
+    { title: 'Generate', icon: FileText, url: '/text-gen', enabled: true },
     {
       title: 'Text to Speech',
-      icon: Flame,
+      icon: Speaker,
       url: '/text-to-speech',
       enabled: true,
     },
     {
       title: 'Speech to Text',
-      icon: TrendingUp,
+      icon: Mic,
       url: '/speech-to-text',
       enabled: true,
     },
-    {
-      title: 'Summary',
-      icon: Search,
-      url: '/summary',
-      enabled: true,
-    },
-    { title: 'Translate', icon: House, url: '/translate', enabled: true },
-    { title: 'Senitment', icon: Flame, url: '/sentiment', enabled: true },
+    { title: 'Summary', icon: AlignJustify, url: '/summary', enabled: true },
+    { title: 'Translate', icon: Globe, url: '/translate', enabled: true },
+    { title: 'Sentiment', icon: Smile, url: '/sentiment', enabled: true },
     { title: 'Q&A', icon: FileQuestion, url: '/question', enabled: true },
     {
       title: 'Autocomplete',
@@ -96,39 +88,44 @@ const textGroup: NavGroup = {
     },
   ],
 };
-// code
+
+// Code
 const codeGroup: NavGroup = {
   title: 'Code',
   items: [
-    { title: 'Generate', icon: House, url: '/code-gen', enabled: true },
-    { title: 'Debug', icon: Flame, url: '/code-debug', enabled: true },
+    { title: 'Generate', icon: Code, url: '/code-gen', enabled: true },
+    { title: 'Debug', icon: Bug, url: '/code-debug', enabled: true },
   ],
 };
 
-// advance
+// Advance
 const advanceGroup: NavGroup = {
   title: 'Advance',
   items: [
-    { title: 'Meeting Analyzer', icon: House, url: '/meeting', enabled: true },
-    { title: 'Resume Analyzer', icon: Flame, url: '/resume', enabled: true },
+    { title: 'Meeting Analyzer', icon: Users, url: '/meeting', enabled: true },
+    {
+      title: 'Resume Analyzer',
+      icon: FileDigit,
+      url: '/resume',
+      enabled: true,
+    },
     {
       title: 'Learning Assistant',
-      icon: TrendingUp,
+      icon: Plug,
       url: '/learning',
       enabled: true,
     },
   ],
 };
 
-// more
+// More
 const moreGroup: NavGroup = {
   title: 'More',
   items: [
-    { title: 'MD', icon: House, url: '/simple-md', enabled: true },
-    { title: 'Plugin', icon: Flame, url: '/simple-plugin', enabled: true },
+    { title: 'MD', icon: FileText, url: '/simple-md', enabled: true },
+    { title: 'Plugin', icon: Plug, url: '/simple-plugin', enabled: true },
   ],
 };
-
 export function AppSidebar() {
   //const { userProfile: profile } = params;
   const { state } = useSidebar();
