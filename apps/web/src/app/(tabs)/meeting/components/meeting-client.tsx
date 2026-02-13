@@ -1,265 +1,174 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Edit, Sparkles, Check } from 'lucide-react';
-import MeetingHeader from './meeting-header';
+import { Check, FileAudio, Sparkles, ClipboardList } from 'lucide-react';
 
 export default function MeetingClient() {
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailBody, setEmailBody] = useState('');
-  const [messageText, setMessageText] = useState('');
-  const [formStyle, setFormStyle] = useState('professional');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestion, setShowSuggestion] = useState(false);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [transcript, setTranscript] = useState('');
+  const [summary, setSummary] = useState('');
+  const [actionItems, setActionItems] = useState<string[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [duration, setDuration] = useState<number | null>(null);
 
-  const styleSuggestions = {
-    professional:
-      'Thank you for reaching out. I would be happy to discuss this matter further at your convenience. Please let me know a suitable time for a meeting.',
-    casual:
-      "Hey! Thanks for getting in touch. I'd love to chat more about this. When works for you?",
-    concise:
-      "Thanks for contacting me. Let's schedule a meeting to discuss. What time works?",
+  // ----------------------------
+  // Handle Audio Upload
+  // ----------------------------
+  const handleAudioUpload = (file: File | null) => {
+    if (!file) return;
+    setAudioFile(file);
+
+    // Mock duration estimate
+    const estimatedMinutes = Math.floor(file.size / 500000);
+    setDuration(estimatedMinutes > 0 ? estimatedMinutes : 1);
   };
 
-  const generateSuggestion = (text: string) => {
-    if (text.length < 5) {
-      setShowSuggestion(false);
-      return;
-    }
+  // ----------------------------
+  // Generate Transcript (Mock)
+  // ----------------------------
+  const generateTranscript = async () => {
+    if (!audioFile) return;
 
-    const suggestions = [
-      'I appreciate your prompt response and look forward to our continued collaboration.',
-      'Please find the attached document for your review and consideration.',
-      'I hope this message finds you well. I wanted to follow up on our previous discussion.',
-      'Thank you for bringing this to my attention. I will address this matter immediately.',
+    setIsProcessing(true);
+
+    // Simulated transcript
+    const fakeTranscript = `
+Speaker 1: Let's review the Q4 marketing strategy.
+Speaker 2: We need to increase ad spend by 20%.
+Speaker 1: Agreed. We should also optimize landing pages.
+Speaker 3: Timeline for implementation should be two weeks.
+Speaker 2: I'll handle the campaign updates.
+    `;
+
+    setTimeout(() => {
+      setTranscript(fakeTranscript);
+      generateSummary(fakeTranscript);
+      setIsProcessing(false);
+    }, 1500);
+  };
+
+  // ----------------------------
+  // Generate Summary + Actions
+  // ----------------------------
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const generateSummary = (text: string) => {
+    const generatedSummary = `
+Meeting Summary:
+
+The team discussed Q4 marketing strategy improvements. 
+Key focus areas include increasing ad spend, optimizing landing pages, 
+and implementing updates within a two-week timeline.
+
+Overall Tone:
+Collaborative and solution-focused.
+    `;
+
+    const generatedActions = [
+      'Increase ad spend by 20%',
+      'Optimize landing pages',
+      'Implement updates within two weeks',
+      'Update marketing campaign settings',
     ];
 
-    setSuggestions(suggestions);
-    setShowSuggestion(true);
+    setSummary(generatedSummary);
+    setActionItems(generatedActions);
   };
 
-  const applySuggestion = (suggestion: string) => {
-    setEmailBody(emailBody + (emailBody ? ' ' : '') + suggestion);
-    setShowSuggestion(false);
-  };
-
-  const quickComplete = () => {
-    const completion =
-      styleSuggestions[formStyle as keyof typeof styleSuggestions];
-    setEmailBody(emailBody + (emailBody ? '\n\n' : '') + completion);
+  // ----------------------------
+  // Export (Mock)
+  // ----------------------------
+  const exportReport = () => {
+    alert('Report exported (mock). Integrate PDF generation if needed.');
   };
 
   return (
-    <div className="container mx-auto py-2">
-      <MeetingHeader />
+    <div className="container mx-auto py-6 space-y-8">
+      {/* Upload Section */}
+      <Card className="p-8 space-y-6 rounded-2xl">
+        <div className="flex items-center gap-2 text-2xl font-bold">
+          <FileAudio className="h-6 w-6" />
+          Meeting Analyzer
+        </div>
 
-      <div className="flex flex-col space-y-7">
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex font-bold text-2xl items-center gap-2 mb-4">
-            <h2>Email Composer</h2>
-          </div>
+        <div className="space-y-4">
+          <Input
+            type="file"
+            accept="audio/*"
+            onChange={(e) => handleAudioUpload(e.target.files?.[0] || null)}
+          />
 
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm mb-2 block">Writing Style</label>
-              <Select value={formStyle} onValueChange={setFormStyle}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                  <SelectItem value="concise">Concise</SelectItem>
-                  <SelectItem value="formal">Formal</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm mb-2 block">Subject</label>
-              <Input
-                placeholder="Email subject..."
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm mb-2 block">Email Body</label>
-              <Textarea
-                placeholder="Start typing and AI will suggest completions..."
-                value={emailBody}
-                onChange={(e) => {
-                  setEmailBody(e.target.value);
-                  generateSuggestion(e.target.value);
-                }}
-                className="min-h-[200px]"
-              />
-            </div>
-
-            {showSuggestion && suggestions.length > 0 && (
-              <Card className="p-4 bg-blue-50 border-blue-200">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm">AI Suggestions</span>
-                </div>
-                <div className="space-y-2">
-                  {suggestions.slice(0, 2).map((suggestion, i) => (
-                    <button
-                      key={i}
-                      onClick={() => applySuggestion(suggestion)}
-                      className="block w-full text-left text-sm p-3 rounded hover:bg-gray-50 transition-colors border"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            <div className="flex gap-2">
-              <Button onClick={quickComplete} className="flex-1">
-                <Sparkles className="h-4 w-4 mr-2" />
-                Complete with AI
-              </Button>
-              <Button variant="outline" onClick={() => setEmailBody('')}>
-                Clear
-              </Button>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6 border-none">
-          <h2 className="mb-4">Quick Message</h2>
-
-          <div className="space-y-4">
-            <Textarea
-              placeholder="Type a message..."
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              className="min-h-[100px]"
-            />
-
-            <Card className="p-3">
-              <p className="text-sm text-gray-600 mb-2">Quick completions:</p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  'Thanks for the update!',
-                  "I'll get back to you soon.",
-                  'Looking forward to it.',
-                  'Let me know if you need anything.',
-                ].map((quick, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setMessageText(quick)}
-                    className="text-xs px-3 py-1 border rounded-full hover:bg-gray-100 transition-colors"
-                  >
-                    {quick}
-                  </button>
-                ))}
-              </div>
-            </Card>
-          </div>
-        </Card>
-
-        <Card className="p-6 border-none">
-          <h2 className="mb-4">Preview</h2>
-
-          {emailBody ? (
-            <div className="space-y-4">
-              <div className="border rounded-lg p-4">
-                <div className="mb-4 pb-4 border-b">
-                  <div className="text-sm text-gray-600 mb-1">Subject:</div>
-                  <div>{emailSubject || '(No subject)'}</div>
-                </div>
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                  {emailBody}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-center text-sm">
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">
-                    {emailBody.split(' ').filter((w) => w).length}
-                  </div>
-                  <div className="text-gray-600">Words</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">{formStyle}</div>
-                  <div className="text-gray-600">Style</div>
-                </Card>
-              </div>
-
-              <Button className="w-full">
-                <Check className="h-4 w-4 mr-2" />
-                Send Email
-              </Button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center min-h-[300px] text-gray-400 border-2 border-dashed rounded-lg">
-              <Edit className="h-12 w-12 mb-3" />
-              <p>Your email preview will appear here</p>
+          {audioFile && (
+            <div className="text-sm text-gray-600">
+              File: {audioFile.name}
+              {duration && <div>Estimated Duration: {duration} min</div>}
             </div>
           )}
-        </Card>
 
-        <Card className="p-6">
-          <h3 className="mb-4">AI Features</h3>
-          <div className="space-y-3">
-            {[
-              {
-                feature: 'Smart Completions',
-                description: 'Context-aware sentence completions',
-              },
-              {
-                feature: 'Style Adaptation',
-                description: 'Adjust tone and formality',
-              },
-              {
-                feature: 'Grammar Check',
-                description: 'Real-time grammar corrections',
-              },
-              {
-                feature: 'Tone Analysis',
-                description: 'Ensure appropriate tone',
-              },
-            ].map((item, i) => (
-              <div key={i} className="flex gap-3 p-3 rounded-lg">
-                <div className="w-8 h-8 bg-lime-100 rounded flex items-center justify-center flex-shrink-0">
-                  <Check className="h-4 w-4 text-lime-600" />
-                </div>
-                <div>
-                  <div className="text-sm">{item.feature}</div>
-                  <div className="text-xs text-gray-600">
-                    {item.description}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <Button
+            onClick={generateTranscript}
+            disabled={!audioFile || isProcessing}
+            className="w-full"
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            {isProcessing ? 'Processing...' : 'Generate Transcript'}
+          </Button>
+        </div>
+      </Card>
+
+      {/* Transcript Section */}
+      {transcript && (
+        <Card className="p-8 space-y-4">
+          <h2 className="text-xl font-semibold">Transcript</h2>
+
+          <Textarea
+            value={transcript}
+            onChange={(e) => setTranscript(e.target.value)}
+            className="min-h-[200px]"
+          />
+
+          <div className="text-sm text-gray-500">
+            Word Count: {transcript.split(' ').filter(Boolean).length}
           </div>
         </Card>
+      )}
 
-        <Card className="p-4">
-          <h3 className="text-sm mb-2">💡 Tips</h3>
-          <ul className="text-sm space-y-1">
-            <li>• Start typing to see AI suggestions</li>
-            <li>• Switch styles for different tones</li>
-            <li>• Use quick completions for common phrases</li>
-            <li>• AI learns from your writing style</li>
-          </ul>
+      {/* Summary Section */}
+      {summary && (
+        <Card className="p-8 space-y-6">
+          <h2 className="text-xl font-semibold">Meeting Summary</h2>
+
+          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
+            {summary}
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2 mb-3 font-semibold">
+              <ClipboardList className="h-5 w-5" />
+              Action Items
+            </div>
+
+            <div className="space-y-2">
+              {actionItems.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 text-sm border p-3 rounded-lg"
+                >
+                  <Check className="h-4 w-4 text-lime-600" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Button onClick={exportReport} className="w-full">
+            Export Report
+          </Button>
         </Card>
-      </div>
+      )}
     </div>
   );
 }
