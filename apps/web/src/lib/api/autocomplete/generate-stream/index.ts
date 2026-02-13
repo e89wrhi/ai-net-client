@@ -40,7 +40,7 @@ export async function* streamAutoComplete(
 
 export function useStreamAutoComplete() {
     return useMutation({
-        mutationFn: (data: StreamAutoCompleteRequestDto) =>
+        mutationFn: async (data: StreamAutoCompleteRequestDto) =>
             streamAutoComplete(data),
     });
 }
