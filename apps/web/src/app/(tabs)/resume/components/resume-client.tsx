@@ -1,265 +1,212 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Edit, Sparkles, Check } from 'lucide-react';
-import ResumeHeader from './resume-header';
+import { Sparkles, FileText, Award } from 'lucide-react';
 
 export default function ResumeClient() {
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailBody, setEmailBody] = useState('');
-  const [messageText, setMessageText] = useState('');
-  const [formStyle, setFormStyle] = useState('professional');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestion, setShowSuggestion] = useState(false);
+  const [resumeText, setResumeText] = useState('');
+  const [uploadedFileName, setUploadedFileName] = useState('');
+  const [analysis, setAnalysis] = useState('');
+  const [skills, setSkills] = useState<string[]>([]);
+  const [experience, setExperience] = useState<string[]>([]);
+  const [education, setEducation] = useState<string[]>([]);
+  const [strengths, setStrengths] = useState<string[]>([]);
+  const [atsScore, setAtsScore] = useState<number | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const styleSuggestions = {
-    professional:
-      'Thank you for reaching out. I would be happy to discuss this matter further at your convenience. Please let me know a suitable time for a meeting.',
-    casual:
-      "Hey! Thanks for getting in touch. I'd love to chat more about this. When works for you?",
-    concise:
-      "Thanks for contacting me. Let's schedule a meeting to discuss. What time works?",
+  // ----------------------------
+  // Handle File Upload
+  // ----------------------------
+  const handleFileUpload = async (file: File | null) => {
+    if (!file) return;
+
+    setUploadedFileName(file.name);
+
+    const fileType = file.type;
+
+    if (fileType === 'text/plain') {
+      const text = await file.text();
+      setResumeText(text);
+    } else {
+      // For PDF/DOCX (requires backend parsing for full support)
+      const text = await file.text().catch(() => '');
+      setResumeText(
+        text || 'File uploaded. Full parsing requires backend integration.'
+      );
+    }
   };
 
-  const generateSuggestion = (text: string) => {
-    if (text.length < 5) {
-      setShowSuggestion(false);
-      return;
-    }
+  // ----------------------------
+  // Resume Analysis
+  // ----------------------------
+  const analyzeResume = () => {
+    if (!resumeText) return;
 
-    const suggestions = [
-      'I appreciate your prompt response and look forward to our continued collaboration.',
-      'Please find the attached document for your review and consideration.',
-      'I hope this message finds you well. I wanted to follow up on our previous discussion.',
-      'Thank you for bringing this to my attention. I will address this matter immediately.',
+    setIsAnalyzing(true);
+
+    const extractedSkills = [
+      'JavaScript',
+      'React',
+      'Node.js',
+      'Leadership',
+      'Communication',
     ];
 
-    setSuggestions(suggestions);
-    setShowSuggestion(true);
-  };
+    const extractedExperience = [
+      'Frontend Developer (2+ years)',
+      'Full Stack Developer (1.5+ years)',
+    ];
 
-  const applySuggestion = (suggestion: string) => {
-    setEmailBody(emailBody + (emailBody ? ' ' : '') + suggestion);
-    setShowSuggestion(false);
-  };
+    const extractedEducation = [
+      'Bachelor’s Degree in Computer Science',
+      'Web Development Certification',
+    ];
 
-  const quickComplete = () => {
-    const completion =
-      styleSuggestions[formStyle as keyof typeof styleSuggestions];
-    setEmailBody(emailBody + (emailBody ? '\n\n' : '') + completion);
+    const extractedStrengths = [
+      'Strong technical foundation',
+      'Experience with production systems',
+      'Team collaboration',
+    ];
+
+    const wordCount = resumeText.split(' ').filter(Boolean).length;
+    const calculatedScore = wordCount > 400 ? 90 : wordCount > 250 ? 80 : 70;
+
+    const generatedAnalysis = `
+Resume Analysis Summary:
+
+Your resume demonstrates strong technical expertise and solid experience.
+
+Improvement Recommendations:
+• Add measurable achievements (e.g., increased performance by 30%)
+• Include more action-driven verbs
+• Optimize keywords for ATS systems
+• Ensure consistent formatting
+    `;
+
+    setTimeout(() => {
+      setSkills(extractedSkills);
+      setExperience(extractedExperience);
+      setEducation(extractedEducation);
+      setStrengths(extractedStrengths);
+      setAtsScore(calculatedScore);
+      setAnalysis(generatedAnalysis);
+      setIsAnalyzing(false);
+    }, 1200);
   };
 
   return (
-    <div className="container mx-auto py-2">
-      <ResumeHeader />
+    <div className="container mx-auto py-6 space-y-8">
+      {/* Upload Section */}
+      <Card className="p-8 space-y-6 rounded-2xl">
+        <div className="flex items-center gap-2 text-2xl font-bold">
+          <FileText className="h-6 w-6" />
+          Resume Analyzer
+        </div>
 
-      <div className="flex flex-col space-y-7">
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex font-bold text-2xl items-center gap-2 mb-4">
-            <h2>Email Composer</h2>
+        <Input
+          type="file"
+          accept=".pdf,.doc,.docx,.txt"
+          onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+        />
+
+        {uploadedFileName && (
+          <div className="text-sm text-gray-500">
+            Uploaded: {uploadedFileName}
           </div>
+        )}
 
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm mb-2 block">Writing Style</label>
-              <Select value={formStyle} onValueChange={setFormStyle}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                  <SelectItem value="concise">Concise</SelectItem>
-                  <SelectItem value="formal">Formal</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        <Textarea
+          placeholder="Or paste your resume content here..."
+          value={resumeText}
+          onChange={(e) => setResumeText(e.target.value)}
+          className="min-h-[250px]"
+        />
 
-            <div>
-              <label className="text-sm mb-2 block">Subject</label>
-              <Input
-                placeholder="Email subject..."
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-              />
-            </div>
+        <Button
+          onClick={analyzeResume}
+          disabled={!resumeText || isAnalyzing}
+          className="w-full"
+        >
+          <Sparkles className="h-4 w-4 mr-2" />
+          {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
+        </Button>
+      </Card>
 
-            <div>
-              <label className="text-sm mb-2 block">Email Body</label>
-              <Textarea
-                placeholder="Start typing and AI will suggest completions..."
-                value={emailBody}
-                onChange={(e) => {
-                  setEmailBody(e.target.value);
-                  generateSuggestion(e.target.value);
-                }}
-                className="min-h-[200px]"
-              />
-            </div>
-
-            {showSuggestion && suggestions.length > 0 && (
-              <Card className="p-4 bg-blue-50 border-blue-200">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm">AI Suggestions</span>
-                </div>
-                <div className="space-y-2">
-                  {suggestions.slice(0, 2).map((suggestion, i) => (
-                    <button
-                      key={i}
-                      onClick={() => applySuggestion(suggestion)}
-                      className="block w-full text-left text-sm p-3 rounded hover:bg-gray-50 transition-colors border"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            <div className="flex gap-2">
-              <Button onClick={quickComplete} className="flex-1">
-                <Sparkles className="h-4 w-4 mr-2" />
-                Complete with AI
-              </Button>
-              <Button variant="outline" onClick={() => setEmailBody('')}>
-                Clear
-              </Button>
-            </div>
-          </div>
+      {/* ATS Score */}
+      {atsScore !== null && (
+        <Card className="p-6 text-center">
+          <div className="text-sm text-gray-500 mb-2">ATS Score</div>
+          <div className="text-4xl font-bold text-lime-600">{atsScore}/100</div>
         </Card>
+      )}
 
-        <Card className="p-6 border-none">
-          <h2 className="mb-4">Quick Message</h2>
-
-          <div className="space-y-4">
-            <Textarea
-              placeholder="Type a message..."
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              className="min-h-[100px]"
-            />
-
-            <Card className="p-3">
-              <p className="text-sm text-gray-600 mb-2">Quick completions:</p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  'Thanks for the update!',
-                  "I'll get back to you soon.",
-                  'Looking forward to it.',
-                  'Let me know if you need anything.',
-                ].map((quick, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setMessageText(quick)}
-                    className="text-xs px-3 py-1 border rounded-full hover:bg-gray-100 transition-colors"
-                  >
-                    {quick}
-                  </button>
-                ))}
-              </div>
-            </Card>
-          </div>
-        </Card>
-
-        <Card className="p-6 border-none">
-          <h2 className="mb-4">Preview</h2>
-
-          {emailBody ? (
-            <div className="space-y-4">
-              <div className="border rounded-lg p-4">
-                <div className="mb-4 pb-4 border-b">
-                  <div className="text-sm text-gray-600 mb-1">Subject:</div>
-                  <div>{emailSubject || '(No subject)'}</div>
-                </div>
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                  {emailBody}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-center text-sm">
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">
-                    {emailBody.split(' ').filter((w) => w).length}
-                  </div>
-                  <div className="text-gray-600">Words</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">{formStyle}</div>
-                  <div className="text-gray-600">Style</div>
-                </Card>
-              </div>
-
-              <Button className="w-full">
-                <Check className="h-4 w-4 mr-2" />
-                Send Email
-              </Button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center min-h-[300px] text-gray-400 border-2 border-dashed rounded-lg">
-              <Edit className="h-12 w-12 mb-3" />
-              <p>Your email preview will appear here</p>
-            </div>
-          )}
-        </Card>
-
-        <Card className="p-6">
-          <h3 className="mb-4">AI Features</h3>
-          <div className="space-y-3">
-            {[
-              {
-                feature: 'Smart Completions',
-                description: 'Context-aware sentence completions',
-              },
-              {
-                feature: 'Style Adaptation',
-                description: 'Adjust tone and formality',
-              },
-              {
-                feature: 'Grammar Check',
-                description: 'Real-time grammar corrections',
-              },
-              {
-                feature: 'Tone Analysis',
-                description: 'Ensure appropriate tone',
-              },
-            ].map((item, i) => (
-              <div key={i} className="flex gap-3 p-3 rounded-lg">
-                <div className="w-8 h-8 bg-lime-100 rounded flex items-center justify-center flex-shrink-0">
-                  <Check className="h-4 w-4 text-lime-600" />
-                </div>
-                <div>
-                  <div className="text-sm">{item.feature}</div>
-                  <div className="text-xs text-gray-600">
-                    {item.description}
-                  </div>
-                </div>
+      {/* Skills */}
+      {skills.length > 0 && (
+        <Card className="p-8 space-y-4">
+          <h2 className="text-xl font-semibold">Skills</h2>
+          <div className="flex flex-wrap gap-2">
+            {skills.map((skill, i) => (
+              <div key={i} className="px-3 py-1 border rounded-full text-sm">
+                {skill}
               </div>
             ))}
           </div>
         </Card>
+      )}
 
-        <Card className="p-4">
-          <h3 className="text-sm mb-2">💡 Tips</h3>
-          <ul className="text-sm space-y-1">
-            <li>• Start typing to see AI suggestions</li>
-            <li>• Switch styles for different tones</li>
-            <li>• Use quick completions for common phrases</li>
-            <li>• AI learns from your writing style</li>
-          </ul>
+      {/* Experience */}
+      {experience.length > 0 && (
+        <Card className="p-8 space-y-4">
+          <h2 className="text-xl font-semibold">Experience</h2>
+          {experience.map((exp, i) => (
+            <div key={i} className="border p-4 rounded-lg text-sm">
+              {exp}
+            </div>
+          ))}
         </Card>
-      </div>
+      )}
+
+      {/* Education */}
+      {education.length > 0 && (
+        <Card className="p-8 space-y-4">
+          <h2 className="text-xl font-semibold">Education</h2>
+          {education.map((edu, i) => (
+            <div key={i} className="border p-4 rounded-lg text-sm">
+              {edu}
+            </div>
+          ))}
+        </Card>
+      )}
+
+      {/* Strengths */}
+      {strengths.length > 0 && (
+        <Card className="p-8 space-y-4">
+          <h2 className="text-xl font-semibold">Strengths</h2>
+          {strengths.map((strength, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-2 border p-3 rounded-lg text-sm"
+            >
+              <Award className="h-4 w-4 text-lime-600" />
+              {strength}
+            </div>
+          ))}
+        </Card>
+      )}
+
+      {/* Detailed Analysis */}
+      {analysis && (
+        <Card className="p-8">
+          <h2 className="text-xl font-semibold mb-4">Detailed Feedback</h2>
+          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
+            {analysis}
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
