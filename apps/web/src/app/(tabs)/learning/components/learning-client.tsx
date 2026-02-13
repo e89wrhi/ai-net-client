@@ -1,265 +1,281 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from '@/components/ui/select';
-import { Edit, Sparkles, Check } from 'lucide-react';
-import LearningHeader from './learning-header';
+import { Check, Sparkles, BookOpen, HelpCircle } from 'lucide-react';
 
 export default function LearningClient() {
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailBody, setEmailBody] = useState('');
-  const [messageText, setMessageText] = useState('');
-  const [formStyle, setFormStyle] = useState('professional');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestion, setShowSuggestion] = useState(false);
+  const [topic, setTopic] = useState('');
+  const [difficulty, setDifficulty] = useState<
+    'beginner' | 'intermediate' | 'advanced'
+  >('beginner');
 
-  const styleSuggestions = {
-    professional:
-      'Thank you for reaching out. I would be happy to discuss this matter further at your convenience. Please let me know a suitable time for a meeting.',
-    casual:
-      "Hey! Thanks for getting in touch. I'd love to chat more about this. When works for you?",
-    concise:
-      "Thanks for contacting me. Let's schedule a meeting to discuss. What time works?",
+  const [lesson, setLesson] = useState('');
+  const [studentAnswer, setStudentAnswer] = useState('');
+  const [question, setQuestion] = useState('');
+
+  const [feedback, setFeedback] = useState('');
+  const [score, setScore] = useState<number | null>(null);
+
+  const [hints, setHints] = useState<string[]>([]);
+  const [showHints, setShowHints] = useState(false);
+
+  const [completedLessons, setCompletedLessons] = useState(0);
+  const [averageScore, setAverageScore] = useState(0);
+
+  // ---------------------------
+  // Lesson Generator
+  // ---------------------------
+  const generateLesson = () => {
+    if (!topic) return;
+
+    const generatedLesson = `
+📘 Topic: ${topic}
+🎯 Difficulty: ${difficulty}
+
+Overview:
+This lesson introduces the core concepts of ${topic} at a ${difficulty} level.
+
+Key Concepts:
+• Definition and explanation of ${topic}
+• Why it matters
+• Real-world applications
+• Common mistakes to avoid
+
+Practice Question:
+Explain the main idea of ${topic} in your own words and provide one example.
+    `;
+
+    setLesson(generatedLesson);
+    setStudentAnswer('');
+    setFeedback('');
+    setScore(null);
   };
 
-  const generateSuggestion = (text: string) => {
-    if (text.length < 5) {
-      setShowSuggestion(false);
-      return;
+  // ---------------------------
+  // Submit Answer + Grade
+  // ---------------------------
+  const submitAnswer = () => {
+    if (!studentAnswer) return;
+
+    const wordCount = studentAnswer.split(' ').filter(Boolean).length;
+
+    let calculatedScore = 50;
+
+    if (wordCount > 50) calculatedScore = 95;
+    else if (wordCount > 30) calculatedScore = 85;
+    else if (wordCount > 15) calculatedScore = 75;
+    else calculatedScore = 60;
+
+    setScore(calculatedScore);
+
+    setFeedback(`
+Evaluation:
+• Clarity: ${wordCount > 20 ? 'Good' : 'Needs improvement'}
+• Depth: ${wordCount > 30 ? 'Strong understanding' : 'Surface-level explanation'}
+• Structure: ${
+      studentAnswer.includes('.')
+        ? 'Well structured'
+        : 'Could use clearer sentences'
     }
 
-    const suggestions = [
-      'I appreciate your prompt response and look forward to our continued collaboration.',
-      'Please find the attached document for your review and consideration.',
-      'I hope this message finds you well. I wanted to follow up on our previous discussion.',
-      'Thank you for bringing this to my attention. I will address this matter immediately.',
-    ];
+Final Score: ${calculatedScore}/100
 
-    setSuggestions(suggestions);
-    setShowSuggestion(true);
+Suggestions:
+- Add clearer definitions
+- Provide more examples
+- Expand on why the concept is important
+    `);
+
+    // Update progress
+    const newCompleted = completedLessons + 1;
+    const newAverage =
+      (averageScore * completedLessons + calculatedScore) / newCompleted;
+
+    setCompletedLessons(newCompleted);
+    setAverageScore(Math.round(newAverage));
+
+    // Adaptive difficulty
+    if (calculatedScore > 85 && difficulty !== 'advanced') {
+      setDifficulty(difficulty === 'beginner' ? 'intermediate' : 'advanced');
+    }
   };
 
-  const applySuggestion = (suggestion: string) => {
-    setEmailBody(emailBody + (emailBody ? ' ' : '') + suggestion);
-    setShowSuggestion(false);
+  // ---------------------------
+  // Hint Generator
+  // ---------------------------
+  const generateHints = () => {
+    if (!topic) return;
+
+    setHints([
+      `Start by clearly defining "${topic}".`,
+      'Explain why the concept matters.',
+      'Include a real-world example.',
+      'Break your explanation into clear paragraphs.',
+    ]);
+    setShowHints(true);
   };
 
-  const quickComplete = () => {
-    const completion =
-      styleSuggestions[formStyle as keyof typeof styleSuggestions];
-    setEmailBody(emailBody + (emailBody ? '\n\n' : '') + completion);
+  // ---------------------------
+  // Ask AI (Mocked)
+  // ---------------------------
+  const askAI = () => {
+    if (!question) return;
+
+    setFeedback(`
+Answer to your question:
+
+${question}
+
+Explanation:
+This concept relates to the core principles of ${
+      topic || 'the subject you are studying'
+    }. Focus on understanding the foundational logic first before moving to advanced details.
+    `);
   };
 
   return (
-    <div className="container mx-auto py-2">
-      <LearningHeader />
+    <div className="container mx-auto py-6 space-y-8">
+      {/* Lesson Generator */}
+      <Card className="p-8 rounded-2xl space-y-6">
+        <div className="flex items-center gap-2 text-2xl font-bold">
+          <BookOpen className="h-6 w-6" />
+          Lesson Generator
+        </div>
 
-      <div className="flex flex-col space-y-7">
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex font-bold text-2xl items-center gap-2 mb-4">
-            <h2>Email Composer</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm mb-2 block">Writing Style</label>
-              <Select value={formStyle} onValueChange={setFormStyle}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                  <SelectItem value="concise">Concise</SelectItem>
-                  <SelectItem value="formal">Formal</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm mb-2 block">Subject</label>
-              <Input
-                placeholder="Email subject..."
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm mb-2 block">Email Body</label>
-              <Textarea
-                placeholder="Start typing and AI will suggest completions..."
-                value={emailBody}
-                onChange={(e) => {
-                  setEmailBody(e.target.value);
-                  generateSuggestion(e.target.value);
-                }}
-                className="min-h-[200px]"
-              />
-            </div>
-
-            {showSuggestion && suggestions.length > 0 && (
-              <Card className="p-4 bg-blue-50 border-blue-200">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm">AI Suggestions</span>
-                </div>
-                <div className="space-y-2">
-                  {suggestions.slice(0, 2).map((suggestion, i) => (
-                    <button
-                      key={i}
-                      onClick={() => applySuggestion(suggestion)}
-                      className="block w-full text-left text-sm p-3 rounded hover:bg-gray-50 transition-colors border"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            <div className="flex gap-2">
-              <Button onClick={quickComplete} className="flex-1">
-                <Sparkles className="h-4 w-4 mr-2" />
-                Complete with AI
-              </Button>
-              <Button variant="outline" onClick={() => setEmailBody('')}>
-                Clear
-              </Button>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6 border-none">
-          <h2 className="mb-4">Quick Message</h2>
-
-          <div className="space-y-4">
-            <Textarea
-              placeholder="Type a message..."
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              className="min-h-[100px]"
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm mb-2 block">Topic</label>
+            <Input
+              placeholder="Enter topic (e.g., Photosynthesis)"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
             />
-
-            <Card className="p-3">
-              <p className="text-sm text-gray-600 mb-2">Quick completions:</p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  'Thanks for the update!',
-                  "I'll get back to you soon.",
-                  'Looking forward to it.',
-                  'Let me know if you need anything.',
-                ].map((quick, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setMessageText(quick)}
-                    className="text-xs px-3 py-1 border rounded-full hover:bg-gray-100 transition-colors"
-                  >
-                    {quick}
-                  </button>
-                ))}
-              </div>
-            </Card>
           </div>
-        </Card>
 
-        <Card className="p-6 border-none">
-          <h2 className="mb-4">Preview</h2>
+          <div>
+            <label className="text-sm mb-2 block">Difficulty</label>
+            <Select
+              value={difficulty}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onValueChange={(v: any) => setDifficulty(v)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="beginner">Beginner</SelectItem>
+                <SelectItem value="intermediate">Intermediate</SelectItem>
+                <SelectItem value="advanced">Advanced</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-          {emailBody ? (
-            <div className="space-y-4">
-              <div className="border rounded-lg p-4">
-                <div className="mb-4 pb-4 border-b">
-                  <div className="text-sm text-gray-600 mb-1">Subject:</div>
-                  <div>{emailSubject || '(No subject)'}</div>
-                </div>
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                  {emailBody}
-                </div>
-              </div>
+          <Button onClick={generateLesson} className="w-full">
+            <Sparkles className="h-4 w-4 mr-2" />
+            Generate Lesson
+          </Button>
+        </div>
 
-              <div className="grid grid-cols-2 gap-4 text-center text-sm">
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">
-                    {emailBody.split(' ').filter((w) => w).length}
-                  </div>
-                  <div className="text-gray-600">Words</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">{formStyle}</div>
-                  <div className="text-gray-600">Style</div>
-                </Card>
-              </div>
+        {lesson && (
+          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg bg-muted">
+            {lesson}
+          </div>
+        )}
+      </Card>
 
-              <Button className="w-full">
-                <Check className="h-4 w-4 mr-2" />
-                Send Email
-              </Button>
+      {/* Student Submission */}
+      {lesson && (
+        <Card className="p-8 space-y-6">
+          <h2 className="text-xl font-semibold">Submit Your Answer</h2>
+
+          <Textarea
+            placeholder="Write your explanation here..."
+            value={studentAnswer}
+            onChange={(e) => setStudentAnswer(e.target.value)}
+            className="min-h-[150px]"
+          />
+
+          <div className="flex gap-4">
+            <Button onClick={submitAnswer} className="flex-1">
+              <Check className="h-4 w-4 mr-2" />
+              Submit Answer
+            </Button>
+
+            <Button variant="outline" onClick={generateHints}>
+              <HelpCircle className="h-4 w-4 mr-2" />
+              Get Hints
+            </Button>
+          </div>
+
+          {showHints && (
+            <div className="bg-blue-50 border p-4 rounded-lg text-sm">
+              {hints.map((hint, i) => (
+                <div key={i}>• {hint}</div>
+              ))}
             </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center min-h-[300px] text-gray-400 border-2 border-dashed rounded-lg">
-              <Edit className="h-12 w-12 mb-3" />
-              <p>Your email preview will appear here</p>
+          )}
+
+          {feedback && (
+            <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
+              {feedback}
+            </div>
+          )}
+
+          {score !== null && (
+            <div className="text-center text-3xl font-bold text-lime-600">
+              {score}/100
             </div>
           )}
         </Card>
+      )}
 
-        <Card className="p-6">
-          <h3 className="mb-4">AI Features</h3>
-          <div className="space-y-3">
-            {[
-              {
-                feature: 'Smart Completions',
-                description: 'Context-aware sentence completions',
-              },
-              {
-                feature: 'Style Adaptation',
-                description: 'Adjust tone and formality',
-              },
-              {
-                feature: 'Grammar Check',
-                description: 'Real-time grammar corrections',
-              },
-              {
-                feature: 'Tone Analysis',
-                description: 'Ensure appropriate tone',
-              },
-            ].map((item, i) => (
-              <div key={i} className="flex gap-3 p-3 rounded-lg">
-                <div className="w-8 h-8 bg-lime-100 rounded flex items-center justify-center flex-shrink-0">
-                  <Check className="h-4 w-4 text-lime-600" />
-                </div>
-                <div>
-                  <div className="text-sm">{item.feature}</div>
-                  <div className="text-xs text-gray-600">
-                    {item.description}
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Ask AI */}
+      <Card className="p-8 space-y-4">
+        <div className="text-xl font-semibold">Ask a Question</div>
+
+        <Textarea
+          placeholder="Ask anything about the topic..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className="min-h-[100px]"
+        />
+
+        <Button onClick={askAI} className="w-full">
+          Ask AI
+        </Button>
+      </Card>
+
+      {/* Progress Dashboard */}
+      <Card className="p-8 space-y-4 text-center">
+        <h3 className="text-lg font-semibold">Progress Dashboard</h3>
+
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <div className="text-3xl font-bold text-lime-600">
+              {completedLessons}
+            </div>
+            <div className="text-sm text-gray-500">Lessons Completed</div>
           </div>
-        </Card>
 
-        <Card className="p-4">
-          <h3 className="text-sm mb-2">💡 Tips</h3>
-          <ul className="text-sm space-y-1">
-            <li>• Start typing to see AI suggestions</li>
-            <li>• Switch styles for different tones</li>
-            <li>• Use quick completions for common phrases</li>
-            <li>• AI learns from your writing style</li>
-          </ul>
-        </Card>
-      </div>
+          <div>
+            <div className="text-3xl font-bold text-lime-600">
+              {averageScore}%
+            </div>
+            <div className="text-sm text-gray-500">Average Score</div>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
