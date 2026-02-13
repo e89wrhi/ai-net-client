@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Bug, Lightbulb, RefreshCw } from 'lucide-react';
+import { useStreamAnalyzeCode } from '@/lib/api/code-debug/stream-analyze-code';
+import { DebugDepth, ProgrammingLanguage } from '@/types/enums/code-debug';
 import CodeDebugHeader from './code-debug-header';
 
 export default function CodeDebugClient() {
@@ -20,87 +22,60 @@ export default function CodeDebugClient() {
   const [language, setLanguage] = useState('python');
   const [analysisType, setAnalysisType] = useState('explain');
   const [result, setResult] = useState('');
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  const analyzeCode = () => {
+  const { mutateAsync: streamAnalyze, isPending } = useStreamAnalyzeCode();
+
+  const getLanguageEnum = (lang: string): ProgrammingLanguage => {
+    switch (lang) {
+      case 'python':
+        return ProgrammingLanguage.Python;
+      case 'javascript':
+        return ProgrammingLanguage.JavaScript;
+      case 'typescript':
+        return ProgrammingLanguage.TypeScript;
+      case 'java':
+        return ProgrammingLanguage.Java;
+      case 'go':
+        return ProgrammingLanguage.Go;
+      case 'rust':
+        return ProgrammingLanguage.Rust;
+      case 'csharp':
+        return ProgrammingLanguage.CSharp;
+      default:
+        return ProgrammingLanguage.Other;
+    }
+  };
+
+  const analyzeCode = async () => {
     if (!code.trim()) return;
 
-    const results = {
-      explain: `📖 Code Explanation:
+    setResult('');
 
-This code snippet appears to be written in ${language}. Here's a breakdown:
+    try {
+      const stream = await streamAnalyze({
+        UserId: 'user-1', // Placeholder
+        Code: code,
+        Language: getLanguageEnum(language),
+        Depth: DebugDepth.Standard,
+        IncludeSuggestion: true,
+        ModelId: selectedModel,
+      });
 
-1. **Purpose**: The code implements a basic algorithm/function
-2. **Structure**: It follows standard ${language} conventions
-3. **Flow**: 
-   - First, it initializes necessary variables
-   - Then it processes the input data
-   - Finally, it returns or outputs the result
-
-4. **Key Concepts Used**:
-   - Variable declaration and assignment
-   - Control flow structures (if/else, loops)
-   - Function/method definitions
-   - Data manipulation
-
-In a production environment, this would use advanced code analysis AI to provide detailed, context-aware explanations.`,
-
-      debug: `🐛 Debug Analysis:
-
-**Potential Issues Found:**
-
-1. ⚠️ **Logic Error** (Line 3-5)
-   - The loop condition might cause an off-by-one error
-   - Suggestion: Review boundary conditions
-   
-2. ⚠️ **Performance** (Line 8)
-   - Inefficient operation inside loop
-   - Suggestion: Consider moving outside or optimizing
-   
-3. ⚠️ **Best Practices** (Line 12)
-   - Variable naming could be more descriptive
-   - Suggestion: Use meaningful names like 'userCount' instead of 'n'
-
-**Recommended Fixes:**
-- Add input validation
-- Include error handling
-- Add type hints/annotations
-- Consider edge cases
-
-**Overall Code Quality:** Good foundation, minor improvements needed.`,
-
-      refactor: `♻️ Refactored Code:
-
-\`\`\`${language}
-// Original code has been refactored for:
-// - Better readability
-// - Improved performance
-// - Enhanced maintainability
-// - Modern ${language} best practices
-
-${code}
-
-// Improvements made:
-// 1. More descriptive variable names
-// 2. Extracted helper functions
-// 3. Added documentation
-// 4. Optimized algorithms
-// 5. Included error handling
-\`\`\`
-
-**Changes Made:**
-✓ Simplified complex logic
-✓ Reduced code duplication
-✓ Improved naming conventions
-✓ Added comments and documentation
-✓ Applied SOLID principles`,
-    };
-
-    setResult(results[analysisType as keyof typeof results]);
+      for await (const chunk of stream) {
+        setResult((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Analysis failed:', error);
+    }
   };
 
   return (
     <div className="container mx-auto py-2">
-      <CodeDebugHeader />
+      <CodeDebugHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">
@@ -153,8 +128,8 @@ ${code}
               </div>
             </div>
 
-            <Button onClick={analyzeCode} className="w-full">
-              Analyze Code
+            <Button onClick={analyzeCode} className="w-full" disabled={isPending}>
+              {isPending ? 'Analyzing...' : 'Analyze Code'}
             </Button>
 
             <Card className="p-4">
@@ -241,13 +216,12 @@ ${code}
                       <Card key={i} className="p-3">
                         <div className="flex items-start gap-3">
                           <span
-                            className={`px-2 py-1 rounded text-xs ${
-                              item.severity === 'high'
-                                ? 'bg-red-100 text-red-700'
-                                : item.severity === 'medium'
-                                  ? 'bg-yellow-100 text-yellow-700'
-                                  : 'bg-blue-100 text-blue-700'
-                            }`}
+                            className={`px-2 py-1 rounded text-xs ${item.severity === 'high'
+                              ? 'bg-red-100 text-red-700'
+                              : item.severity === 'medium'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-blue-100 text-blue-700'
+                              }`}
                           >
                             {item.severity}
                           </span>

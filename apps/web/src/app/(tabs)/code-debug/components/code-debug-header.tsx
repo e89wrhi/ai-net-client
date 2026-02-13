@@ -3,8 +3,17 @@ import { codeDebugLink, codeDebugWhy } from '../../_components/data/code-debug';
 import WhyDrawer from '../../_components/why-drawer';
 import { CodeDebugOptions } from './code-debug-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function CodeDebugHeader() {
+interface CodeDebugHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function CodeDebugHeader({
+  selectedModel,
+  onModelChange,
+}: CodeDebugHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -23,6 +32,12 @@ export default function CodeDebugHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
+
         <WhyDrawer
           title="codedebug"
           link={codeDebugLink}

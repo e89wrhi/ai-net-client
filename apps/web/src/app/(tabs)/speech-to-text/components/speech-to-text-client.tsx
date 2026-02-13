@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/select';
 import { Mic, Upload, Square } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { useStreamTranscribeAudio } from '@/lib/api/speech-to-text/stream-transcribe-audio';
+import { SpeechToTextDetailLevel } from '@/types/enums/speechtotext';
 import SpeechToTextHeader from './speech-to-text-header';
 
 export default function SpeechToTextClient() {
@@ -20,6 +22,29 @@ export default function SpeechToTextClient() {
   const [transcription, setTranscription] = useState('');
   const [language, setLanguage] = useState('auto');
   const [recordingTime, setRecordingTime] = useState(0);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
+
+  const { mutateAsync: streamTranscribe, isPending } = useStreamTranscribeAudio();
+
+  const handleTranscribe = async (audioUrl: string) => {
+    setTranscription('');
+    try {
+      const stream = await streamTranscribe({
+        UserId: 'user-1', // Placeholder
+        AudioUrl: audioUrl,
+        Language: language === 'auto' ? 'en' : language,
+        IncludePunctuation: true,
+        DetailLevel: SpeechToTextDetailLevel.Standard,
+        ModelId: selectedModel,
+      });
+
+      for await (const chunk of stream) {
+        setTranscription((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Transcription failed:', error);
+    }
+  };
 
   const startRecording = () => {
     setIsRecording(true);
@@ -37,24 +62,24 @@ export default function SpeechToTextClient() {
     }, 1000);
   };
 
-  const stopRecording = () => {
+  const stopRecording = async () => {
     setIsRecording(false);
-    // Simulate transcription
-    setTranscription(
-      'This is a simulated transcription of your audio. In a production environment, this would use advanced speech recognition AI like Whisper to convert your spoken words into accurate text. The system can handle multiple languages, accents, and background noise.'
-    );
+    // In a real app, we would upload the recorded blob and get a URL
+    // For now, we simulate a URL
+    await handleTranscribe('https://example.com/recorded-audio.wav');
   };
 
-  const uploadAudio = () => {
-    // Simulate file upload and transcription
-    setTranscription(
-      'Transcription from uploaded file: Hello, this is a sample transcription from an audio file. The AI can accurately transcribe various audio formats including MP3, WAV, and M4A. Language detection is automatic, and the system handles different accents and speaking styles.'
-    );
+  const uploadAudio = async () => {
+    // In a real app, we would upload the file and get a URL
+    await handleTranscribe('https://example.com/uploaded-file.mp3');
   };
 
   return (
     <div className="container mx-auto py-2">
-      <SpeechToTextHeader />
+      <SpeechToTextHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">

@@ -12,6 +12,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Languages, ArrowRight, RefreshCw, Copy } from 'lucide-react';
+import { useStreamTranslateText } from '@/lib/api/translate/stream-translate-text';
+import { TranslationDetailLevel } from '@/types/enums/translate';
 import TranslateHeader from './translate-header';
 
 const languages = [
@@ -35,22 +37,33 @@ export default function TranslationClient() {
   const [sourceLang, setSourceLang] = useState('auto');
   const [targetLang, setTargetLang] = useState('es');
   const [detectedLang, setDetectedLang] = useState('');
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  const translate = () => {
+
+  const { mutateAsync: streamTranslate, isPending } = useStreamTranslateText();
+
+  const translate = async () => {
     if (!sourceText.trim()) return;
 
-    // Simulate translation
-    const translations: Record<string, string> = {
-      en: 'Hello, how are you today? This is an example of AI-powered translation.',
-      es: 'Hola, ¿cómo estás hoy? Este es un ejemplo de traducción impulsada por IA.',
-      fr: "Bonjour, comment allez-vous aujourd'hui? Ceci est un exemple de traduction alimentée par l'IA.",
-      de: 'Hallo, wie geht es dir heute? Dies ist ein Beispiel für KI-gestützte Übersetzung.',
-      zh: '你好，你今天怎么样？这是人工智能驱动翻译的一个例子。',
-      ja: 'こんにちは、今日はお元気ですか？これはAI搭載翻訳の例です。',
-    };
+    setTranslatedText('');
+    // setDetectedLang(''); // We might need a way to get detected lang from stream or response? 
+    // For now, let's just stream the translation.
 
-    setDetectedLang('English');
-    setTranslatedText(translations[targetLang]! ?? translations.en);
+    try {
+      const stream = await streamTranslate({
+        Text: sourceText,
+        SourceLanguage: sourceLang,
+        TargetLanguage: targetLang,
+        DetailLevel: TranslationDetailLevel.Standard,
+        ModelId: selectedModel,
+      });
+
+      for await (const chunk of stream) {
+        setTranslatedText((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Translation failed:', error);
+    }
   };
 
   const swapLanguages = () => {
@@ -65,7 +78,10 @@ export default function TranslationClient() {
 
   return (
     <div className="container mx-auto py-2">
-      <TranslateHeader />
+      <TranslateHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <Card className="p-8 border-none rounded-3xl">
         <div className="flex items-center justify-center gap-4 mb-6">
@@ -156,10 +172,10 @@ export default function TranslationClient() {
         </div>
 
         <div className="flex justify-center mt-6">
-          <Button onClick={translate} size="lg" className="gap-2">
+          <Button onClick={translate} size="lg" className="gap-2" disabled={isPending}>
             <Languages className="h-4 w-4" />
-            Translate
-            <ArrowRight className="h-4 w-4" />
+            {isPending ? 'Translating...' : 'Translate'}
+            {!isPending && <ArrowRight className="h-4 w-4" />}
           </Button>
         </div>
       </Card>

@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Edit, Sparkles, Check } from 'lucide-react';
+import { useStreamAutoComplete } from '@/lib/api/autocomplete/generate-stream';
+import { CompletionMode } from '@/types/enums/autocomplete';
 import AutocompleteHeader from './autocomplete-header';
 
 export default function AutocompleteClient() {
@@ -22,6 +24,7 @@ export default function AutocompleteClient() {
   const [formStyle, setFormStyle] = useState('professional');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestion, setShowSuggestion] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const styleSuggestions = {
     professional:
@@ -54,15 +57,34 @@ export default function AutocompleteClient() {
     setShowSuggestion(false);
   };
 
-  const quickComplete = () => {
-    const completion =
-      styleSuggestions[formStyle as keyof typeof styleSuggestions];
-    setEmailBody(emailBody + (emailBody ? '\n\n' : '') + completion);
+  const { mutateAsync: streamComplete, isPending } = useStreamAutoComplete();
+
+  const quickComplete = async () => {
+    if (!emailBody.trim()) return;
+
+    try {
+      const stream = await streamComplete({
+        Prompt: emailBody,
+        Mode: CompletionMode.Text,
+        ModelId: selectedModel,
+      });
+
+      setEmailBody((prev) => prev + (prev.endsWith('\n\n') ? '' : '\n\n'));
+
+      for await (const chunk of stream) {
+        setEmailBody((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Autocomplete failed:', error);
+    }
   };
 
   return (
     <div className="container mx-auto py-2">
-      <AutocompleteHeader />
+      <AutocompleteHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="flex flex-col space-y-7">
         <Card className="p-8 border-none rounded-3xl">
@@ -129,9 +151,9 @@ export default function AutocompleteClient() {
             )}
 
             <div className="flex gap-2">
-              <Button onClick={quickComplete} className="flex-1">
+              <Button onClick={quickComplete} className="flex-1" disabled={isPending}>
                 <Sparkles className="h-4 w-4 mr-2" />
-                Complete with AI
+                {isPending ? 'Completing...' : 'Complete with AI'}
               </Button>
               <Button variant="outline" onClick={() => setEmailBody('')}>
                 Clear

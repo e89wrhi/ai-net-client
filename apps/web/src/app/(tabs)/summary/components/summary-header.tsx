@@ -6,8 +6,17 @@ import {
 import WhyDrawer from '../../_components/why-drawer';
 import { SummaryOptions } from './summary-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function SummaryHeader() {
+interface SummaryHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function SummaryHeader({
+  selectedModel,
+  onModelChange,
+}: SummaryHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -26,6 +35,12 @@ export default function SummaryHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
+
         <WhyDrawer
           title="summary"
           link={summarizationLink}

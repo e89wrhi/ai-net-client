@@ -13,6 +13,9 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Check, Sparkles, BookOpen, HelpCircle } from 'lucide-react';
+import { useStreamLesson } from '@/lib/api/learning/stream-lesson';
+import { DifficultyLevel, LearningMode } from '@/types/enums/learn';
+import LearningHeader from './learning-header';
 
 export default function LearningClient() {
   const [topic, setTopic] = useState('');
@@ -26,6 +29,7 @@ export default function LearningClient() {
 
   const [feedback, setFeedback] = useState('');
   const [score, setScore] = useState<number | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const [hints, setHints] = useState<string[]>([]);
   const [showHints, setShowHints] = useState(false);
@@ -36,30 +40,38 @@ export default function LearningClient() {
   // ---------------------------
   // Lesson Generator
   // ---------------------------
-  const generateLesson = () => {
+  // ---------------------------
+  // Lesson Generator
+  // ---------------------------
+  const { mutateAsync: streamLesson, isPending } = useStreamLesson();
+
+  const generateLesson = async () => {
     if (!topic) return;
 
-    const generatedLesson = `
-📘 Topic: ${topic}
-🎯 Difficulty: ${difficulty}
-
-Overview:
-This lesson introduces the core concepts of ${topic} at a ${difficulty} level.
-
-Key Concepts:
-• Definition and explanation of ${topic}
-• Why it matters
-• Real-world applications
-• Common mistakes to avoid
-
-Practice Question:
-Explain the main idea of ${topic} in your own words and provide one example.
-    `;
-
-    setLesson(generatedLesson);
+    setLesson('');
     setStudentAnswer('');
     setFeedback('');
     setScore(null);
+
+    let diffLevel = DifficultyLevel.Easy;
+    if (difficulty === 'intermediate') diffLevel = DifficultyLevel.Medium;
+    if (difficulty === 'advanced') diffLevel = DifficultyLevel.Hard;
+
+    try {
+      const stream = await streamLesson({
+        UserId: 'user-1', // Placeholder
+        Topic: topic,
+        Mode: LearningMode.Guided,
+        DifficultyLevel: diffLevel,
+        ModelId: selectedModel,
+      });
+
+      for await (const chunk of stream) {
+        setLesson((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Lesson generation failed:', error);
+    }
   };
 
   // ---------------------------
@@ -83,11 +95,10 @@ Explain the main idea of ${topic} in your own words and provide one example.
 Evaluation:
 • Clarity: ${wordCount > 20 ? 'Good' : 'Needs improvement'}
 • Depth: ${wordCount > 30 ? 'Strong understanding' : 'Surface-level explanation'}
-• Structure: ${
-      studentAnswer.includes('.')
+• Structure: ${studentAnswer.includes('.')
         ? 'Well structured'
         : 'Could use clearer sentences'
-    }
+      }
 
 Final Score: ${calculatedScore}/100
 
@@ -138,14 +149,17 @@ Answer to your question:
 ${question}
 
 Explanation:
-This concept relates to the core principles of ${
-      topic || 'the subject you are studying'
-    }. Focus on understanding the foundational logic first before moving to advanced details.
+This concept relates to the core principles of ${topic || 'the subject you are studying'
+      }. Focus on understanding the foundational logic first before moving to advanced details.
     `);
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-8">
+    <div className="container mx-auto py-2">
+      <LearningHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
       {/* Lesson Generator */}
       <Card className="p-8 rounded-2xl space-y-6">
         <div className="flex items-center gap-2 text-2xl font-bold">
@@ -181,9 +195,9 @@ This concept relates to the core principles of ${
             </Select>
           </div>
 
-          <Button onClick={generateLesson} className="w-full">
+          <Button onClick={generateLesson} className="w-full" disabled={isPending}>
             <Sparkles className="h-4 w-4 mr-2" />
-            Generate Lesson
+            {isPending ? 'Generating Lesson...' : 'Generate Lesson'}
           </Button>
         </div>
 

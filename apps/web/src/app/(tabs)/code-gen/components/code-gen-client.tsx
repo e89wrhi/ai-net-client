@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/select';
 import { Code, Copy, Check } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { useStreamGenerateCode } from '@/lib/api/code-gen/stream-generate';
+import { CodeQualityLevel, CodeStyle } from '@/types/enums/code-gen';
 import CodeGenHeader from './code-gen-header';
 
 export default function CodeGenerationClient() {
@@ -21,6 +23,7 @@ export default function CodeGenerationClient() {
   const [verbosity, setVerbosity] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const codeExamples = {
     python: `def fibonacci(n):
@@ -106,19 +109,30 @@ int main() {
 }`,
   };
 
-  const generateCode = () => {
+  const { mutateAsync: streamGenerate, isPending } = useStreamGenerateCode();
+
+  const generateCode = async () => {
     if (!prompt.trim()) return;
 
-    const code = verbosity
-      ? codeExamples[language as keyof typeof codeExamples]
-      : codeExamples[language as keyof typeof codeExamples]
-          .split('\n')
-          .filter((line) => !line.trim().startsWith('//'))
-          .join('\n');
+    setGeneratedCode('');
 
-    setGeneratedCode(
-      `// Generated code for: ${prompt}\n// Language: ${language}\n// Verbosity: ${verbosity ? 'Detailed' : 'Brief'}\n\n${code}`
-    );
+    try {
+      const stream = await streamGenerate({
+        UserId: 'user-1', // Placeholder
+        Prompt: prompt,
+        Language: language,
+        Quality: CodeQualityLevel.ProductionReady,
+        Style: verbosity ? CodeStyle.Standard : CodeStyle.Minimal,
+        IncludeComments: verbosity,
+        ModelId: selectedModel,
+      });
+
+      for await (const chunk of stream) {
+        setGeneratedCode((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Code generation failed:', error);
+    }
   };
 
   const copyCode = () => {
@@ -129,7 +143,10 @@ int main() {
 
   return (
     <div className="container mx-auto py-2">
-      <CodeGenHeader />
+      <CodeGenHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">
@@ -182,8 +199,8 @@ int main() {
               </div>
             </div>
 
-            <Button onClick={generateCode} className="w-full">
-              Generate Code
+            <Button onClick={generateCode} className="w-full" disabled={isPending}>
+              {isPending ? 'Generating Code...' : 'Generate Code'}
             </Button>
 
             <Card className="p-4">

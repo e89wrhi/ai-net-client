@@ -14,6 +14,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { FileText, Upload, Link as LinkIcon } from 'lucide-react';
+import { useStreamSummarizeText } from '@/lib/api/summary/stream-summarize-text';
+import { SummaryDetailLevel } from '@/types/enums/summary';
 import SummaryHeader from './summary-header';
 
 export default function SummarizationClient() {
@@ -23,24 +25,42 @@ export default function SummarizationClient() {
   const [topicFocus, setTopicFocus] = useState('general');
   const [length, setLength] = useState('medium');
   const [inputMethod, setInputMethod] = useState('text');
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  const generateSummary = () => {
+  const { mutateAsync: streamSummarize, isPending } = useStreamSummarizeText();
+
+  const generateSummary = async () => {
     if (!inputText.trim()) return;
 
-    // Simulate AI summarization
-    const summaries = {
-      paragraph: `This is a ${length} paragraph summary focusing on ${topicFocus} aspects. The original text has been condensed while preserving key information. In a production environment, this would use advanced NLP models to extract the most important points and generate a coherent summary.`,
-      bullets: `• Key Point 1: Main theme from the original text\n• Key Point 2: Secondary important information\n• Key Point 3: Supporting details and context\n• Key Point 4: Conclusion or final thoughts\n\nGenerated with ${topicFocus} focus at ${length} length.`,
-      headline: `Breaking: AI-Powered Summarization Delivers ${length.charAt(0).toUpperCase() + length.slice(1)}-Length Headlines with ${topicFocus.charAt(0).toUpperCase() + topicFocus.slice(1)} Focus`,
-      abstract: `Abstract: This ${length} abstract provides a scholarly overview of the input content with emphasis on ${topicFocus} elements. The summarization employs natural language processing to distill complex information into an accessible format suitable for academic or professional contexts.`,
-    };
+    setSummary('');
 
-    setSummary(summaries[summaryType as keyof typeof summaries]);
+    // Map length to detail level
+    let detailLevel = SummaryDetailLevel.Standard;
+    if (length === 'short') detailLevel = SummaryDetailLevel.Short;
+    if (length === 'detailed') detailLevel = SummaryDetailLevel.Detailed;
+
+    try {
+      const stream = await streamSummarize({
+        Text: inputText,
+        DetailLevel: detailLevel,
+        Language: 'en', // Default to English for now as UI doesn't have language selector
+        ModelId: selectedModel,
+      });
+
+      for await (const chunk of stream) {
+        setSummary((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Summarization failed:', error);
+    }
   };
 
   return (
     <div className="container mx-auto py-2">
-      <SummaryHeader />
+      <SummaryHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">
@@ -142,8 +162,8 @@ export default function SummarizationClient() {
               </Select>
             </div>
 
-            <Button onClick={generateSummary} className="w-full">
-              Generate Summary
+            <Button onClick={generateSummary} className="w-full" disabled={isPending}>
+              {isPending ? 'Generating...' : 'Generate Summary'}
             </Button>
           </div>
         </Card>

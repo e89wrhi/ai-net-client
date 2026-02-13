@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/select';
 import { Send, Plus, X, Settings } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { useGenerateStream } from '@/lib/api/chat/generate-stream';
+import { useSendMessage } from '@/lib/api/chat/send-message';
 import TextGenHeader from './text-gen-header';
 
 interface Message {
@@ -38,6 +40,7 @@ export default function TextGenerationClient() {
   const [length, setLength] = useState('medium');
   const [style, setStyle] = useState('balanced');
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const addTab = () => {
     const newId = (tabs.length + 1).toString();
@@ -54,39 +57,77 @@ export default function TextGenerationClient() {
     }
   };
 
-  const sendMessage = () => {
+  const { mutateAsync: sendMsgApi } = useSendMessage();
+  const { mutateAsync: generateStreamApi } = useGenerateStream();
+
+  const sendMessage = async () => {
     if (!input.trim()) return;
 
-    const currentTab = tabs.find((tab) => tab.id === activeTab);
+    const currentTabId = activeTab;
+    const currentTab = tabs.find((tab) => tab.id === currentTabId);
     if (!currentTab) return;
 
     const userMessage: Message = { role: 'user', content: input };
+    const aiMessagePlaceholder: Message = { role: 'assistant', content: '' };
 
-    // Simulate AI response
-    const aiResponse: Message = {
-      role: 'assistant',
-      content: `This is a simulated AI response to: "${input}". In a real implementation, this would connect to an AI API like GPT-4 or Claude. Settings applied: Creativity ${creativity[0]}, Length: ${length}, Style: ${style}.`,
-    };
-
-    const updatedTabs = tabs.map((tab) => {
-      if (tab.id === activeTab) {
-        return {
-          ...tab,
-          messages: [...tab.messages, userMessage, aiResponse],
-        };
-      }
-      return tab;
-    });
-
-    setTabs(updatedTabs);
+    // Optimistic update
+    setTabs((prev) =>
+      prev.map((tab) => {
+        if (tab.id === currentTabId) {
+          return {
+            ...tab,
+            messages: [...tab.messages, userMessage, aiMessagePlaceholder],
+          };
+        }
+        return tab;
+      })
+    );
     setInput('');
+
+    try {
+      await sendMsgApi({ SessionId: currentTabId, Content: input });
+
+      const stream = await generateStreamApi({
+        SessionId: currentTabId,
+        ModelId: selectedModel,
+      });
+
+      let accumulatedContent = '';
+      for await (const chunk of stream) {
+        accumulatedContent += chunk;
+        setTabs((curr) =>
+          curr.map((tab) => {
+            if (tab.id === currentTabId) {
+              const msgs = [...tab.messages];
+              // Update last message (ai placeholder)
+              if (
+                msgs.length > 0 &&
+                msgs[msgs.length - 1]!.role === 'assistant'
+              ) {
+                msgs[msgs.length - 1] = {
+                  role: 'assistant',
+                  content: accumulatedContent,
+                };
+              }
+              return { ...tab, messages: msgs };
+            }
+            return tab;
+          })
+        );
+      }
+    } catch (error) {
+      console.error('Chat generation failed:', error);
+    }
   };
 
   const currentTab = tabs.find((tab) => tab.id === activeTab);
 
   return (
     <div className="container mx-auto py-2">
-      <TextGenHeader />
+      <TextGenHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <Card className="p-8 border-none rounded-3xl">
         <div className="flex items-center justify-between mb-4">
@@ -194,11 +235,10 @@ export default function TextGenerationClient() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-xl ${
-                    message.role === 'user'
-                      ? 'bg-blue-600 text-white dark:text-black'
-                      : 'bg-black dark:bg-white text-white dark:text-black'
-                  }`}
+                  className={`max-w-[80%] p-3 rounded-xl ${message.role === 'user'
+                    ? 'bg-blue-600 text-white dark:text-black'
+                    : 'bg-black dark:bg-white text-white dark:text-black'
+                    }`}
                 >
                   {message.content}
                 </div>

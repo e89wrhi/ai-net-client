@@ -3,8 +3,17 @@ import { translateLink, translateWhy } from '../../_components/data/translate';
 import WhyDrawer from '../../_components/why-drawer';
 import { TranslateOptions } from './translate-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function TranslateHeader() {
+interface TranslateHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function TranslateHeader({
+  selectedModel,
+  onModelChange,
+}: TranslateHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -23,6 +32,12 @@ export default function TranslateHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
+
         <WhyDrawer
           title="translate"
           link={translateLink}

@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Check, FileAudio, Sparkles, ClipboardList } from 'lucide-react';
+import { useStreamMeetingAnalysis } from '@/lib/api/meeting/stream-meeting-analysis';
+import MeetingHeader from './meeting-header';
 
 export default function MeetingClient() {
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -14,6 +16,7 @@ export default function MeetingClient() {
   const [actionItems, setActionItems] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // ----------------------------
   // Handle Audio Upload
@@ -55,27 +58,31 @@ Speaker 2: I'll handle the campaign updates.
   // Generate Summary + Actions
   // ----------------------------
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const generateSummary = (text: string) => {
-    const generatedSummary = `
-Meeting Summary:
+  // ----------------------------
+  // Generate Summary + Actions
+  // ----------------------------
+  const { mutateAsync: analyzeMeetingStream } = useStreamMeetingAnalysis();
 
-The team discussed Q4 marketing strategy improvements. 
-Key focus areas include increasing ad spend, optimizing landing pages, 
-and implementing updates within a two-week timeline.
+  const generateSummary = async (text: string) => {
+    setSummary('');
+    setActionItems([]); // Clear actions as we stream the full analysis into summary
 
-Overall Tone:
-Collaborative and solution-focused.
-    `;
+    try {
+      const stream = await analyzeMeetingStream({
+        UserId: 'user-1',
+        Transcript: text,
+        IncludeActionItems: true,
+        IncludeDescisions: true,
+        Language: 'en',
+        ModelId: selectedModel,
+      });
 
-    const generatedActions = [
-      'Increase ad spend by 20%',
-      'Optimize landing pages',
-      'Implement updates within two weeks',
-      'Update marketing campaign settings',
-    ];
-
-    setSummary(generatedSummary);
-    setActionItems(generatedActions);
+      for await (const chunk of stream) {
+        setSummary((prev) => prev + chunk);
+      }
+    } catch (error) {
+      console.error('Meeting analysis failed:', error);
+    }
   };
 
   // ----------------------------
@@ -86,89 +93,95 @@ Collaborative and solution-focused.
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-8">
-      {/* Upload Section */}
-      <Card className="p-8 space-y-6 rounded-2xl">
-        <div className="flex items-center gap-2 text-2xl font-bold">
-          <FileAudio className="h-6 w-6" />
-          Meeting Analyzer
-        </div>
+    <div className="container mx-auto py-2">
+      <MeetingHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
+      <div className="space-y-8">
+        {/* Upload Section */}
+        <Card className="p-8 space-y-6 rounded-2xl">
+          <div className="flex items-center gap-2 text-2xl font-bold">
+            <FileAudio className="h-6 w-6" />
+            Meeting Analyzer
+          </div>
 
-        <div className="space-y-4">
-          <Input
-            type="file"
-            accept="audio/*"
-            onChange={(e) => handleAudioUpload(e.target.files?.[0] || null)}
-          />
+          <div className="space-y-4">
+            <Input
+              type="file"
+              accept="audio/*"
+              onChange={(e) => handleAudioUpload(e.target.files?.[0] || null)}
+            />
 
-          {audioFile && (
-            <div className="text-sm text-gray-600">
-              File: {audioFile.name}
-              {duration && <div>Estimated Duration: {duration} min</div>}
-            </div>
-          )}
+            {audioFile && (
+              <div className="text-sm text-gray-600">
+                File: {audioFile.name}
+                {duration && <div>Estimated Duration: {duration} min</div>}
+              </div>
+            )}
 
-          <Button
-            onClick={generateTranscript}
-            disabled={!audioFile || isProcessing}
-            className="w-full"
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            {isProcessing ? 'Processing...' : 'Generate Transcript'}
-          </Button>
-        </div>
-      </Card>
-
-      {/* Transcript Section */}
-      {transcript && (
-        <Card className="p-8 space-y-4">
-          <h2 className="text-xl font-semibold">Transcript</h2>
-
-          <Textarea
-            value={transcript}
-            onChange={(e) => setTranscript(e.target.value)}
-            className="min-h-[200px]"
-          />
-
-          <div className="text-sm text-gray-500">
-            Word Count: {transcript.split(' ').filter(Boolean).length}
+            <Button
+              onClick={generateTranscript}
+              disabled={!audioFile || isProcessing}
+              className="w-full"
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              {isProcessing ? 'Processing...' : 'Generate Transcript'}
+            </Button>
           </div>
         </Card>
-      )}
 
-      {/* Summary Section */}
-      {summary && (
-        <Card className="p-8 space-y-6">
-          <h2 className="text-xl font-semibold">Meeting Summary</h2>
+        {/* Transcript Section */}
+        {transcript && (
+          <Card className="p-8 space-y-4">
+            <h2 className="text-xl font-semibold">Transcript</h2>
 
-          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
-            {summary}
-          </div>
+            <Textarea
+              value={transcript}
+              onChange={(e) => setTranscript(e.target.value)}
+              className="min-h-[200px]"
+            />
 
-          <div>
-            <div className="flex items-center gap-2 mb-3 font-semibold">
-              <ClipboardList className="h-5 w-5" />
-              Action Items
+            <div className="text-sm text-gray-500">
+              Word Count: {transcript.split(' ').filter(Boolean).length}
+            </div>
+          </Card>
+        )}
+
+        {/* Summary Section */}
+        {summary && (
+          <Card className="p-8 space-y-6">
+            <h2 className="text-xl font-semibold">Meeting Summary</h2>
+
+            <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
+              {summary}
             </div>
 
-            <div className="space-y-2">
-              {actionItems.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-2 text-sm border p-3 rounded-lg"
-                >
-                  <Check className="h-4 w-4 text-lime-600" />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3 font-semibold">
+                <ClipboardList className="h-5 w-5" />
+                Action Items
+              </div>
 
-          <Button onClick={exportReport} className="w-full">
-            Export Report
-          </Button>
-        </Card>
-      )}
+              <div className="space-y-2">
+                {actionItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 text-sm border p-3 rounded-lg"
+                  >
+                    <Check className="h-4 w-4 text-lime-600" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Button onClick={exportReport} className="w-full">
+              Export Report
+            </Button>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
