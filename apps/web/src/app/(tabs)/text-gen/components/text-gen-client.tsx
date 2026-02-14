@@ -235,10 +235,11 @@ export default function TextGenerationClient() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-xl ${message.role === 'user'
-                    ? 'bg-blue-600 text-white dark:text-black'
-                    : 'bg-black dark:bg-white text-white dark:text-black'
-                    }`}
+                  className={`max-w-[80%] p-3 rounded-xl ${
+                    message.role === 'user'
+                      ? 'bg-blue-600 text-white dark:text-black'
+                      : 'bg-black dark:bg-white text-white dark:text-black'
+                  }`}
                 >
                   {message.content}
                 </div>

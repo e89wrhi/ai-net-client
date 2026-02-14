@@ -199,7 +199,11 @@ int main() {
               </div>
             </div>
 
-            <Button onClick={generateCode} className="w-full" disabled={isPending}>
+            <Button
+              onClick={generateCode}
+              className="w-full"
+              disabled={isPending}
+            >
               {isPending ? 'Generating Code...' : 'Generate Code'}
             </Button>
 

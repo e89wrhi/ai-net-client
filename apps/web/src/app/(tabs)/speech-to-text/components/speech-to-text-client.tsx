@@ -24,7 +24,8 @@ export default function SpeechToTextClient() {
   const [recordingTime, setRecordingTime] = useState(0);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  const { mutateAsync: streamTranscribe, isPending } = useStreamTranscribeAudio();
+  const { mutateAsync: streamTranscribe, isPending } =
+    useStreamTranscribeAudio();
 
   const handleTranscribe = async (audioUrl: string) => {
     setTranscription('');

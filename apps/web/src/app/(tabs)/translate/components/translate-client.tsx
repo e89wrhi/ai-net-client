@@ -39,14 +39,13 @@ export default function TranslationClient() {
   const [detectedLang, setDetectedLang] = useState('');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-
   const { mutateAsync: streamTranslate, isPending } = useStreamTranslateText();
 
   const translate = async () => {
     if (!sourceText.trim()) return;
 
     setTranslatedText('');
-    // setDetectedLang(''); // We might need a way to get detected lang from stream or response? 
+    // setDetectedLang(''); // We might need a way to get detected lang from stream or response?
     // For now, let's just stream the translation.
 
     try {
@@ -172,7 +171,12 @@ export default function TranslationClient() {
         </div>
 
         <div className="flex justify-center mt-6">
-          <Button onClick={translate} size="lg" className="gap-2" disabled={isPending}>
+          <Button
+            onClick={translate}
+            size="lg"
+            className="gap-2"
+            disabled={isPending}
+          >
             <Languages className="h-4 w-4" />
             {isPending ? 'Translating...' : 'Translate'}
             {!isPending && <ArrowRight className="h-4 w-4" />}

@@ -95,10 +95,11 @@ export default function LearningClient() {
 Evaluation:
 • Clarity: ${wordCount > 20 ? 'Good' : 'Needs improvement'}
 • Depth: ${wordCount > 30 ? 'Strong understanding' : 'Surface-level explanation'}
-• Structure: ${studentAnswer.includes('.')
+• Structure: ${
+      studentAnswer.includes('.')
         ? 'Well structured'
         : 'Could use clearer sentences'
-      }
+    }
 
 Final Score: ${calculatedScore}/100
 
@@ -149,8 +150,9 @@ Answer to your question:
 ${question}
 
 Explanation:
-This concept relates to the core principles of ${topic || 'the subject you are studying'
-      }. Focus on understanding the foundational logic first before moving to advanced details.
+This concept relates to the core principles of ${
+      topic || 'the subject you are studying'
+    }. Focus on understanding the foundational logic first before moving to advanced details.
     `);
   };
 
@@ -195,7 +197,11 @@ This concept relates to the core principles of ${topic || 'the subject you are s
             </Select>
           </div>
 
-          <Button onClick={generateLesson} className="w-full" disabled={isPending}>
+          <Button
+            onClick={generateLesson}
+            className="w-full"
+            disabled={isPending}
+          >
             <Sparkles className="h-4 w-4 mr-2" />
             {isPending ? 'Generating Lesson...' : 'Generate Lesson'}
           </Button>

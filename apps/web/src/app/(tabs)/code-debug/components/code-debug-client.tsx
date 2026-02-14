@@ -128,7 +128,11 @@ export default function CodeDebugClient() {
               </div>
             </div>
 
-            <Button onClick={analyzeCode} className="w-full" disabled={isPending}>
+            <Button
+              onClick={analyzeCode}
+              className="w-full"
+              disabled={isPending}
+            >
               {isPending ? 'Analyzing...' : 'Analyze Code'}
             </Button>
 
@@ -216,12 +220,13 @@ export default function CodeDebugClient() {
                       <Card key={i} className="p-3">
                         <div className="flex items-start gap-3">
                           <span
-                            className={`px-2 py-1 rounded text-xs ${item.severity === 'high'
-                              ? 'bg-red-100 text-red-700'
-                              : item.severity === 'medium'
-                                ? 'bg-yellow-100 text-yellow-700'
-                                : 'bg-blue-100 text-blue-700'
-                              }`}
+                            className={`px-2 py-1 rounded text-xs ${
+                              item.severity === 'high'
+                                ? 'bg-red-100 text-red-700'
+                                : item.severity === 'medium'
+                                  ? 'bg-yellow-100 text-yellow-700'
+                                  : 'bg-blue-100 text-blue-700'
+                            }`}
                           >
                             {item.severity}
                           </span>

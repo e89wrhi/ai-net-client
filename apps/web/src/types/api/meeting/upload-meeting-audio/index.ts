@@ -1,9 +1,9 @@
 export interface UploadMeetingAudioRequest {
-    File: File;
-    MeetingId?: string;
+  File: File;
+  MeetingId?: string;
 }
 
 export interface UploadMeetingAudioResponse {
-    TranscriptId: string;
-    Status: string;
+  TranscriptId: string;
+  Status: string;
 }

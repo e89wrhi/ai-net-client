@@ -151,7 +151,11 @@ export default function AutocompleteClient() {
             )}
 
             <div className="flex gap-2">
-              <Button onClick={quickComplete} className="flex-1" disabled={isPending}>
+              <Button
+                onClick={quickComplete}
+                className="flex-1"
+                disabled={isPending}
+              >
                 <Sparkles className="h-4 w-4 mr-2" />
                 {isPending ? 'Completing...' : 'Complete with AI'}
               </Button>

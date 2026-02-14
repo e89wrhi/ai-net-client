@@ -162,7 +162,11 @@ export default function SummarizationClient() {
               </Select>
             </div>
 
-            <Button onClick={generateSummary} className="w-full" disabled={isPending}>
+            <Button
+              onClick={generateSummary}
+              className="w-full"
+              disabled={isPending}
+            >
               {isPending ? 'Generating...' : 'Generate Summary'}
             </Button>
           </div>
