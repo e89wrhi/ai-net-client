@@ -36,6 +36,7 @@ export default function TranslationClient() {
   const [translatedText, setTranslatedText] = useState('');
   const [sourceLang, setSourceLang] = useState('auto');
   const [targetLang, setTargetLang] = useState('es');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [detectedLang, setDetectedLang] = useState('');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 

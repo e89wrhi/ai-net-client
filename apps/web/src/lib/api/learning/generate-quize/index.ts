@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 export async function generateQuiz(
   payload: GenerateQuizRequestDto
 ): Promise<GenerateQuizResponseDto | null> {
-  const url = api_paths.learning.generateQuiz();
+  const url = api_paths.assistant.generate_quiz();
 
   return fetchClient<GenerateQuizResponseDto | null>(url, {
     method: 'POST',

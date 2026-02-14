@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 export async function analyzeInvoice(
   payload: AnalyzeInvoiceWithAIRequestDto
 ): Promise<AnalyzeInvoiceWithAIResponseDto | null> {
-  const url = api_paths.payment.analyze();
+  const url = api_paths.payment.analyze_invoice();
 
   return fetchClient<AnalyzeInvoiceWithAIResponseDto | null>(url, {
     method: 'POST',

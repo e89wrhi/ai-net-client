@@ -21,11 +21,7 @@ const AI_MODELS = [
   { id: 'gemini-pro', name: 'Gemini Pro' },
 ];
 
-export function ModelSelector({
-  value,
-  onValueChange,
-  className,
-}: ModelSelectorProps) {
+export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
   return (
     <Select
       value={value ?? 'auto'}

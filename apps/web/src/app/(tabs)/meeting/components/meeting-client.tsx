@@ -55,12 +55,6 @@ Speaker 2: I'll handle the campaign updates.
   };
 
   // ----------------------------
-  // Generate Summary + Actions
-  // ----------------------------
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // ----------------------------
-  // Generate Summary + Actions
-  // ----------------------------
   const { mutateAsync: analyzeMeetingStream } = useStreamMeetingAnalysis();
 
   const generateSummary = async (text: string) => {

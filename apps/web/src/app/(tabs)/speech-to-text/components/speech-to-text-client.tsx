@@ -24,6 +24,7 @@ export default function SpeechToTextClient() {
   const [recordingTime, setRecordingTime] = useState(0);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutateAsync: streamTranscribe, isPending } =
     useStreamTranscribeAudio();
 

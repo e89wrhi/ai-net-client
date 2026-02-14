@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 export async function generateCode(
   payload: GenerateCodeRequestDto
 ): Promise<GenerateCodeResponseDto | null> {
-  const url = api_paths.codeGen.generate();
+  const url = api_paths.code_gen.generate();
 
   return fetchClient<GenerateCodeResponseDto | null>(url, {
     method: 'POST',

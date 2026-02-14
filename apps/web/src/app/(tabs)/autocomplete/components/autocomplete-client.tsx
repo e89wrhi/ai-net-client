@@ -26,6 +26,7 @@ export default function AutocompleteClient() {
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const styleSuggestions = {
     professional:
       'Thank you for reaching out. I would be happy to discuss this matter further at your convenience. Please let me know a suitable time for a meeting.',

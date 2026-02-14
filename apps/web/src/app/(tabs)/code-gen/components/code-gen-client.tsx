@@ -25,6 +25,7 @@ export default function CodeGenerationClient() {
   const [copied, setCopied] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const codeExamples = {
     python: `def fibonacci(n):
     """Generate Fibonacci sequence up to n terms"""
