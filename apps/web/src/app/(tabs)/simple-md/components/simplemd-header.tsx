@@ -3,8 +3,17 @@ import { simplemdLink, simplemdWhy } from '../../_components/data/simplemd';
 import WhyDrawer from '../../_components/why-drawer';
 import { SimpleMDOptions } from './simplemd-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function SimpleMDHeader() {
+interface MDHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function SimpleMDHeader({
+  selectedModel,
+  onModelChange,
+}: MDHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -23,6 +32,11 @@ export default function SimpleMDHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
         <WhyDrawer title="simplemd" link={simplemdLink} items={simplemdWhy} />
 
         <SimpleMDOptions link={simplemdLink} />

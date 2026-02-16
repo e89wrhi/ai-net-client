@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { FileText, Sparkles, CheckCircle } from 'lucide-react';
+import SimpleMDHeader from './simplemd-header';
 
 export default function SimpleMDClient() {
   const [mdFile, setMdFile] = useState<File | null>(null);
   const [mdContent, setMdContent] = useState('');
   const [analysis, setAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // ----------------------------
   // Handle .md file upload
@@ -73,8 +75,12 @@ Suggestions:
 
   return (
     <div className="container mx-auto py-6 space-y-8">
+      <SimpleMDHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
       {/* Upload Section */}
-      <Card className="p-8 space-y-6 rounded-2xl">
+      <Card className="p-8 space-y-6 border-none rounded-3xl">
         <div className="flex items-center gap-2 text-2xl font-bold">
           <FileText className="h-6 w-6" />
           Markdown Analyzer

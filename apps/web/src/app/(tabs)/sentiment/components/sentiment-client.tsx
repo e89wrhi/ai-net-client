@@ -21,6 +21,7 @@ interface SentimentResult {
 export default function SentimentClient() {
   const [text, setText] = useState('');
   const [result, setResult] = useState<SentimentResult | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const analyzeSentiment = () => {
     if (!text.trim()) return;
@@ -86,7 +87,10 @@ export default function SentimentClient() {
 
   return (
     <div className="container mx-auto py-2">
-      <SentimentHeader />
+      <SentimentHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">

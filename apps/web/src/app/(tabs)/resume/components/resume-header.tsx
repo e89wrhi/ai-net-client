@@ -3,8 +3,17 @@ import { resumeLink, resumeWhy } from '../../_components/data/resume';
 import WhyDrawer from '../../_components/why-drawer';
 import { ResumeOptions } from './resume-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function ResumeHeader() {
+interface ResumeHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function ResumeHeader({
+  selectedModel,
+  onModelChange,
+}: ResumeHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -23,8 +32,12 @@ export default function ResumeHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
         <WhyDrawer title="resume" link={resumeLink} items={resumeWhy} />
-
         <ResumeOptions link={resumeLink} />
       </div>
     </div>

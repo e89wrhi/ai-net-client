@@ -157,13 +157,13 @@ This concept relates to the core principles of ${
   };
 
   return (
-    <div className="container mx-auto py-2">
+    <div className="container mx-auto space-y-4 py-2">
       <LearningHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
       />
       {/* Lesson Generator */}
-      <Card className="p-8 rounded-2xl space-y-6">
+      <Card className="p-8 border-none rounded-3xl space-y-6">
         <div className="flex items-center gap-2 text-2xl font-bold">
           <BookOpen className="h-6 w-6" />
           Lesson Generator
@@ -216,7 +216,7 @@ This concept relates to the core principles of ${
 
       {/* Student Submission */}
       {lesson && (
-        <Card className="p-8 space-y-6">
+        <Card className="p-8 space-y-6 border-none rounded-3xl">
           <h2 className="text-xl font-semibold">Submit Your Answer</h2>
 
           <Textarea
@@ -261,7 +261,7 @@ This concept relates to the core principles of ${
       )}
 
       {/* Ask AI */}
-      <Card className="p-8 space-y-4">
+      <Card className="p-8 space-y-4 rounded-3xl border-none">
         <div className="text-xl font-semibold">Ask a Question</div>
 
         <Textarea
@@ -277,7 +277,7 @@ This concept relates to the core principles of ${
       </Card>
 
       {/* Progress Dashboard */}
-      <Card className="p-8 space-y-4 text-center">
+      <Card className="p-8 space-y-4 text-center border-none rounded-3xl">
         <h3 className="text-lg font-semibold">Progress Dashboard</h3>
 
         <div className="grid grid-cols-2 gap-6">

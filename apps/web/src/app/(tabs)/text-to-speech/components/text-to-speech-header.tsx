@@ -6,8 +6,17 @@ import {
 import WhyDrawer from '../../_components/why-drawer';
 import { TextToSpeechOptions } from './text-to-speech-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function TextToSpeechHeader() {
+interface TextToSpeechHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function TextToSpeechHeader({
+  selectedModel,
+  onModelChange,
+}: TextToSpeechHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -26,6 +35,12 @@ export default function TextToSpeechHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
+
         <WhyDrawer
           title="texttospeech"
           link={textToSpeechLink}

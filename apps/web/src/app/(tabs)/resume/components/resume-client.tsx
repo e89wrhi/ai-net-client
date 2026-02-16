@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Sparkles, FileText, Award } from 'lucide-react';
+import ResumeHeader from './resume-header';
 
 export default function ResumeClient() {
   const [resumeText, setResumeText] = useState('');
@@ -17,6 +18,7 @@ export default function ResumeClient() {
   const [strengths, setStrengths] = useState<string[]>([]);
   const [atsScore, setAtsScore] = useState<number | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // ----------------------------
   // Handle File Upload
@@ -100,8 +102,12 @@ Improvement Recommendations:
 
   return (
     <div className="container mx-auto py-6 space-y-8">
+      <ResumeHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
       {/* Upload Section */}
-      <Card className="p-8 space-y-6 rounded-2xl">
+      <Card className="p-8 space-y-6 rounded-3xl border-none">
         <div className="flex items-center gap-2 text-2xl font-bold">
           <FileText className="h-6 w-6" />
           Resume Analyzer

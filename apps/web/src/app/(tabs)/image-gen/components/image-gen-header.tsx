@@ -6,8 +6,17 @@ import {
 import WhyDrawer from '../../_components/why-drawer';
 import { ImageGenOptions } from './image-gen-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function ImageGenHeader() {
+interface ImageHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function ImageGenHeader({
+  selectedModel,
+  onModelChange,
+}: ImageHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -26,6 +35,12 @@ export default function ImageGenHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
+
         <WhyDrawer
           title="imagegen"
           link={imageGenerationLink}

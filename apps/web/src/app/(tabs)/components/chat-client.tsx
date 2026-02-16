@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send } from 'lucide-react';
+import ChatHeader from './chat-header';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -21,6 +22,7 @@ export default function ChatClient() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [recentChats, setRecentChats] = useState<ChatSession[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // ------------------------
   // Load Mock Recent Chats on mount
@@ -119,9 +121,10 @@ export default function ChatClient() {
 
   return (
     <div className="container mx-auto py-4 space-y-6">
-      {/* Recent Chats */}
-      <h2 className="text-2xl font-bold mb-2">Recent Chats</h2>
-
+      <ChatHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
       {recentChats.length > 0 && (
         <div className="flex gap-2 overflow-x-auto mb-4">
           {recentChats.map((chat) => (

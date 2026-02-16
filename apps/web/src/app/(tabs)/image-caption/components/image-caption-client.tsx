@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ImageIcon, Sparkles, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
+import ImageCaptionHeader from './image-caption-header';
 
 export default function ImageCaptioningClient() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [caption, setCaption] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // -----------------------------
   // Handle Image Upload
@@ -47,8 +49,12 @@ export default function ImageCaptioningClient() {
 
   return (
     <div className="container mx-auto py-6 space-y-8">
+      <ImageCaptionHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
       {/* Upload Section */}
-      <Card className="p-8 space-y-6 rounded-2xl">
+      <Card className="p-8 space-y-6 border-none rounded-3xl">
         <div className="flex items-center gap-2 text-2xl font-bold">
           <ImageIcon className="h-6 w-6" />
           Image Caption Generator
@@ -84,7 +90,7 @@ export default function ImageCaptioningClient() {
 
       {/* Caption Output */}
       {caption && (
-        <Card className="p-8">
+        <Card className="p-8 border-none rounded-3xl">
           <div className="flex items-center gap-2 mb-4 text-lg font-semibold">
             <CheckCircle className="h-5 w-5 text-lime-600" />
             Generated Caption

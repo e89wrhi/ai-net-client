@@ -20,6 +20,7 @@ export default function ImageGenerationClient() {
   const [style, setStyle] = useState('realistic');
   const [generatedImage, setGeneratedImage] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const generateImage = async () => {
     if (!prompt.trim()) return;
@@ -37,7 +38,10 @@ export default function ImageGenerationClient() {
 
   return (
     <div className="container mx-auto py-2">
-      <ImageGenHeader />
+      <ImageGenHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">

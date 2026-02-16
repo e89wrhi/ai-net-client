@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Plug, Terminal } from 'lucide-react';
+import SimplePluginHeader from './simpleplugin-header';
 
 type PluginResult = {
   title: string;
@@ -17,6 +18,7 @@ export default function SimplePluginClient() {
   const [results, setResults] = useState<PluginResult[]>([]);
   const [toolLog, setToolLog] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // -------------------------
   // Simulated Bing Search Plugin
@@ -64,8 +66,12 @@ export default function SimplePluginClient() {
 
   return (
     <div className="container mx-auto py-6 space-y-8">
+      <SimplePluginHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
       {/* Header */}
-      <Card className="p-8 space-y-4 rounded-2xl">
+      <Card className="p-8 space-y-4 border-none rounded-3xl">
         <div className="flex items-center gap-2 text-2xl font-bold">
           <Plug className="h-6 w-6" />
           AI Plugins Showcase
@@ -76,7 +82,7 @@ export default function SimplePluginClient() {
       </Card>
 
       {/* Plugin Invocation */}
-      <Card className="p-8 space-y-6">
+      <Card className="p-8 space-y-6 border-none rounded-3xl">
         <h2 className="text-xl font-semibold">Bing Search Plugin</h2>
 
         <Input
@@ -97,7 +103,7 @@ export default function SimplePluginClient() {
 
       {/* Results */}
       {results.length > 0 && (
-        <Card className="p-8 space-y-4">
+        <Card className="p-8 space-y-4 rounded-3xl border-none">
           <h2 className="text-xl font-semibold">Search Results</h2>
 
           {results.map((result, i) => (
@@ -112,7 +118,7 @@ export default function SimplePluginClient() {
 
       {/* Tool Execution Log */}
       {toolLog.length > 0 && (
-        <Card className="p-8 space-y-4">
+        <Card className="p-8 space-y-4 border-none rounded-3xl">
           <div className="flex items-center gap-2 text-lg font-semibold">
             <Terminal className="h-5 w-5" />
             Tool Execution Log
@@ -127,7 +133,7 @@ export default function SimplePluginClient() {
       )}
 
       {/* Plugin Marketplace Preview */}
-      <Card className="p-8 space-y-4">
+      <Card className="p-8 space-y-4 rounded-3xl border-none">
         <h2 className="text-xl font-semibold">Available Plugins</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -138,7 +144,7 @@ export default function SimplePluginClient() {
             </div>
           </div>
 
-          <div className="border p-4 rounded-lg">
+          <div className="border p-4 rounded-2xl">
             <div className="font-semibold">Weather API</div>
             <div className="text-gray-500">Get real-time weather updates.</div>
           </div>

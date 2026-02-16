@@ -3,8 +3,17 @@ import { chatLink, chatWhy } from '../../(tabs)/_components/data/chat';
 import WhyDrawer from '../../(tabs)/_components/why-drawer';
 import { ChatOptions } from './chat-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../_components/model-selector';
 
-export default function ChatHeader() {
+interface ChatHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function ChatHeader({
+  selectedModel,
+  onModelChange,
+}: ChatHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -23,6 +32,12 @@ export default function ChatHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
+
         <WhyDrawer title="chat" link={chatLink} items={chatWhy} />
 
         <ChatOptions link={chatLink} />

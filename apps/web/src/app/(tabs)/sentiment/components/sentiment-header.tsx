@@ -3,8 +3,17 @@ import { sentimentLink, sentimentWhy } from '../../_components/data/sentiment';
 import WhyDrawer from '../../_components/why-drawer';
 import { SentimentOptions } from './sentiment-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { ModelSelector } from '../../_components/model-selector';
 
-export default function SentimentHeader() {
+interface SentimentHeaderProps {
+  selectedModel: string | null;
+  onModelChange: (model: string | null) => void;
+}
+
+export default function SentimentHeader({
+  selectedModel,
+  onModelChange,
+}: SentimentHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
       <div className="flex flex-row">
@@ -23,6 +32,12 @@ export default function SentimentHeader() {
       </div>
 
       <div className="flex flex-row items-center space-x-3">
+        <ModelSelector
+          value={selectedModel}
+          onValueChange={onModelChange}
+          className="w-[200px]"
+        />
+
         <WhyDrawer
           title="sentiment"
           link={sentimentLink}

@@ -23,6 +23,7 @@ export default function TextToSpeechClient() {
   const [pitch, setPitch] = useState([1]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioGenerated, setAudioGenerated] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const generateSpeech = () => {
     if (!text.trim()) return;
@@ -39,7 +40,10 @@ export default function TextToSpeechClient() {
 
   return (
     <div className="container mx-auto py-2">
-      <TextToSpeechHeader />
+      <TextToSpeechHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">

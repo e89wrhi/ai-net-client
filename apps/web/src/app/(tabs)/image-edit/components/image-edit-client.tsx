@@ -13,6 +13,7 @@ export default function ImageEditingClient() {
   const [uploadedImage, setUploadedImage] = useState('');
   const [editPrompt, setEditPrompt] = useState('');
   const [editedImage, setEditedImage] = useState('');
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('upload');
 
   const handleEdit = () => {
@@ -26,7 +27,10 @@ export default function ImageEditingClient() {
 
   return (
     <div className="container mx-auto py-2">
-      <ImageEditHeader />
+      <ImageEditHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-8 border-none rounded-3xl">

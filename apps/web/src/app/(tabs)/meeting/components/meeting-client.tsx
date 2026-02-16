@@ -94,7 +94,7 @@ Speaker 2: I'll handle the campaign updates.
       />
       <div className="space-y-8">
         {/* Upload Section */}
-        <Card className="p-8 space-y-6 rounded-2xl">
+        <Card className="p-8 space-y-6 border-none rounded-3xl">
           <div className="flex items-center gap-2 text-2xl font-bold">
             <FileAudio className="h-6 w-6" />
             Meeting Analyzer
@@ -127,7 +127,7 @@ Speaker 2: I'll handle the campaign updates.
 
         {/* Transcript Section */}
         {transcript && (
-          <Card className="p-8 space-y-4">
+          <Card className="p-8 space-y-4 border-none rounded-3xl">
             <h2 className="text-xl font-semibold">Transcript</h2>
 
             <Textarea

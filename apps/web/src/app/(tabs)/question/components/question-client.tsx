@@ -20,6 +20,7 @@ export default function QuestionAnswerClient() {
   const [context, setContext] = useState('');
   const [history, setHistory] = useState<QAPair[]>([]);
   const [currentAnswer, setCurrentAnswer] = useState('');
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const askQuestion = () => {
     if (!question.trim()) return;
@@ -36,7 +37,10 @@ export default function QuestionAnswerClient() {
 
   return (
     <div className="container mx-auto py-2">
-      <QuestionHeader />
+      <QuestionHeader
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
