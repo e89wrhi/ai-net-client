@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ExternalLink, Option, Cross } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { ModeToggle } from '@/components/layout/mode-toggle';
+import { ModeToggle } from '@/components/shared/mode-toggle';
 
 interface Props {
   link: string;

@@ -5,7 +5,6 @@ import { Icons } from '../icons';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 import { ModeToggle } from './mode-toggle';
 import Image from 'next/image';
-import { LocaleChange } from './change-locale';
 
 interface NavigationProps {
   currentPage?: string;
@@ -61,7 +60,6 @@ export function Navigation({}: NavigationProps) {
             </TooltipContent>
           </Tooltip>
           <ModeToggle />
-          <LocaleChange pathname={''} />
         </div>
       </div>
     </nav>
