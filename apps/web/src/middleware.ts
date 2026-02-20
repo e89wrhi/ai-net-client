@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth/auth';
 import { v4 as uuidv4 } from 'uuid';
 
-const locales = ['en'];
+const locales = ['en', 'am'];
 
 const authRoutes = [
   '/login',
@@ -79,9 +79,10 @@ export async function middleware(req: NextRequest) {
     redirect.headers.set('x-request-uuid', requestId);
     return redirect;
   }
-
-  // Redirect authenticated users away from auth routes
-  if (isLoggedIn && !authError && isAuthRoute) {
+  // Redirect authenticated users away from auth routes,
+  // UNLESS they have an error query parameter (to show error messages on the login page)
+  const hasError = req.nextUrl.searchParams.has('error');
+  if (isLoggedIn && !authError && isAuthRoute && !hasError) {
     const redirect = NextResponse.redirect(new URL('/', req.url));
     redirect.headers.set('x-request-uuid', requestId);
     return redirect;

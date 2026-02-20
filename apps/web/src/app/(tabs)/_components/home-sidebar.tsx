@@ -6,10 +6,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  useSidebar,
 } from '@/components/ui/sidebar';
 import { NavGroupp } from './home-sidebar-items';
 import { NavGroup } from '@/types/sidebar';
@@ -32,14 +28,10 @@ import {
   FileDigit,
   Plug,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
+import { UserDto } from '@/types/api/user/current-user';
+import SidebarFooterLayout from './sidebar-footer';
+import { useRouter } from 'next/navigation';
 
-const profile = {
-  name: 'Sample name',
-  image: '/ai.png',
-};
 // Featured
 const featuredGroup: NavGroup = {
   title: 'Featured',
@@ -126,10 +118,13 @@ const moreGroup: NavGroup = {
     { title: 'Plugin', icon: Plug, url: '/simple-plugin', enabled: true },
   ],
 };
-export function AppSidebar() {
-  //const { userProfile: profile } = params;
-  const { state } = useSidebar();
-  const isCollapsed = state === 'collapsed';
+
+interface AppSidebarProps {
+  userProfile: UserDto;
+}
+
+export function AppSidebar({ userProfile: profile }: AppSidebarProps) {
+  const router = useRouter();
 
   const navGroups: NavGroup[] = [
     featuredGroup,
@@ -139,6 +134,10 @@ export function AppSidebar() {
     advanceGroup,
     moreGroup,
   ];
+
+  const handleOpenMe = () => {
+    router.push(`/account`);
+  };
 
   return (
     <Sidebar
@@ -169,38 +168,14 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
 
-      {/* FOOTER - USER PROFILE OR CTA */}
-      <SidebarFooter className="p-4 border-t border-border/50">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className={cn(
-                'h-12 w-full justify-start gap-4 rounded-2xl transition-all duration-200 hover:bg-muted/50',
-                isCollapsed && 'justify-center px-0'
-              )}
-            >
-              <Link href="/account" className="flex items-center">
-                <Avatar className="h-8 w-8 border border-border shrink-0">
-                  <AvatarImage src={profile.image ?? ''} alt={profile.name} />
-                  <AvatarFallback className="font-bold text-[10px] bg-green-400 text-black">
-                    {profile.name?.[0]?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {!isCollapsed && (
-                  <div className="flex flex-col text-left overflow-hidden">
-                    <span className="text-sm font-black truncate">
-                      {profile.name}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground font-medium truncate">
-                      View Profile
-                    </span>
-                  </div>
-                )}
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      {/* FOOTER */}
+      <SidebarFooter className="border-t border-border/80 p-3">
+        <SidebarFooterLayout
+          name={profile.name}
+          image={profile.image}
+          status={profile.status}
+          onOpen={handleOpenMe}
+        />
       </SidebarFooter>
 
       <SidebarRail />

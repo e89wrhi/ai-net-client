@@ -142,11 +142,5 @@ interface User {
   isActive?: boolean;
 }
 
-interface CreateUserRequest {
-  name: string;
-  email: string;
-  role?: string;
-}
-
 // Export types for use in other files
-export type { CurrentUserResponse, User, CreateUserRequest };
+export type { CurrentUserResponse, User };

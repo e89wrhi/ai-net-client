@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
  * function DeleteButton() {
  *   const { hasPermission, hasAnyPermission, hasAllPermissions } = usePermissions();
  *
- *   if (!hasPermission('ai.delete')) {
+ *   if (!hasPermission('article.delete')) {
  *     return null;
  *   }
  *
@@ -68,7 +68,6 @@ export function usePermissions() {
     hasAnyRole,
     hasAllRoles,
     isUser: hasRole('user'),
-    isEditor: hasRole('profile'),
   };
 }
 
@@ -83,11 +82,11 @@ interface PermissionGuardProps {
 }
 
 /**
- * <PermissionGuard permission="ai.delete">
+ * <PermissionGuard permission="article.delete">
  *   <button>Delete</button>
  * </PermissionGuard>
  *
- * <PermissionGuard permissions={['ai.create', 'ai.edit']} requireAll={false}>
+ * <PermissionGuard permissions={['article.create', 'article.edit']} requireAll={false}>
  *   <button>Edit or Create</button>
  * </PermissionGuard>
  */

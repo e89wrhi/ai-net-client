@@ -2,6 +2,9 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { AppSidebar } from './_components/home-sidebar';
 import { cookies } from 'next/headers';
+import { auth } from '@/auth';
+import { getCurrentUser } from '@/lib/api/user/get-current';
+import { redirect } from 'next/navigation';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -10,14 +13,27 @@ interface DashboardLayoutProps {
 export default async function FeaturesLayout({
   children,
 }: DashboardLayoutProps) {
+  const session = await auth();
+
+  // Extract userId from session to fetch admin profile
+  // next-auth session user might have userId if we added it to the session callback
+  const userId = session?.user?.id;
+  // Fetch the admin profile using the authenticated user's userId
+  const userProfile = userId ? await getCurrentUser() : null;
+  // If session exists but no admin profile linked, don't open the portal
+  if (!userProfile) {
+    redirect('/login?error=SessionNotFound');
+  }
+
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
+
   return (
     <SidebarProvider
       defaultOpen={defaultOpen}
       className="flex min-h-screen flex-col"
     >
-      <AppSidebar />
+      <AppSidebar userProfile={userProfile} />
       <div
         id="content"
         className={cn(

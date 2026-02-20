@@ -67,7 +67,7 @@ export async function hasAllRoles(roleList: string[]): Promise<boolean> {
 // Require a specific permission or redirect to unauthorized page
 export async function requirePermission(
   permission: string,
-  redirectTo = '/unauthorized'
+  redirectTo: string = '/unauthorized'
 ) {
   const hasAccess = await hasPermission(permission);
 
@@ -79,7 +79,7 @@ export async function requirePermission(
 // Require any of the specified permissions or redirect
 export async function requireAnyPermission(
   permissionList: string[],
-  redirectTo = '/unauthorized'
+  redirectTo: string = '/unauthorized'
 ) {
   const hasAccess = await hasAnyPermission(permissionList);
 
@@ -91,7 +91,7 @@ export async function requireAnyPermission(
 // Require all of the specified permissions or redirect
 export async function requireAllPermissions(
   permissionList: string[],
-  redirectTo = '/unauthorized'
+  redirectTo: string = '/unauthorized'
 ) {
   const hasAccess = await hasAllPermissions(permissionList);
 
@@ -101,7 +101,10 @@ export async function requireAllPermissions(
 }
 
 // Require a specific role or redirect
-export async function requireRole(role: string, redirectTo = '/unauthorized') {
+export async function requireRole(
+  role: string,
+  redirectTo: string = '/unauthorized'
+) {
   const hasAccess = await hasRole(role);
 
   if (!hasAccess) {
@@ -112,7 +115,7 @@ export async function requireRole(role: string, redirectTo = '/unauthorized') {
 // Require any of the specified roles or redirect
 export async function requireAnyRole(
   roleList: string[],
-  redirectTo = '/unauthorized'
+  redirectTo: string = '/unauthorized'
 ) {
   const hasAccess = await hasAnyRole(roleList);
 
@@ -124,7 +127,7 @@ export async function requireAnyRole(
 // Require all of the specified roles or redirect
 export async function requireAllRoles(
   roleList: string[],
-  redirectTo = '/unauthorized'
+  redirectTo: string = '/unauthorized'
 ) {
   const hasAccess = await hasAllRoles(roleList);
 
@@ -149,7 +152,7 @@ export async function requireAllRoles(
  * import { hasPermission } from '@/auth/permissions-server';
  *
  * export async function deleteArticle(id: string) {
- *   if (!await hasPermission('ai.delete')) {
+ *   if (!await hasPermission('article.delete')) {
  *     throw new Error('Unauthorized');
  *   }
  *

@@ -5,7 +5,7 @@ import { createHmac } from 'crypto';
 export const MockDuendeProvider: any = {
   id: 'duende',
   name: 'Mock Duende (Dev Only)',
-  type: 'oauth',
+  type: 'oidc',
 
   clientId: 'user-portal-mock',
   clientSecret: 'mock-secret',
@@ -22,7 +22,7 @@ export const MockDuendeProvider: any = {
   authorization: {
     url: 'http://localhost:3000/api/auth/mock/authorize',
     params: {
-      scope: 'openid profile email ai.api offline_access',
+      scope: 'openid profile email journal.api offline_access',
       response_type: 'code',
     },
   },
@@ -33,13 +33,13 @@ export const MockDuendeProvider: any = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   profile(profile: any) {
     return {
-      id: profile.sub || 'usr-001',
+      id: profile.sub || 'adm-001',
       userId: profile.userId || profile.sub,
       name: profile.name || 'Mock User User',
       email: profile.email || 'user@mock.local',
       image: profile.picture,
-      role: profile.role || ['user', 'profile', 'user'],
-      permission: profile.permission || ['user.access'],
+      role: profile.role || ['user'],
+      permission: profile.permission || [],
     };
   },
 
@@ -54,52 +54,21 @@ export const MockDuendeProvider: any = {
   },
 
   // Override well-known endpoint - Disabled to prevent server-side fetch issues
-  // wellKnown: 'http://localhost:3000/api/auth/mock/.well-known/openid-configuration',
+  wellKnown:
+    'http://localhost:3000/api/auth/mock/.well-known/openid-configuration',
 };
 
 // Aligned with mock user data from src/mock/users/index.ts
 export const MOCK_USERS = {
   user: {
-    sub: 'usr-001', // Matches Elias Mekonnen
+    sub: 'adm-001', // Matches Elias Mekonnen
     userId: 'usr-001',
     name: 'Elias Mekonnen',
-    email: 'elias.mekonnen@ai.local',
+    email: 'elias.mekonnen@journal.local',
     preferred_username: 'elias',
     picture: '/a1.png',
-    role: ['user', 'profile', 'user'],
-    permission: [
-      'user.access',
-      'user.users.view',
-      'user.users.create',
-      'user.users.edit',
-      'user.users.delete',
-      'ai.create',
-      'ai.edit',
-      'ai.delete',
-      'ai.publish',
-      'match.create',
-      'match.edit',
-      'match.delete',
-    ],
-    accessKey: 'KEY-001',
-  },
-  user2: {
-    sub: 'usr-002', // Matches Sara Getachew
-    userId: 'usr-002',
-    name: 'Sara Getachew',
-    email: 'sara.getachew@ai.local',
-    preferred_username: 'sara',
-    picture: '/images/user2.jpg',
-    role: ['user', 'user'],
-    permission: [
-      'user.access',
-      'user.users.view',
-      'ai.create',
-      'ai.edit',
-      'ai.view',
-      'match.view',
-    ],
-    accessKey: 'KEY-002',
+    role: ['user'],
+    permission: [],
   },
 };
 
@@ -157,7 +126,7 @@ export function generateMockTokens(userType: keyof typeof MOCK_USERS = 'user') {
     id_token: idToken,
     token_type: 'Bearer',
     expires_in: 3600, // 1 hour
-    scope: 'openid profile email ai.api offline_access',
+    scope: 'openid profile email journal.api offline_access',
   };
 }
 

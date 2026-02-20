@@ -34,7 +34,7 @@ const DuendeProvider: OIDCConfig<any> = {
   clientSecret: AUTH_DUENDE_SECRET!,
   authorization: {
     params: {
-      scope: 'openid profile email ai.api offline_access',
+      scope: 'openid profile email journal.api offline_access',
       response_type: 'code',
     },
   },
@@ -47,6 +47,7 @@ const DuendeProvider: OIDCConfig<any> = {
       image: profile.picture,
       role: profile.role,
       permission: profile.permission,
+      accessKey: profile.accessKey,
     };
   },
 };
@@ -78,7 +79,7 @@ providers.push(
       if (useMockAuth) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // Return Sara Getachew's user data (usr-002) to align with mock users
+        // Return Sara Getachew's user data (adm-002) to align with mock users
         return {
           id: 'usr-002',
           userId: 'usr-002',
@@ -86,12 +87,7 @@ providers.push(
           email: credentials.email as string,
           image: '/images/user2.jpg',
           role: ['user', 'user'],
-          permission: [
-            'user.access',
-            'user.users.view',
-            'ai.create',
-            'ai.edit',
-          ],
+          permission: ['ai.chatbot'],
         };
       }
 
@@ -238,6 +234,7 @@ const config = {
         session.user.name = token.name as string;
         session.user.roles = token.roles as string[];
         session.user.permissions = token.permissions as string[];
+        session.user.accessKey = token.accessKey as string;
       }
 
       return session;

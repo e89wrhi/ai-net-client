@@ -3,11 +3,7 @@ export { auth, signIn, signOut } from './auth';
 
 // Client-side API calls (for Client Components)
 export { apiCall, userApi, ApiError } from './api-client';
-export type {
-  CurrentUserResponse,
-  User,
-  CreateUserRequest,
-} from './api-client';
+export type { CurrentUserResponse, User } from './api-client';
 
 // Server-side API calls (for Server Components & Actions)
 export {
