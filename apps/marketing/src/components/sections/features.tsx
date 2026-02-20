@@ -21,11 +21,11 @@ const Steps = () => {
             <Button className="rounded-full">Start Chat</Button>
           </Link>
           <Image
-            src="/chat.png"
+            src="/illustrations/chat.png"
             alt="Chat Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -43,11 +43,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Autocomplete</Button>
           </Link>
           <Image
-            src="/autocomplete.png"
+            src="/illustrations/autocomplete.png"
             alt="Autocomplete Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1300}
+            width={1300}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -65,11 +65,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Debugging</Button>
           </Link>
           <Image
-            src="/debug.png"
+            src="/illustrations/codedebug.png"
             alt="Debug Code Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -87,11 +87,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Coding</Button>
           </Link>
           <Image
-            src="/generate.png"
+            src="/illustrations/codegen.png"
             alt="Generate Code Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -109,11 +109,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Captions</Button>
           </Link>
           <Image
-            src="/caption.png"
+            src="/illustrations/imagecaption.png"
             alt="Image Caption Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -131,11 +131,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Editing</Button>
           </Link>
           <Image
-            src="/edit.png"
+            src="/illustrations/imageedit.png"
             alt="Edit Image Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-77"
           />
         </div>
       ),
@@ -153,11 +153,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Images</Button>
           </Link>
           <Image
-            src="/generate-image.png"
+            src="/illustrations/imagegen.png"
             alt="Generate Image Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -175,11 +175,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Learning</Button>
           </Link>
           <Image
-            src="/learning.png"
+            src="/illustrations/learning.png"
             alt="Learning Assistant Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-80"
           />
         </div>
       ),
@@ -197,11 +197,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Summary</Button>
           </Link>
           <Image
-            src="/meeting.png"
+            src="/illustrations/meeting.png"
             alt="Meeting Summarizer Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -219,11 +219,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Analyzing</Button>
           </Link>
           <Image
-            src="/resume.png"
+            src="/illustrations/resume.png"
             alt="Resume Analyzer Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -241,11 +241,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Sentiment</Button>
           </Link>
           <Image
-            src="/sentiment.png"
+            src="/illustrations/sentiment.png"
             alt="Sentiment Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -262,11 +262,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Converting</Button>
           </Link>
           <Image
-            src="/speech-to-text.png"
+            src="/illustrations/speechtotext.png"
             alt="Speech to Text Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
@@ -283,11 +283,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Converting</Button>
           </Link>
           <Image
-            src="/text-to-speech.png"
+            src="/illustrations/texttospeech.png"
             alt="Text to Speech Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-80"
           />
         </div>
       ),
@@ -304,11 +304,11 @@ const Steps = () => {
             <Button className="rounded-full">Try Translation</Button>
           </Link>
           <Image
-            src="/translate.png"
+            src="/illustrations/translate.png"
             alt="Translate Feature"
-            height={300}
-            width={300}
-            className="h-70 w-70"
+            height={1500}
+            width={1500}
+            className="h-70 mt-5 w-70"
           />
         </div>
       ),
