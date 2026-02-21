@@ -34,7 +34,7 @@ const DuendeProvider: OIDCConfig<any> = {
   clientSecret: AUTH_DUENDE_SECRET!,
   authorization: {
     params: {
-      scope: 'openid profile email journal.api offline_access',
+      scope: 'openid profile email aishow.api offline_access',
       response_type: 'code',
     },
   },

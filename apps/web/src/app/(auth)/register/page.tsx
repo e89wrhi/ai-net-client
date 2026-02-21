@@ -51,11 +51,9 @@ export default function RegisterPage() {
         <div className="p-8 bg-neutral-900/50 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl">
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold text-white tracking-tight">
-              Create Admin Account
+              Create AI-net Account
             </h2>
-            <p className="mt-2 text-neutral-400">
-              Join the journal administration team
-            </p>
+            <p className="mt-2 text-neutral-400">Join the AI-net</p>
           </div>
 
           <form onSubmit={handleRegister} className="space-y-6">
@@ -94,7 +92,7 @@ export default function RegisterPage() {
                 <input
                   type="email"
                   name="email"
-                  placeholder="admin@journal.com"
+                  placeholder="user@gmail.com"
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
                   required
                 />
@@ -156,7 +154,7 @@ export default function RegisterPage() {
         </div>
 
         <p className="mt-8 text-center text-xs text-neutral-600 uppercase tracking-[0.2em]">
-          Journal Admin Protocol v1.0
+          AI-net v1.0
         </p>
       </motion.div>
     </div>

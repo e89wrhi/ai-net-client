@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       'openid',
       'profile',
       'email',
-      'journal.api',
+      'aishow.api',
       'offline_access',
     ],
     token_endpoint_auth_methods_supported: [

@@ -67,7 +67,7 @@ export default function ForgotPasswordPage() {
                     />
                     <input
                       type="email"
-                      placeholder="admin@journal.com"
+                      placeholder="user@gmail.com"
                       className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all shadow-inner"
                       required
                     />

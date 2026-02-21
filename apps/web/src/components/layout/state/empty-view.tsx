@@ -33,7 +33,7 @@ export default function EmptyView(props: Props) {
           src={'/empty.png'}
           height={600}
           width={600}
-          alt="nolimit"
+          alt="ai-net"
           className="h-50 w-50"
         />
       </div>

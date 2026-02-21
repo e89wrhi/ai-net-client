@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
               Create New Password
             </h2>
             <p className="text-neutral-500 text-sm">
-              Choose a strong password to protect your admin access.
+              Choose a strong password to protect your account.
             </p>
           </div>
 

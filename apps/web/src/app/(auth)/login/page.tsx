@@ -10,29 +10,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const error = searchParams.get('error');
 
-  const handleLogin = async () => {
-    setIsLoading(true);
-
-    try {
-      await signIn('duende', {
-        callbackUrl: '/',
-        redirect: true,
-      });
-    } catch (error) {
-      console.error('Login failed:', error);
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="max-w-md w-full space-y-8 p-8 bg-neutral-900 rounded-lg shadow-md">
         <div>
           <h2 className="text-center text-3xl font-extrabold text-white">
-            Admin Portal
+            AI-net
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in with your admin account
+            Sign in with your ai-net account
           </p>
         </div>
 
@@ -50,9 +36,9 @@ export default function LoginPage() {
                 : error === 'LogoutSuccess'
                   ? 'You have been signed out successfully.'
                   : error === 'AccessDenied' || error === 'MissingRequiredRole'
-                    ? 'Access denied. Your account lacks the required admin permissions.'
+                    ? 'Access denied. Your account lacks the required user permissions.'
                     : error === 'Configuration'
-                      ? 'Server configuration error. Please contact your administrator.'
+                      ? 'Server configuration error. Please contact your admin.'
                       : error === 'OAuthCallbackError'
                         ? 'Authentication failed. There was an error during the login flow.'
                         : 'Authentication failed. Please try again.'}
@@ -120,7 +106,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 name="email"
-                placeholder="admin@journal.com"
+                placeholder="user@gmail.com"
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
                 required
               />
@@ -146,25 +132,6 @@ export default function LoginPage() {
               {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-[#171717] text-neutral-500">
-                Enterprise
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={handleLogin}
-            disabled={isLoading}
-            className="w-full py-3 px-4 border border-white/10 rounded-xl text-sm font-medium text-neutral-400 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            Sign in with SSO (Duende IdentityServer)
-          </button>
         </div>
 
         <div className="flex flex-col space-y-4 pt-4 border-t border-white/5">

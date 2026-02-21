@@ -22,7 +22,7 @@ export const MockDuendeProvider: any = {
   authorization: {
     url: 'http://localhost:3000/api/auth/mock/authorize',
     params: {
-      scope: 'openid profile email journal.api offline_access',
+      scope: 'openid profile email aishow.api offline_access',
       response_type: 'code',
     },
   },
@@ -64,7 +64,7 @@ export const MOCK_USERS = {
     sub: 'adm-001', // Matches Elias Mekonnen
     userId: 'usr-001',
     name: 'Elias Mekonnen',
-    email: 'elias.mekonnen@journal.local',
+    email: 'elias.mekonnen@gmail.local',
     preferred_username: 'elias',
     picture: '/a1.png',
     role: ['user'],
@@ -126,7 +126,7 @@ export function generateMockTokens(userType: keyof typeof MOCK_USERS = 'user') {
     id_token: idToken,
     token_type: 'Bearer',
     expires_in: 3600, // 1 hour
-    scope: 'openid profile email journal.api offline_access',
+    scope: 'openid profile email aishow.api offline_access',
   };
 }
 
