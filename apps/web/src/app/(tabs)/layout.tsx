@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { auth } from '@/auth';
 import { getCurrentUser } from '@/lib/api/user/get-current';
 import { redirect } from 'next/navigation';
+import NotificationBar from '@/components/shared/notification-bar';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -46,6 +47,7 @@ export default async function FeaturesLayout({
           'has-[main.fixed-main]:group-data-[scroll-locked=1]/body:h-svh'
         )}
       >
+        <NotificationBar />
         {children}
       </div>
     </SidebarProvider>
