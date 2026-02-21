@@ -8,11 +8,13 @@ import { ModelSelector } from '../../_components/model-selector';
 interface QHeaderProps {
   selectedModel: string | null;
   onModelChange: (model: string | null) => void;
+  onClearHistory?: () => void;
 }
 
 export default function QuestionHeader({
   selectedModel,
   onModelChange,
+  onClearHistory,
 }: QHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
@@ -25,8 +27,7 @@ export default function QuestionHeader({
         <div className="mb-8">
           <h1 className="mb-2 font-bold text-4xl">Q & A</h1>
           <p className="text-gray-600">
-            Smart text suggestions for emails, forms, and messages with style
-            adjustments
+            Interactive AI assistant for context-aware queries and deep insights
           </p>
         </div>
       </div>
@@ -39,7 +40,7 @@ export default function QuestionHeader({
         />
         <WhyDrawer title="question" link={qnaLink} items={qnaWhy} />
 
-        <QuestionOptions link={qnaLink} />
+        <QuestionOptions link={qnaLink} onClearHistory={onClearHistory} />
       </div>
     </div>
   );

@@ -138,6 +138,7 @@ If you have a more specific scenario or a document you'd like me to analyze in t
       <QuestionHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onClearHistory={() => setHistory([])}
       />
 
       <div className="grid gap-8 lg:grid-cols-12 mt-4">

@@ -1,12 +1,12 @@
 'use client';
 
-import { Github, AlertTriangle, Sparkles, Activity, X } from 'lucide-react';
+import { Github, AlertCircle, Info, Activity, X } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface BarProps {
-  variant: 'warning' | 'promo' | 'status';
+  variant: 'info' | 'repo' | 'system';
 }
 
 function BarItem({ variant }: BarProps) {
@@ -15,62 +15,60 @@ function BarItem({ variant }: BarProps) {
   if (!isVisible) return null;
 
   const content = {
-    warning: {
-      icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
-      text: "Developer Preview: This project is currently in the testing stage and utilizes mock data streams.",
-      bgColor: "bg-amber-50/80 dark:bg-amber-900/10",
-      borderColor: "border-amber-200/50 dark:border-amber-800/30",
+    info: {
+      icon: <AlertCircle className="h-4 w-4" />,
+      text: "Developer Preview: Currently running with simulated data streams for testing.",
+      bgColor: "bg-muted/30",
+      borderColor: "border-border",
       link: null
     },
-    promo: {
-      icon: <Sparkles className="h-4 w-4 text-indigo-500" />,
-      text: "We just open-sourced the new AI-Client backend! Check out the repository on GitHub.",
-      bgColor: "bg-indigo-50/80 dark:bg-indigo-900/10",
-      borderColor: "border-indigo-200/50 dark:border-indigo-800/30",
-      link: { label: "View Source", href: "https://github.com/", icon: <Github className="h-3 w-3" /> }
+    repo: {
+      icon: <Github className="h-4 w-4" />,
+      text: "Open Source: The AI-Client backend repository is now available on GitHub.",
+      bgColor: "bg-muted/30",
+      borderColor: "border-border",
+      link: { label: "GitHub", href: "https://github.com/", icon: null }
     },
-    status: {
-      icon: <Activity className="h-4 w-4 text-emerald-500" />,
-      text: "All AI models are currently operational. Average latency is around 450ms.",
-      bgColor: "bg-emerald-50/80 dark:bg-emerald-900/10",
-      borderColor: "border-emerald-200/50 dark:border-emerald-800/30",
-      link: { label: "Status Page", href: "#", icon: null }
+    system: {
+      icon: <Activity className="h-4 w-4" />,
+      text: "System Status: All inference nodes are operational. Latency: 450ms.",
+      bgColor: "bg-muted/30",
+      borderColor: "border-border",
+      link: { label: "Details", href: "#", icon: null }
     }
   }[variant];
 
   return (
     <div className={cn(
-      "w-full border-b backdrop-blur-md transition-all duration-500 animate-in slide-in-from-top",
+      "w-full border-b backdrop-blur-sm transition-all duration-300 animate-in fade-in",
       content.bgColor,
       content.borderColor
     )}>
-      <div className="container mx-auto px-6 h-11 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="animate-pulse">
+      <div className="container mx-auto px-4 h-10 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="text-muted-foreground">
             {content.icon}
           </div>
-          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <p className="text-xs font-medium text-foreground/80 tracking-tight">
             {content.text}
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {content.link && (
             <Link
               href={content.link.href}
               target="_blank"
-              className="group flex flex-row text-[13px] items-center gap-1.5 font-bold transition-all
-              bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 px-3 py-1 rounded-full shadow-sm ring-1 ring-zinc-200 dark:ring-zinc-700 hover:ring-primary/50"
+              className="text-[11px] font-bold hover:underline underline-offset-4 text-foreground/90 transition-colors px-2 py-0.5"
             >
-              {content.link.icon}
               {content.link.label}
             </Link>
           )}
           <button
             onClick={() => setIsVisible(false)}
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors p-1"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
@@ -81,14 +79,8 @@ function BarItem({ variant }: BarProps) {
 export default function NotificationBar() {
   return (
     <div className="flex flex-col">
-      {/* Example 1: Critical Mock Data Warning */}
-      <BarItem variant="warning" />
-
-      {/* Example 2: Premium Promo Bar */}
-      <BarItem variant="promo" />
-
-      {/* Example 3: System Status Indicator */}
-      <BarItem variant="status" />
+      <BarItem variant="info" />
+      <BarItem variant="repo" />
     </div>
   );
 }
