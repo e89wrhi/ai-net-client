@@ -1,245 +1,192 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Edit, Sparkles, Check } from 'lucide-react';
+  Sparkles,
+  Trash2,
+  Copy,
+  Check,
+  Command
+} from 'lucide-react';
 import { useStreamAutoComplete } from '@/lib/api/autocomplete/generate-stream';
 import { CompletionMode } from '@/types/enums/autocomplete';
 import AutocompleteHeader from './autocomplete-header';
+import { toast } from 'sonner';
 
 export default function AutocompleteClient() {
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailBody, setEmailBody] = useState('');
   const [messageText, setMessageText] = useState('');
-  const [formStyle, setFormStyle] = useState('professional');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestion, setShowSuggestion] = useState(false);
+  const [suggestion, setSuggestion] = useState('');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const styleSuggestions = {
-    professional:
-      'Thank you for reaching out. I would be happy to discuss this matter further at your convenience. Please let me know a suitable time for a meeting.',
-    casual:
-      "Hey! Thanks for getting in touch. I'd love to chat more about this. When works for you?",
-    concise:
-      "Thanks for contacting me. Let's schedule a meeting to discuss. What time works?",
-  };
+  const { mutateAsync: streamComplete } = useStreamAutoComplete();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const generateSuggestion = (text: string) => {
-    if (text.length < 5) {
-      setShowSuggestion(false);
-      return;
-    }
+  // Toggle this to switch between mock and real API
+  const USE_MOCK = true;
 
-    const suggestions = [
-      'I appreciate your prompt response and look forward to our continued collaboration.',
-      'Please find the attached document for your review and consideration.',
-      'I hope this message finds you well. I wanted to follow up on our previous discussion.',
-      'Thank you for bringing this to my attention. I will address this matter immediately.',
+  // Mock stream generator for development
+  const mockStreamAutoComplete = async function* (prompt: string) {
+    const responses = [
+      " and I would be happy to discuss this project further with your team.",
+      " that we've been working on for the past few weeks should be ready by Friday.",
+      ", which will help us achieve our goals much faster than the previous approach.",
+      " and let me know if you have any other questions about the implementation.",
+      " is exactly what we need to move forward with the next phase of development.",
     ];
 
-    setSuggestions(suggestions);
-    setShowSuggestion(true);
+    const response = responses[Math.floor(Math.random() * responses.length)] || responses[0]!;
+    const chunks = response.split(/(?<= )/); // Split by space but keep it
+
+    for (const chunk of chunks) {
+      await new Promise(resolve => setTimeout(resolve, 40 + Math.random() * 60));
+      yield chunk;
+    }
   };
 
-  const applySuggestion = (suggestion: string) => {
-    setEmailBody(emailBody + (emailBody ? ' ' : '') + suggestion);
-    setShowSuggestion(false);
-  };
+  // debounced suggestion trigger
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (messageText.length > 5 && !suggestion) {
+        generateLiveSuggestion(messageText);
+      }
+    }, 800);
 
-  const { mutateAsync: streamComplete, isPending } = useStreamAutoComplete();
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [messageText]);
 
-  const quickComplete = async () => {
-    if (!emailBody.trim()) return;
-
+  const generateLiveSuggestion = async (prompt: string) => {
     try {
-      const stream = await streamComplete({
-        Prompt: emailBody,
-        Mode: CompletionMode.Text,
-        ModelId: selectedModel,
-      });
+      setSuggestion('');
 
-      setEmailBody((prev) => prev + (prev.endsWith('\n\n') ? '' : '\n\n'));
+      const stream = USE_MOCK
+        ? mockStreamAutoComplete(prompt)
+        : await streamComplete({
+          Prompt: prompt,
+          Mode: CompletionMode.Inline,
+          ModelId: selectedModel,
+        });
 
       for await (const chunk of stream) {
-        setEmailBody((prev) => prev + chunk);
+        setSuggestion((prev) => prev + chunk);
       }
-    } catch (error) {
-      console.error('Autocomplete failed:', error);
+    } catch (error: any) {
+      if (error.name !== 'AbortError') {
+        console.error('Suggestion failed:', error);
+      }
     }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Tab' && suggestion) {
+      e.preventDefault();
+      setMessageText((prev) => prev + suggestion);
+      setSuggestion('');
+    }
+    // Clear suggestion on any key press if needed, but usually we just want to hide it if they keep typing
+    if (e.key !== 'Tab' && e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt') {
+      setSuggestion('');
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(messageText);
+    setIsCopied(true);
+    toast.success('Copied to clipboard');
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   return (
-    <div className="container mx-auto py-2">
+    <div className="container mx-auto py-4 max-w-4xl animate-in fade-in duration-700">
       <AutocompleteHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
       />
 
-      <div className="flex flex-col space-y-7">
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex font-bold text-2xl items-center gap-2 mb-4">
-            <h2>Email Composer</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm mb-2 block">Writing Style</label>
-              <Select value={formStyle} onValueChange={setFormStyle}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="casual">Casual</SelectItem>
-                  <SelectItem value="concise">Concise</SelectItem>
-                  <SelectItem value="formal">Formal</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm mb-2 block">Subject</label>
-              <Input
-                placeholder="Email subject..."
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label className="text-sm mb-2 block">Email Body</label>
-              <Textarea
-                placeholder="Start typing and AI will suggest completions..."
-                value={emailBody}
-                onChange={(e) => {
-                  setEmailBody(e.target.value);
-                  generateSuggestion(e.target.value);
-                }}
-                className="min-h-[200px]"
-              />
-            </div>
-
-            {showSuggestion && suggestions.length > 0 && (
-              <Card className="p-4 bg-blue-50 border-blue-200">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm">AI Suggestions</span>
-                </div>
-                <div className="space-y-2">
-                  {suggestions.slice(0, 2).map((suggestion, i) => (
-                    <button
-                      key={i}
-                      onClick={() => applySuggestion(suggestion)}
-                      className="block w-full text-left text-sm p-3 rounded hover:bg-gray-50 transition-colors border"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </Card>
-            )}
-
-            <div className="flex gap-2">
-              <Button
-                onClick={quickComplete}
-                className="flex-1"
-                disabled={isPending}
+      <div className="mt-8 relative group">
+        <Card className="p-0 border-none bg-white dark:bg-zinc-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] rounded-[2.5rem] overflow-hidden ring-1 ring-zinc-200 dark:ring-zinc-800 transition-all duration-500 hover:ring-primary/20">
+          <div className="p-8">
+            <div className="relative min-h-[400px]">
+              {/* Ghost Text Overlay */}
+              <div
+                className="absolute inset-0 p-0 pointer-events-none text-lg leading-relaxed whitespace-pre-wrap break-words text-transparent"
+                style={{ font: 'inherit' }}
               >
-                <Sparkles className="h-4 w-4 mr-2" />
-                {isPending ? 'Completing...' : 'Complete with AI'}
+                <span>{messageText}</span>
+                <span className="text-zinc-300 dark:text-zinc-600 animate-pulse">
+                  {suggestion}
+                </span>
+              </div>
+
+              <Textarea
+                ref={textareaRef}
+                placeholder="Start typing your message..."
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="absolute inset-0 w-full h-full p-0 text-lg border-none focus-visible:ring-0 bg-transparent resize-none leading-relaxed placeholder:text-zinc-400 z-10"
+              />
+            </div>
+          </div>
+
+          <div className="px-8 py-5 bg-zinc-50 dark:bg-zinc-800/50 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-medium px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                <Command className="h-3 w-3" />
+                <span>Tab to Accept</span>
+              </div>
+              <div className="text-xs text-zinc-400">
+                {messageText.length} chars
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCopy}
+                className="h-10 w-10 rounded-xl hover:bg-white dark:hover:bg-zinc-800 shadow-sm transition-all"
+              >
+                {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
               </Button>
-              <Button variant="outline" onClick={() => setEmailBody('')}>
-                Clear
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMessageText('')}
+                className="h-10 w-10 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-500 transition-all"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={() => generateLiveSuggestion(messageText)}
+                className="rounded-xl px-5 gap-2 shadow-lg shadow-primary/20 ml-2"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span>AI completion</span>
               </Button>
             </div>
           </div>
         </Card>
+      </div>
 
-        <Card className="p-8 border-none rounded-3xl">
-          <h2 className="mb-4">Quick Message</h2>
-
-          <div className="space-y-4">
-            <Textarea
-              placeholder="Type a message..."
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              className="min-h-[100px]"
-            />
-
-            <Card className="p-3">
-              <p className="text-sm text-gray-600 mb-2">Quick completions:</p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  'Thanks for the update!',
-                  "I'll get back to you soon.",
-                  'Looking forward to it.',
-                  'Let me know if you need anything.',
-                ].map((quick, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setMessageText(quick)}
-                    className="text-xs px-3 py-1 border rounded-full hover:bg-gray-100 transition-colors"
-                  >
-                    {quick}
-                  </button>
-                ))}
-              </div>
-            </Card>
-          </div>
-        </Card>
-
-        <Card className="p-8 border-none rounded-3xl">
-          <h2 className="mb-4">Preview</h2>
-
-          {emailBody ? (
-            <div className="space-y-4">
-              <div className="border rounded-lg p-4">
-                <div className="mb-4 pb-4 border-b">
-                  <div className="text-sm text-gray-600 mb-1">Subject:</div>
-                  <div>{emailSubject || '(No subject)'}</div>
-                </div>
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                  {emailBody}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-center text-sm">
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">
-                    {emailBody.split(' ').filter((w) => w).length}
-                  </div>
-                  <div className="text-gray-600">Words</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-2xl text-lime-600">{formStyle}</div>
-                  <div className="text-gray-600">Style</div>
-                </Card>
-              </div>
-
-              <Button className="w-full">
-                <Check className="h-4 w-4 mr-2" />
-                Send Email
-              </Button>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center min-h-[300px] text-gray-400 border-2 border-dashed rounded-lg">
-              <Edit className="h-12 w-12 mb-3" />
-              <p>Your email preview will appear here</p>
-            </div>
-          )}
-        </Card>
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 opacity-60 hover:opacity-100 transition-opacity">
+        <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Smart Fill</p>
+          <p className="text-sm text-zinc-500">Wait for AI to suggest the next words</p>
+        </div>
+        <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Hotkeys</p>
+          <p className="text-sm text-zinc-500">Press Tab to instantly accept suggestions</p>
+        </div>
+        <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Streaming</p>
+          <p className="text-sm text-zinc-500">Watch recommendations appear in real-time</p>
+        </div>
       </div>
     </div>
   );
