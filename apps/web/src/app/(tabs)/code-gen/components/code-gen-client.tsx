@@ -16,6 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { useStreamGenerateCode } from '@/lib/api/code-gen/stream-generate';
 import { CodeQualityLevel, CodeStyle } from '@/types/enums/code-gen';
 import CodeGenHeader from './code-gen-header';
+import { toast } from 'sonner';
 
 export default function CodeGenerationClient() {
   const [prompt, setPrompt] = useState('');
@@ -142,11 +143,16 @@ int main() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <CodeGenHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

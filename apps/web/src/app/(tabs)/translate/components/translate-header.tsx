@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface TranslateHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function TranslateHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: TranslateHeaderProps) {
   return (
@@ -44,7 +46,10 @@ export default function TranslateHeader({
           items={translateWhy}
         />
 
-        <TranslateOptions link={translateLink} />
+        <TranslateOptions
+          onSessionReset={onSessionReset}
+          link={translateLink}
+        />
       </div>
     </div>
   );

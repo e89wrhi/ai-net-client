@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface SpeechToTextHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function SpeechToTextHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: SpeechToTextHeaderProps) {
   return (
@@ -47,7 +49,10 @@ export default function SpeechToTextHeader({
           items={speechToTextWhy}
         />
 
-        <SpeechToTextOptions link={speechToTextLink} />
+        <SpeechToTextOptions
+          onSessionReset={onSessionReset}
+          link={speechToTextLink}
+        />
       </div>
     </div>
   );

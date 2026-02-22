@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Heart, Frown, Meh, Smile } from 'lucide-react';
 import SentimentHeader from './sentiment-header';
+import { toast } from 'sonner';
 
 interface SentimentResult {
   overall: 'positive' | 'negative' | 'neutral';
@@ -85,11 +86,16 @@ export default function SentimentClient() {
     }
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <SentimentHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

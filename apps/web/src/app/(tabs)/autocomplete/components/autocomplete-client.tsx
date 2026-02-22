@@ -4,13 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import {
-  Sparkles,
-  Trash2,
-  Copy,
-  Check,
-  Command
-} from 'lucide-react';
+import { Sparkles, Trash2, Copy, Check, Command } from 'lucide-react';
 import { useStreamAutoComplete } from '@/lib/api/autocomplete/generate-stream';
 import { CompletionMode } from '@/types/enums/autocomplete';
 import AutocompleteHeader from './autocomplete-header';
@@ -29,20 +23,24 @@ export default function AutocompleteClient() {
   const USE_MOCK = true;
 
   // Mock stream generator for development
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const mockStreamAutoComplete = async function* (prompt: string) {
     const responses = [
-      " and I would be happy to discuss this project further with your team.",
+      ' and I would be happy to discuss this project further with your team.',
       " that we've been working on for the past few weeks should be ready by Friday.",
-      ", which will help us achieve our goals much faster than the previous approach.",
-      " and let me know if you have any other questions about the implementation.",
-      " is exactly what we need to move forward with the next phase of development.",
+      ', which will help us achieve our goals much faster than the previous approach.',
+      ' and let me know if you have any other questions about the implementation.',
+      ' is exactly what we need to move forward with the next phase of development.',
     ];
 
-    const response = responses[Math.floor(Math.random() * responses.length)] || responses[0]!;
+    const response =
+      responses[Math.floor(Math.random() * responses.length)] || responses[0]!;
     const chunks = response.split(/(?<= )/); // Split by space but keep it
 
     for (const chunk of chunks) {
-      await new Promise(resolve => setTimeout(resolve, 40 + Math.random() * 60));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 40 + Math.random() * 60)
+      );
       yield chunk;
     }
   };
@@ -58,6 +56,7 @@ export default function AutocompleteClient() {
     return () => {
       clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messageText]);
 
   const generateLiveSuggestion = async (prompt: string) => {
@@ -67,14 +66,15 @@ export default function AutocompleteClient() {
       const stream = USE_MOCK
         ? mockStreamAutoComplete(prompt)
         : await streamComplete({
-          Prompt: prompt,
-          Mode: CompletionMode.Inline,
-          ModelId: selectedModel,
-        });
+            Prompt: prompt,
+            Mode: CompletionMode.Inline,
+            ModelId: selectedModel,
+          });
 
       for await (const chunk of stream) {
         setSuggestion((prev) => prev + chunk);
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.name !== 'AbortError') {
         console.error('Suggestion failed:', error);
@@ -89,7 +89,12 @@ export default function AutocompleteClient() {
       setSuggestion('');
     }
     // Clear suggestion on any key press if needed, but usually we just want to hide it if they keep typing
-    if (e.key !== 'Tab' && e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt') {
+    if (
+      e.key !== 'Tab' &&
+      e.key !== 'Shift' &&
+      e.key !== 'Control' &&
+      e.key !== 'Alt'
+    ) {
       setSuggestion('');
     }
   };
@@ -101,11 +106,16 @@ export default function AutocompleteClient() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-4 max-w-4xl animate-in fade-in duration-700">
       <AutocompleteHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="mt-8 relative group">
@@ -152,7 +162,11 @@ export default function AutocompleteClient() {
                 onClick={handleCopy}
                 className="h-10 w-10 rounded-xl hover:bg-white dark:hover:bg-zinc-800 shadow-sm transition-all"
               >
-                {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                {isCopied ? (
+                  <Check className="h-4 w-4 text-green-500" />
+                ) : (
+                  <Copy className="h-4 w-4" />
+                )}
               </Button>
               <Button
                 variant="ghost"
@@ -176,16 +190,28 @@ export default function AutocompleteClient() {
 
       <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 opacity-60 hover:opacity-100 transition-opacity">
         <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Smart Fill</p>
-          <p className="text-sm text-zinc-500">Wait for AI to suggest the next words</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+            Smart Fill
+          </p>
+          <p className="text-sm text-zinc-500">
+            Wait for AI to suggest the next words
+          </p>
         </div>
         <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Hotkeys</p>
-          <p className="text-sm text-zinc-500">Press Tab to instantly accept suggestions</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+            Hotkeys
+          </p>
+          <p className="text-sm text-zinc-500">
+            Press Tab to instantly accept suggestions
+          </p>
         </div>
         <div className="p-4 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">Streaming</p>
-          <p className="text-sm text-zinc-500">Watch recommendations appear in real-time</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+            Streaming
+          </p>
+          <p className="text-sm text-zinc-500">
+            Watch recommendations appear in real-time
+          </p>
         </div>
       </div>
     </div>

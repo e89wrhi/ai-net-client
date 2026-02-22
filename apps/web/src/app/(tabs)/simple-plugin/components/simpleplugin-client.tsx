@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Plug, Terminal } from 'lucide-react';
 import SimplePluginHeader from './simpleplugin-header';
+import { toast } from 'sonner';
 
 type PluginResult = {
   title: string;
@@ -64,11 +65,16 @@ export default function SimplePluginClient() {
     }, 1500);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-8">
       <SimplePluginHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
       {/* Header */}
       <Card className="p-8 space-y-4 border-none rounded-3xl">

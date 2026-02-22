@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface AutocompleteHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function AutocompleteHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: AutocompleteHeaderProps) {
   return (
@@ -47,7 +49,10 @@ export default function AutocompleteHeader({
           items={autocompleteWhy}
         />
 
-        <AutocompleteOptions link={autocompleteLink} />
+        <AutocompleteOptions
+          onSessionReset={onSessionReset}
+          link={autocompleteLink}
+        />
       </div>
     </div>
   );

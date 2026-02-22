@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send } from 'lucide-react';
 import ChatHeader from './chat-header';
+import { toast } from 'sonner';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -119,10 +120,15 @@ export default function ChatClient() {
     setMessages(chat.messages);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-4 space-y-6">
       <ChatHeader
         selectedModel={selectedModel}
+        onSessionReset={handleReset}
         onModelChange={setSelectedModel}
       />
       {recentChats.length > 0 && (

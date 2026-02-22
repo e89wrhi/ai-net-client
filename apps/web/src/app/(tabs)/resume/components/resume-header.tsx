@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface ResumeHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function ResumeHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: ResumeHeaderProps) {
   return (
@@ -38,7 +40,7 @@ export default function ResumeHeader({
           className="w-[200px]"
         />
         <WhyDrawer title="resume" link={resumeLink} items={resumeWhy} />
-        <ResumeOptions link={resumeLink} />
+        <ResumeOptions onSessionReset={onSessionReset} link={resumeLink} />
       </div>
     </div>
   );

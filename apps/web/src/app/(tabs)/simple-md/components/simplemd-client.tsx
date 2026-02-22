@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { FileText, Sparkles, CheckCircle } from 'lucide-react';
 import SimpleMDHeader from './simplemd-header';
+import { toast } from 'sonner';
 
 export default function SimpleMDClient() {
   const [mdFile, setMdFile] = useState<File | null>(null);
@@ -73,11 +74,16 @@ Suggestions:
     }, 800);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-8">
       <SimpleMDHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
       {/* Upload Section */}
       <Card className="p-8 space-y-6 border-none rounded-3xl">

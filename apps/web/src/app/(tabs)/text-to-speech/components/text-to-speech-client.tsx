@@ -14,6 +14,7 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Volume2, Play, Pause, Download, RotateCcw } from 'lucide-react';
 import TextToSpeechHeader from './text-to-speech-header';
+import { toast } from 'sonner';
 
 export default function TextToSpeechClient() {
   const [text, setText] = useState('');
@@ -38,11 +39,16 @@ export default function TextToSpeechClient() {
     }
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <TextToSpeechHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

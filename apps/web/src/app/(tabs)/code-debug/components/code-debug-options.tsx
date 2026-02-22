@@ -6,18 +6,19 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ExternalLink, Option, Cross } from 'lucide-react';
+import { MoreHorizontal, BookOpen, RefreshCcw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ModeToggle } from '@/components/shared/mode-toggle';
 
 interface Props {
   link: string;
-  onNewSession?: () => void;
+  onSessionReset?: () => void;
 }
 export function CodeDebugOptions(props: Props) {
-  const { link, onNewSession } = props;
+  const { link, onSessionReset } = props;
   const router = useRouter();
   const handleOpenLink = () => {
     router.push(link);
@@ -28,26 +29,37 @@ export function CodeDebugOptions(props: Props) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="sm"
-          className="h-8 w-8 px-0 rounded-full 
-        hover:text-main-green"
+          size="icon"
+          className="h-9 w-9 rounded-full hover:bg-muted transition-colors"
         >
-          <Option className="" />
+          <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="space-y-3 p-2 rounded-2xl m-4"
+        className="w-56 m-2 p-3 space-y-2 rounded-2xl bg-popover border-none shadow-md animate-in fade-in zoom-in-95 duration-100"
       >
-        <DropdownMenuItem onClick={handleOpenLink}>
-          <ExternalLink className="mr-2 h-4 w-4" />
-          <span>Learn More</span>
+        <DropdownMenuItem
+          onClick={handleOpenLink}
+          className="rounded-full cursor-pointer text-sm"
+        >
+          <BookOpen className="mr-2 h-4 w-4" />
+          <span>Documentation</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onNewSession}>
-          <Cross className="mr-2 h-4 w-4" />
-          <span>New Session</span>
+
+        <DropdownMenuItem
+          onClick={onSessionReset}
+          className="rounded-full cursor-pointer text-sm text-destructive focus:text-destructive active:bg-destructive/10"
+        >
+          <RefreshCcw className="mr-2 h-4 w-4 text-red-400" />
+          <span className="font-medium">Reset Session</span>
         </DropdownMenuItem>
-        <ModeToggle />
+
+        <DropdownMenuSeparator className="my-1.5" />
+
+        <div className="px-1 my-2">
+          <ModeToggle variant="minimal" />
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

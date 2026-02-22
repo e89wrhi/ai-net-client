@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface ImageHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function ImageEditHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: ImageHeaderProps) {
   return (
@@ -44,7 +46,10 @@ export default function ImageEditHeader({
           items={imageEditWhy}
         />
 
-        <ImageEditOptions link={imageEditLink} />
+        <ImageEditOptions
+          onSessionReset={onSessionReset}
+          link={imageEditLink}
+        />
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Upload, Paintbrush, Eraser, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import ImageEditHeader from './image-edit-header';
+import { toast } from 'sonner';
 
 export default function ImageEditingClient() {
   const [uploadedImage, setUploadedImage] = useState('');
@@ -25,11 +26,16 @@ export default function ImageEditingClient() {
     setActiveTab('result');
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <ImageEditHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

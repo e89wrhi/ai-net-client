@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface SummaryHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function SummaryHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: SummaryHeaderProps) {
   return (
@@ -47,7 +49,10 @@ export default function SummaryHeader({
           items={summarizationWhy}
         />
 
-        <SummaryOptions link={summarizationLink} />
+        <SummaryOptions
+          onSessionReset={onSessionReset}
+          link={summarizationLink}
+        />
       </div>
     </div>
   );

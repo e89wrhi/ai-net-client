@@ -16,6 +16,7 @@ import { Progress } from '@/components/ui/progress';
 import { useStreamTranscribeAudio } from '@/lib/api/speech-to-text/stream-transcribe-audio';
 import { SpeechToTextDetailLevel } from '@/types/enums/speechtotext';
 import SpeechToTextHeader from './speech-to-text-header';
+import { toast } from 'sonner';
 
 export default function SpeechToTextClient() {
   const [isRecording, setIsRecording] = useState(false);
@@ -76,11 +77,16 @@ export default function SpeechToTextClient() {
     await handleTranscribe('https://example.com/uploaded-file.mp3');
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <SpeechToTextHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

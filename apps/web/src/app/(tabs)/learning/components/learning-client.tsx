@@ -16,6 +16,7 @@ import { Check, Sparkles, BookOpen, HelpCircle } from 'lucide-react';
 import { useStreamLesson } from '@/lib/api/learning/stream-lesson';
 import { DifficultyLevel, LearningMode } from '@/types/enums/learn';
 import LearningHeader from './learning-header';
+import { toast } from 'sonner';
 
 export default function LearningClient() {
   const [topic, setTopic] = useState('');
@@ -156,11 +157,16 @@ This concept relates to the core principles of ${
     `);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto space-y-4 py-2">
       <LearningHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
       {/* Lesson Generator */}
       <Card className="p-8 border-none rounded-3xl space-y-6">

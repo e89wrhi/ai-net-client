@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface LearningHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function LearningHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: LearningHeaderProps) {
   return (
@@ -40,7 +42,7 @@ export default function LearningHeader({
 
         <WhyDrawer title="learning" link={learningLink} items={learningWhy} />
 
-        <LearningOptions link={learningLink} />
+        <LearningOptions onSessionReset={onSessionReset} link={learningLink} />
       </div>
     </div>
   );

@@ -23,19 +23,17 @@ import {
   Zap,
   Clock,
   BarChart3,
-  Check
+  Check,
 } from 'lucide-react';
 import { useStreamSummarizeText } from '@/lib/api/summary/stream-summarize-text';
 import { SummaryDetailLevel } from '@/types/enums/summary';
 import SummaryHeader from './summary-header';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 export default function SummarizationClient() {
   const [inputText, setInputText] = useState('');
   const [summary, setSummary] = useState('');
   const [summaryType, setSummaryType] = useState('paragraph');
-  const [topicFocus, setTopicFocus] = useState('general');
   const [length, setLength] = useState('medium');
   const [inputMethod, setInputMethod] = useState('text');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -60,7 +58,9 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
 
     const chunks = response.split(/(?<= )/);
     for (const chunk of chunks) {
-      await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 50));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
       yield chunk;
     }
   };
@@ -70,7 +70,9 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
     if (!file) return;
 
     if (file.type !== 'text/plain' && !file.name.endsWith('.txt')) {
-      toast.error('Only .txt files are supported in this demo. PDF/DOCX require server-side parsing.');
+      toast.error(
+        'Only .txt files are supported in this demo. PDF/DOCX require server-side parsing.'
+      );
       return;
     }
 
@@ -89,7 +91,9 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
 
     // Simulate URL content fetching
     setTimeout(() => {
-      setInputText(`This is mock content fetched from ${url}. In a production environment, we would use a library like Cheerio or a dedicated scraper service to extract the main article text, removing ads, navigation, and other boilerplate.`);
+      setInputText(
+        `This is mock content fetched from ${url}. In a production environment, we would use a library like Cheerio or a dedicated scraper service to extract the main article text, removing ads, navigation, and other boilerplate.`
+      );
       toast.success('Content fetched successfully', { id: 'url-fetch' });
     }, 1500);
   };
@@ -111,11 +115,11 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
       const stream = USE_MOCK
         ? mockSummarizeStream()
         : await streamSummarize({
-          Text: inputText,
-          DetailLevel: detailLevel,
-          Language: 'en',
-          ModelId: selectedModel,
-        });
+            Text: inputText,
+            DetailLevel: detailLevel,
+            Language: 'en',
+            ModelId: selectedModel,
+          });
 
       for await (const chunk of stream) {
         setSummary((prev) => prev + chunk);
@@ -133,11 +137,16 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
     setTimeout(() => setIsCopied(false), 2000);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-4 max-w-7xl animate-in fade-in duration-700">
       <SummaryHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-8 lg:grid-cols-12 mt-4">
@@ -151,15 +160,24 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
             >
               <div className="px-6 pt-6">
                 <TabsList className="grid w-full grid-cols-3 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-2xl h-12">
-                  <TabsTrigger value="text" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm">
+                  <TabsTrigger
+                    value="text"
+                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm"
+                  >
                     <FileText className="h-4 w-4 mr-2" />
                     Text
                   </TabsTrigger>
-                  <TabsTrigger value="file" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm">
+                  <TabsTrigger
+                    value="file"
+                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm"
+                  >
                     <Upload className="h-4 w-4 mr-2" />
                     File
                   </TabsTrigger>
-                  <TabsTrigger value="url" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm">
+                  <TabsTrigger
+                    value="url"
+                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm"
+                  >
                     <LinkIcon className="h-4 w-4 mr-2" />
                     URL
                   </TabsTrigger>
@@ -184,7 +202,9 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                     <div className="bg-primary/10 p-4 rounded-2xl inline-block mb-4 group-hover:scale-110 transition-transform">
                       <Upload className="h-8 w-8 text-primary" />
                     </div>
-                    <p className="text-zinc-900 dark:text-zinc-100 font-semibold mb-1 text-lg">Select a file</p>
+                    <p className="text-zinc-900 dark:text-zinc-100 font-semibold mb-1 text-lg">
+                      Select a file
+                    </p>
                     <p className="text-sm text-zinc-500 max-w-[200px] mx-auto">
                       PDF, DOCX, or TXT documents (Max 10MB)
                     </p>
@@ -209,7 +229,11 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                     />
                     <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                   </div>
-                  <Button onClick={handleUrlFetch} className="w-full h-12 rounded-2xl gap-2 font-bold" variant="secondary">
+                  <Button
+                    onClick={handleUrlFetch}
+                    className="w-full h-12 rounded-2xl gap-2 font-bold"
+                    variant="secondary"
+                  >
                     <ExternalLink className="h-4 w-4" />
                     Extract Document Text
                   </Button>
@@ -229,10 +253,18 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-700">
-                      <SelectItem value="paragraph" className="rounded-lg">Paragraph</SelectItem>
-                      <SelectItem value="bullets" className="rounded-lg">Bullet Points</SelectItem>
-                      <SelectItem value="headline" className="rounded-lg">Headline</SelectItem>
-                      <SelectItem value="abstract" className="rounded-lg">Abstract</SelectItem>
+                      <SelectItem value="paragraph" className="rounded-lg">
+                        Paragraph
+                      </SelectItem>
+                      <SelectItem value="bullets" className="rounded-lg">
+                        Bullet Points
+                      </SelectItem>
+                      <SelectItem value="headline" className="rounded-lg">
+                        Headline
+                      </SelectItem>
+                      <SelectItem value="abstract" className="rounded-lg">
+                        Abstract
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -247,9 +279,15 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-700">
-                      <SelectItem value="short" className="rounded-lg">Short</SelectItem>
-                      <SelectItem value="medium" className="rounded-lg">Medium</SelectItem>
-                      <SelectItem value="detailed" className="rounded-lg">Detailed</SelectItem>
+                      <SelectItem value="short" className="rounded-lg">
+                        Short
+                      </SelectItem>
+                      <SelectItem value="medium" className="rounded-lg">
+                        Medium
+                      </SelectItem>
+                      <SelectItem value="detailed" className="rounded-lg">
+                        Detailed
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -287,8 +325,17 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
 
               {summary && (
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon" onClick={handleCopy} className="rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800">
-                    {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleCopy}
+                    className="rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  >
+                    {isCopied ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               )}
@@ -304,22 +351,34 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                   <Card className="p-6 border-none bg-zinc-50 dark:bg-zinc-800/50 rounded-3xl mt-12 ring-1 ring-zinc-200 dark:ring-zinc-800">
                     <div className="flex items-center gap-2 mb-4">
                       <BarChart3 className="h-5 w-5 text-primary" />
-                      <h3 className="font-bold text-sm uppercase tracking-widest text-zinc-500">Summary Metrics</h3>
+                      <h3 className="font-bold text-sm uppercase tracking-widest text-zinc-500">
+                        Summary Metrics
+                      </h3>
                     </div>
                     <div className="grid grid-cols-3 gap-6">
                       <div className="space-y-1">
-                        <div className="text-2xl font-black text-primary">82%</div>
-                        <div className="text-[10px] font-bold uppercase text-zinc-400">Compression</div>
+                        <div className="text-2xl font-black text-primary">
+                          82%
+                        </div>
+                        <div className="text-[10px] font-bold uppercase text-zinc-400">
+                          Compression
+                        </div>
                       </div>
                       <div className="space-y-1">
                         <div className="text-2xl font-black text-primary">
                           {summary.split(/\s+/).filter(Boolean).length}
                         </div>
-                        <div className="text-[10px] font-bold uppercase text-zinc-400">Word Count</div>
+                        <div className="text-[10px] font-bold uppercase text-zinc-400">
+                          Word Count
+                        </div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-2xl font-black text-primary italic">~0.4s</div>
-                        <div className="text-[10px] font-bold uppercase text-zinc-400">AI Latency</div>
+                        <div className="text-2xl font-black text-primary italic">
+                          ~0.4s
+                        </div>
+                        <div className="text-[10px] font-bold uppercase text-zinc-400">
+                          AI Latency
+                        </div>
                       </div>
                     </div>
                   </Card>
@@ -332,7 +391,8 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                   <div>
                     <p className="text-xl font-bold">Ready to analyze</p>
                     <p className="text-zinc-500 max-w-[300px]">
-                      Upload a file or paste text to see the AI magic happen here.
+                      Upload a file or paste text to see the AI magic happen
+                      here.
                     </p>
                   </div>
                 </div>

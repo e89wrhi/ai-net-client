@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Check, FileAudio, Sparkles, ClipboardList } from 'lucide-react';
 import { useStreamMeetingAnalysis } from '@/lib/api/meeting/stream-meeting-analysis';
 import MeetingHeader from './meeting-header';
+import { toast } from 'sonner';
 
 export default function MeetingClient() {
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -86,11 +87,16 @@ Speaker 2: I'll handle the campaign updates.
     alert('Report exported (mock). Integrate PDF generation if needed.');
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <MeetingHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
       <div className="space-y-8">
         {/* Upload Section */}

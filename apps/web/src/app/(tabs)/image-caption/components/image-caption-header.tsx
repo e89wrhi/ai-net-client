@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface ImageHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function ImageCaptionHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: ImageHeaderProps) {
   return (
@@ -47,7 +49,10 @@ export default function ImageCaptionHeader({
           items={imageCaptionWhy}
         />
 
-        <ImageCaptionOptions link={imageCaptionLink} />
+        <ImageCaptionOptions
+          onSessionReset={onSessionReset}
+          link={imageCaptionLink}
+        />
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ import { Bug, Lightbulb, RefreshCw } from 'lucide-react';
 import { useStreamAnalyzeCode } from '@/lib/api/code-debug/stream-analyze-code';
 import { DebugDepth, ProgrammingLanguage } from '@/types/enums/code-debug';
 import CodeDebugHeader from './code-debug-header';
+import { toast } from 'sonner';
 
 export default function CodeDebugClient() {
   const [code, setCode] = useState('');
@@ -70,11 +71,16 @@ export default function CodeDebugClient() {
     }
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <CodeDebugHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

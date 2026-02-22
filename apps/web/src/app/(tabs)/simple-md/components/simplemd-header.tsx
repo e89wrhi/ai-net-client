@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface MDHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function SimpleMDHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: MDHeaderProps) {
   return (
@@ -39,7 +41,7 @@ export default function SimpleMDHeader({
         />
         <WhyDrawer title="simplemd" link={simplemdLink} items={simplemdWhy} />
 
-        <SimpleMDOptions link={simplemdLink} />
+        <SimpleMDOptions onSessionReset={onSessionReset} link={simplemdLink} />
       </div>
     </div>
   );

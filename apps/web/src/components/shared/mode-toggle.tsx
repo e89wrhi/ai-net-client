@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Sun, Moon, Monitor, Laptop } from 'lucide-react';
+import { Sun, Moon, Laptop } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ModeToggleProps {
@@ -21,20 +21,28 @@ export function ModeToggle({ variant = 'dropdown' }: ModeToggleProps) {
 
   if (variant === 'minimal') {
     return (
-      <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg w-full">
+      <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-full w-full">
         {[
-          { id: 'light', icon: <Sun className="h-3.5 w-3.5" />, label: 'Light' },
+          {
+            id: 'light',
+            icon: <Sun className="h-3.5 w-3.5" />,
+            label: 'Light',
+          },
           { id: 'dark', icon: <Moon className="h-3.5 w-3.5" />, label: 'Dark' },
-          { id: 'system', icon: <Laptop className="h-3.5 w-3.5" />, label: 'System' },
+          {
+            id: 'system',
+            icon: <Laptop className="h-3.5 w-3.5" />,
+            label: 'System',
+          },
         ].map((item) => (
           <button
             key={item.id}
             onClick={() => setTheme(item.id)}
             className={cn(
-              "flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-[10px] font-bold transition-all",
+              'flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-full text-[10px] font-bold transition-all',
               theme === item.id
-                ? "bg-popover shadow-sm text-foreground ring-1 ring-border"
-                : "text-muted-foreground hover:text-foreground"
+                ? 'bg-popover shadow-sm text-foreground ring-1 ring-border'
+                : 'text-muted-foreground hover:text-foreground'
             )}
           >
             {item.icon}
@@ -59,15 +67,24 @@ export function ModeToggle({ variant = 'dropdown' }: ModeToggleProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="rounded-xl p-1">
-        <DropdownMenuItem onClick={() => setTheme('light')} className="rounded-lg">
+        <DropdownMenuItem
+          onClick={() => setTheme('light')}
+          className="rounded-lg"
+        >
           <Sun className="mr-2 h-4 w-4" />
           <span>Light</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')} className="rounded-lg">
+        <DropdownMenuItem
+          onClick={() => setTheme('dark')}
+          className="rounded-lg"
+        >
           <Moon className="mr-2 h-4 w-4" />
           <span>Dark</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')} className="rounded-lg">
+        <DropdownMenuItem
+          onClick={() => setTheme('system')}
+          className="rounded-lg"
+        >
           <Laptop className="mr-2 h-4 w-4" />
           <span>System</span>
         </DropdownMenuItem>

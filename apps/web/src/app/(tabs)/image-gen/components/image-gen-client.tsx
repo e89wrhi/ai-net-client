@@ -14,6 +14,7 @@ import {
 import { Image as ImageIcon, Download, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import ImageGenHeader from './image-gen-header';
+import { toast } from 'sonner';
 
 export default function ImageGenerationClient() {
   const [prompt, setPrompt] = useState('');
@@ -36,11 +37,16 @@ export default function ImageGenerationClient() {
     }, 2000);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <ImageGenHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">

@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface MeetingHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function MeetingHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: MeetingHeaderProps) {
   return (
@@ -40,7 +42,7 @@ export default function MeetingHeader({
 
         <WhyDrawer title="meeting" link={meetingLink} items={meetingWhy} />
 
-        <MeetingOptions link={meetingLink} />
+        <MeetingOptions onSessionReset={onSessionReset} link={meetingLink} />
       </div>
     </div>
   );

@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface TextGenHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function TextGenHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: TextGenHeaderProps) {
   return (
@@ -47,7 +49,10 @@ export default function TextGenHeader({
           items={textGenerationWhy}
         />
 
-        <TextGenOptions link={textGenerationLink} />
+        <TextGenOptions
+          onSessionReset={onSessionReset}
+          link={textGenerationLink}
+        />
       </div>
     </div>
   );

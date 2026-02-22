@@ -17,38 +17,38 @@ function BarItem({ variant }: BarProps) {
   const content = {
     info: {
       icon: <AlertCircle className="h-4 w-4" />,
-      text: "Developer Preview: Currently running with simulated data streams for testing.",
-      bgColor: "bg-muted/30",
-      borderColor: "border-border",
-      link: null
+      text: 'Developer Preview: Currently running with simulated data streams for testing.',
+      bgColor: 'bg-muted/30',
+      borderColor: 'border-border',
+      link: null,
     },
     repo: {
       icon: <Github className="h-4 w-4" />,
-      text: "Open Source: The AI-Client backend repository is now available on GitHub.",
-      bgColor: "bg-muted/30",
-      borderColor: "border-border",
-      link: { label: "GitHub", href: "https://github.com/", icon: null }
+      text: 'Open Source: The AI-Client backend repository is now available on GitHub.',
+      bgColor: 'bg-muted/30',
+      borderColor: 'border-border',
+      link: { label: 'GitHub', href: 'https://github.com/', icon: null },
     },
     system: {
       icon: <Activity className="h-4 w-4" />,
-      text: "System Status: All inference nodes are operational. Latency: 450ms.",
-      bgColor: "bg-muted/30",
-      borderColor: "border-border",
-      link: { label: "Details", href: "#", icon: null }
-    }
+      text: 'System Status: All inference nodes are operational. Latency: 450ms.',
+      bgColor: 'bg-muted/30',
+      borderColor: 'border-border',
+      link: { label: 'Details', href: '#', icon: null },
+    },
   }[variant];
 
   return (
-    <div className={cn(
-      "w-full border-b backdrop-blur-sm transition-all duration-300 animate-in fade-in",
-      content.bgColor,
-      content.borderColor
-    )}>
+    <div
+      className={cn(
+        'w-full border-b backdrop-blur-sm transition-all duration-300 animate-in fade-in',
+        content.bgColor,
+        content.borderColor
+      )}
+    >
       <div className="container mx-auto px-4 h-10 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="text-muted-foreground">
-            {content.icon}
-          </div>
+          <div className="text-muted-foreground">{content.icon}</div>
           <p className="text-xs font-medium text-foreground/80 tracking-tight">
             {content.text}
           </p>

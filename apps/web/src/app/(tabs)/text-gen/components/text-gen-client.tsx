@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/separator';
 import { useGenerateStream } from '@/lib/api/chat/generate-stream';
 import { useSendMessage } from '@/lib/api/chat/send-message';
 import TextGenHeader from './text-gen-header';
+import { toast } from 'sonner';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -122,11 +123,16 @@ export default function TextGenerationClient() {
 
   const currentTab = tabs.find((tab) => tab.id === activeTab);
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <TextGenHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <Card className="p-8 border-none rounded-3xl">

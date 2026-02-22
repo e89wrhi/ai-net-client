@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface SentimentHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function SentimentHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: SentimentHeaderProps) {
   return (
@@ -44,7 +46,10 @@ export default function SentimentHeader({
           items={sentimentWhy}
         />
 
-        <SentimentOptions link={sentimentLink} />
+        <SentimentOptions
+          onSessionReset={onSessionReset}
+          link={sentimentLink}
+        />
       </div>
     </div>
   );

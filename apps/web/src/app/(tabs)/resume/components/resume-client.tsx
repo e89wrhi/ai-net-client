@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Sparkles, FileText, Award } from 'lucide-react';
 import ResumeHeader from './resume-header';
+import { toast } from 'sonner';
 
 export default function ResumeClient() {
   const [resumeText, setResumeText] = useState('');
@@ -100,11 +101,16 @@ Improvement Recommendations:
     }, 1200);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-8">
       <ResumeHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
       {/* Upload Section */}
       <Card className="p-8 space-y-6 rounded-3xl border-none">

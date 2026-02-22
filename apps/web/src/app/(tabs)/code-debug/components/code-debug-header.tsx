@@ -7,11 +7,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface CodeDebugHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function CodeDebugHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: CodeDebugHeaderProps) {
   return (
@@ -44,7 +46,10 @@ export default function CodeDebugHeader({
           items={codeDebugWhy}
         />
 
-        <CodeDebugOptions link={codeDebugLink} />
+        <CodeDebugOptions
+          onSessionReset={onSessionReset}
+          link={codeDebugLink}
+        />
       </div>
     </div>
   );

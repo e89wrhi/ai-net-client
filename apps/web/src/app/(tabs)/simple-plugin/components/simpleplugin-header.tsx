@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface PluginHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function SimplePluginHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: PluginHeaderProps) {
   return (
@@ -43,7 +45,10 @@ export default function SimplePluginHeader({
           link={simplepluginLink}
           items={simplepluginWhy}
         />
-        <SimplePluginOptions link={simplepluginLink} />
+        <SimplePluginOptions
+          onSessionReset={onSessionReset}
+          link={simplepluginLink}
+        />
       </div>
     </div>
   );

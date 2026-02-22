@@ -18,12 +18,11 @@ import {
   ArrowRight,
   FileText,
   Check,
-  Search
+  Search,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import QuestionHeader from './question-header';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 interface QAPair {
   question: string;
@@ -43,9 +42,6 @@ export default function QuestionAnswerClient() {
   const [isGenerating, setIsGenerating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Toggle for development
-  const USE_MOCK = true;
-
   const mockAnswerStream = async function* (q: string, ctx?: string) {
     const response = ctx
       ? `Based on the context provided, here's the answer to your question: "${q}". 
@@ -61,7 +57,9 @@ If you have a more specific scenario or a document you'd like me to analyze in t
 
     const chunks = response.split(/(?<= )/);
     for (const chunk of chunks) {
-      await new Promise(resolve => setTimeout(resolve, 20 + Math.random() * 40));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 20 + Math.random() * 40)
+      );
       yield chunk;
     }
   };
@@ -88,7 +86,7 @@ If you have a more specific scenario or a document you'd like me to analyze in t
         question,
         answer: fullAnswer,
         timestamp: new Date(),
-        context: context || undefined
+        context: context || undefined,
       };
 
       setHistory([newEntry, ...history]);
@@ -133,12 +131,16 @@ If you have a more specific scenario or a document you'd like me to analyze in t
     'Describe the distributed caching architecture',
   ];
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-4 max-w-7xl animate-in fade-in duration-700">
       <QuestionHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
-        onClearHistory={() => setHistory([])}
+        onSessionReset={handleReset}
       />
 
       <div className="grid gap-8 lg:grid-cols-12 mt-4">
@@ -152,7 +154,9 @@ If you have a more specific scenario or a document you'd like me to analyze in t
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">Ask Anything</h2>
-                  <p className="text-sm text-zinc-500">Get instant answers from our AI assistant</p>
+                  <p className="text-sm text-zinc-500">
+                    Get instant answers from our AI assistant
+                  </p>
                 </div>
               </div>
 
@@ -175,13 +179,23 @@ If you have a more specific scenario or a document you'd like me to analyze in t
                 </Button>
               </div>
 
-              <Tabs value={inputMethod} onValueChange={setInputMethod} className="w-full">
+              <Tabs
+                value={inputMethod}
+                onValueChange={setInputMethod}
+                className="w-full"
+              >
                 <TabsList className="bg-zinc-100 dark:bg-zinc-800 p-1 rounded-2xl h-12 inline-flex mb-4">
-                  <TabsTrigger value="text" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700">
+                  <TabsTrigger
+                    value="text"
+                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700"
+                  >
                     <FileText className="h-4 w-4 mr-2" />
                     Context (Optional)
                   </TabsTrigger>
-                  <TabsTrigger value="file" className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700">
+                  <TabsTrigger
+                    value="file"
+                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700"
+                  >
                     <Upload className="h-4 w-4 mr-2" />
                     Upload Doc
                   </TabsTrigger>
@@ -202,8 +216,12 @@ If you have a more specific scenario or a document you'd like me to analyze in t
                     className="border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-3xl p-10 text-center cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all group"
                   >
                     <Upload className="h-10 w-10 mx-auto mb-3 text-zinc-400 group-hover:text-primary transition-colors" />
-                    <p className="font-semibold text-zinc-900 dark:text-zinc-100">Click to upload context</p>
-                    <p className="text-sm text-zinc-500">PDF or TXT documents (Max 10MB)</p>
+                    <p className="font-semibold text-zinc-900 dark:text-zinc-100">
+                      Click to upload context
+                    </p>
+                    <p className="text-sm text-zinc-500">
+                      PDF or TXT documents (Max 10MB)
+                    </p>
                     <input
                       type="file"
                       ref={fileInputRef}
@@ -227,10 +245,23 @@ If you have a more specific scenario or a document you'd like me to analyze in t
                   <h3 className="font-bold text-lg">AI Answer</h3>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon" onClick={handleCopy} className="rounded-xl hover:bg-white dark:hover:bg-zinc-800 shadow-sm">
-                    {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleCopy}
+                    className="rounded-xl hover:bg-white dark:hover:bg-zinc-800 shadow-sm"
+                  >
+                    {isCopied ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
                   </Button>
-                  <Button variant="ghost" size="icon" className="rounded-xl hover:bg-white dark:hover:bg-zinc-800 shadow-sm">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-xl hover:bg-white dark:hover:bg-zinc-800 shadow-sm"
+                  >
                     <Share2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -250,7 +281,12 @@ If you have a more specific scenario or a document you'd like me to analyze in t
                 <History className="h-5 w-5 text-zinc-400" />
                 <h2 className="font-bold text-lg">History</h2>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setHistory([])} className="h-8 w-8 text-zinc-400 hover:text-red-500">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setHistory([])}
+                className="h-8 w-8 text-zinc-400 hover:text-red-500"
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -260,7 +296,9 @@ If you have a more specific scenario or a document you'd like me to analyze in t
                 <div className="bg-zinc-100 dark:bg-zinc-800 p-4 rounded-full inline-block">
                   <HelpCircle className="h-8 w-8 text-zinc-300" />
                 </div>
-                <p className="text-sm text-zinc-500">Your recent questions will appear here</p>
+                <p className="text-sm text-zinc-500">
+                  Your recent questions will appear here
+                </p>
               </div>
             ) : (
               <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
@@ -288,7 +326,9 @@ If you have a more specific scenario or a document you'd like me to analyze in t
           </Card>
 
           <Card className="p-8 border-none bg-gradient-to-br from-zinc-900 to-zinc-800 text-white shadow-xl rounded-[2rem]">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400 mb-6 italic">Quick Ideas</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400 mb-6 italic">
+              Quick Ideas
+            </h3>
             <div className="space-y-2">
               {suggestedQuestions.map((q, i) => (
                 <button

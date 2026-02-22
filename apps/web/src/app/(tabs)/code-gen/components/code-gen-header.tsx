@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface CodeGenHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function CodeGenHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: CodeGenHeaderProps) {
   return (
@@ -47,7 +49,10 @@ export default function CodeGenHeader({
           items={codeGenerationWhy}
         />
 
-        <CodeGenOptions link={codeGenerationLink} />
+        <CodeGenOptions
+          onSessionReset={onSessionReset}
+          link={codeGenerationLink}
+        />
       </div>
     </div>
   );

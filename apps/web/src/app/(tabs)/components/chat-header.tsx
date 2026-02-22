@@ -7,11 +7,13 @@ import { ModelSelector } from '../_components/model-selector';
 
 interface ChatHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function ChatHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: ChatHeaderProps) {
   return (
@@ -40,7 +42,7 @@ export default function ChatHeader({
 
         <WhyDrawer title="chat" link={chatLink} items={chatWhy} />
 
-        <ChatOptions link={chatLink} />
+        <ChatOptions onSessionReset={onSessionReset} link={chatLink} />
       </div>
     </div>
   );

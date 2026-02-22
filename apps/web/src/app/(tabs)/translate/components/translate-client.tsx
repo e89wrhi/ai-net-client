@@ -15,6 +15,7 @@ import { Languages, ArrowRight, RefreshCw, Copy } from 'lucide-react';
 import { useStreamTranslateText } from '@/lib/api/translate/stream-translate-text';
 import { TranslationDetailLevel } from '@/types/enums/translate';
 import TranslateHeader from './translate-header';
+import { toast } from 'sonner';
 
 const languages = [
   { code: 'auto', name: 'Auto-detect' },
@@ -76,11 +77,16 @@ export default function TranslationClient() {
     }
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <TranslateHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
 
       <Card className="p-8 border-none rounded-3xl">

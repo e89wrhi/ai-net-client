@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ImageIcon, Sparkles, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 import ImageCaptionHeader from './image-caption-header';
+import { toast } from 'sonner';
 
 export default function ImageCaptioningClient() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -47,11 +48,16 @@ export default function ImageCaptioningClient() {
     }, 1200);
   };
 
+  const handleReset = () => {
+    toast('Session Reset');
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-8">
       <ImageCaptionHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        onSessionReset={handleReset}
       />
       {/* Upload Section */}
       <Card className="p-8 space-y-6 border-none rounded-3xl">

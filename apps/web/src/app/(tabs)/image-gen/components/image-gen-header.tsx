@@ -10,11 +10,13 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface ImageHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
 }
 
 export default function ImageGenHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
 }: ImageHeaderProps) {
   return (
@@ -47,7 +49,10 @@ export default function ImageGenHeader({
           items={imageGenerationWhy}
         />
 
-        <ImageGenOptions link={imageGenerationLink} />
+        <ImageGenOptions
+          onSessionReset={onSessionReset}
+          link={imageGenerationLink}
+        />
       </div>
     </div>
   );

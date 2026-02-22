@@ -7,14 +7,14 @@ import { ModelSelector } from '../../_components/model-selector';
 
 interface QHeaderProps {
   selectedModel: string | null;
+  onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
-  onClearHistory?: () => void;
 }
 
 export default function QuestionHeader({
   selectedModel,
+  onSessionReset,
   onModelChange,
-  onClearHistory,
 }: QHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
@@ -40,7 +40,7 @@ export default function QuestionHeader({
         />
         <WhyDrawer title="question" link={qnaLink} items={qnaWhy} />
 
-        <QuestionOptions link={qnaLink} onClearHistory={onClearHistory} />
+        <QuestionOptions onSessionReset={onSessionReset} link={qnaLink} />
       </div>
     </div>
   );
