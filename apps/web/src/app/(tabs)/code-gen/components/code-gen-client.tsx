@@ -11,12 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Code, Copy, Check } from 'lucide-react';
+import { Copy, Check, Sparkles } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { useStreamGenerateCode } from '@/lib/api/code-gen/stream-generate';
 import { CodeQualityLevel, CodeStyle } from '@/types/enums/code-gen';
 import CodeGenHeader from './code-gen-header';
 import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function CodeGenerationClient() {
   const [prompt, setPrompt] = useState('');
@@ -156,145 +157,136 @@ int main() {
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex items-center gap-2 mb-4">
-            <Code className="h-5 w-5 text-blue-600" />
-            <h2>Instructions</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm mb-2 block">
-                Describe what you want to code
-              </label>
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <div className="space-y-4">
               <Textarea
                 placeholder="e.g., Write a Python function to generate the Fibonacci sequence..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[150px]"
+                className="min-h-[300px] border-none shadow-none"
               />
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm mb-2 block">
-                  Programming Language
-                </label>
-                <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="python">Python</SelectItem>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
-                    <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="cpp">C++</SelectItem>
-                    <SelectItem value="typescript">TypeScript</SelectItem>
-                    <SelectItem value="go">Go</SelectItem>
-                    <SelectItem value="rust">Rust</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-sm mb-2 block">Code Style</label>
-                <div className="flex items-center gap-2 h-10">
-                  <span className="text-sm">Brief</span>
-                  <Switch checked={verbosity} onCheckedChange={setVerbosity} />
-                  <span className="text-sm">Detailed</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Select value={language} onValueChange={setLanguage}>
+                    <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                      <SelectItem value="python">Python</SelectItem>
+                      <SelectItem value="javascript">JavaScript</SelectItem>
+                      <SelectItem value="java">Java</SelectItem>
+                      <SelectItem value="cpp">C++</SelectItem>
+                      <SelectItem value="typescript">TypeScript</SelectItem>
+                      <SelectItem value="go">Go</SelectItem>
+                      <SelectItem value="rust">Rust</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+
+                <div>
+                  <div className="flex items-center gap-2 h-10">
+                    <span className="text-sm">Brief</span>
+                    <Switch
+                      checked={verbosity}
+                      onCheckedChange={setVerbosity}
+                    />
+                    <span className="text-sm">Detailed</span>
+                  </div>
+                </div>
+                <Button
+                  onClick={generateCode}
+                  className="w-full cursor-pointer rounded-full"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <Spinner className="h-4 w-4" />
+                  ) : (
+                    <Sparkles className="h-4 w-4" />
+                  )}
+                  {isPending ? 'Generating Code...' : 'Generate Code'}
+                </Button>
               </div>
             </div>
-
-            <Button
-              onClick={generateCode}
-              className="w-full"
-              disabled={isPending}
-            >
-              {isPending ? 'Generating Code...' : 'Generate Code'}
-            </Button>
-
-            <Card className="p-4">
-              <h3 className="text-sm mb-2">Example Prompts</h3>
-              <div className="space-y-2 text-sm">
-                {[
-                  'Write a function to reverse a string',
-                  'Create a binary search algorithm',
-                  'Implement a simple REST API endpoint',
-                  'Build a class for managing a todo list',
-                ].map((example, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPrompt(example)}
-                    className="block w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-                  >
-                    {example}
-                  </button>
-                ))}
-              </div>
-            </Card>
           </div>
         </Card>
 
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex items-center justify-between mb-4">
-            <h2>Generated Code</h2>
-            {generatedCode && (
-              <Button variant="outline" size="sm" onClick={copyCode}>
-                {copied ? (
-                  <>
-                    <Check className="h-4 w-4 mr-2" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy
-                  </>
-                )}
-              </Button>
+        <Card
+          className="p-8 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="pb-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold">Generated Code</h2>
+            </div>
+          </div>
+          <div className="">
+            <div className="flex items-center justify-between mb-4">
+              {generatedCode && (
+                <Button variant="outline" size="sm" onClick={copyCode}>
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4 mr-2" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copy
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+
+            {generatedCode ? (
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg overflow-x-auto">
+                  <pre className="text-sm">
+                    <code>{generatedCode}</code>
+                  </pre>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                  <Card className="p-3">
+                    <div className="text-2xl text-blue-600">
+                      {generatedCode.split('\n').length}
+                    </div>
+                    <div className="text-gray-600">Lines</div>
+                  </Card>
+                  <Card className="p-3">
+                    <div className="text-2xl text-blue-600">{language}</div>
+                    <div className="text-gray-600">Language</div>
+                  </Card>
+                  <Card className="p-3">
+                    <div className="text-2xl text-blue-600">0.5s</div>
+                    <div className="text-gray-600">Generated</div>
+                  </Card>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1">
+                    Test Code
+                  </Button>
+                  <Button variant="outline" className="flex-1">
+                    Download
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center min-h-[400px] text-gray-400 rounded-lg">
+                Your generated code will appear here
+              </div>
             )}
           </div>
-
-          {generatedCode ? (
-            <div className="space-y-4">
-              <div className="p-4 rounded-lg overflow-x-auto">
-                <pre className="text-sm">
-                  <code>{generatedCode}</code>
-                </pre>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 text-center text-sm">
-                <Card className="p-3">
-                  <div className="text-2xl text-blue-600">
-                    {generatedCode.split('\n').length}
-                  </div>
-                  <div className="text-gray-600">Lines</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-2xl text-blue-600">{language}</div>
-                  <div className="text-gray-600">Language</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-2xl text-blue-600">0.5s</div>
-                  <div className="text-gray-600">Generated</div>
-                </Card>
-              </div>
-
-              <div className="flex gap-2">
-                <Button variant="outline" className="flex-1">
-                  Test Code
-                </Button>
-                <Button variant="outline" className="flex-1">
-                  Download
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center min-h-[400px] text-gray-400 border-2 border-dashed rounded-lg">
-              Your generated code will appear here
-            </div>
-          )}
         </Card>
       </div>
     </div>

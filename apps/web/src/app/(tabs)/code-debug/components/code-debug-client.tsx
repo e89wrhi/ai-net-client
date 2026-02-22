@@ -12,11 +12,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bug, Lightbulb, RefreshCw } from 'lucide-react';
+import { Bug, Lightbulb, RefreshCw, Sparkles } from 'lucide-react';
 import { useStreamAnalyzeCode } from '@/lib/api/code-debug/stream-analyze-code';
 import { DebugDepth, ProgrammingLanguage } from '@/types/enums/code-debug';
 import CodeDebugHeader from './code-debug-header';
 import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function CodeDebugClient() {
   const [code, setCode] = useState('');
@@ -84,90 +85,79 @@ export default function CodeDebugClient() {
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex items-center gap-2 mb-4">
-            <Bug className="h-5 w-5 text-orange-600" />
-            <h2>Input Code</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm mb-2 block">Paste your code here</label>
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <div className="space-y-4">
               <Textarea
                 placeholder="Enter your code snippet..."
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="min-h-[300px] font-mono text-sm"
+                className="min-h-[300px] border-none shadow-none font-mono text-sm"
               />
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm mb-2 block">Language</label>
-                <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="python">Python</SelectItem>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
-                    <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="cpp">C++</SelectItem>
-                    <SelectItem value="typescript">TypeScript</SelectItem>
-                    <SelectItem value="go">Go</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Select value={language} onValueChange={setLanguage}>
+                    <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                      <SelectItem value="python">Python</SelectItem>
+                      <SelectItem value="javascript">JavaScript</SelectItem>
+                      <SelectItem value="java">Java</SelectItem>
+                      <SelectItem value="cpp">C++</SelectItem>
+                      <SelectItem value="typescript">TypeScript</SelectItem>
+                      <SelectItem value="go">Go</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div>
-                <label className="text-sm mb-2 block">Analysis Type</label>
-                <Select value={analysisType} onValueChange={setAnalysisType}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="explain">Explain Code</SelectItem>
-                    <SelectItem value="debug">Find Bugs</SelectItem>
-                    <SelectItem value="refactor">Refactor</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <Button
-              onClick={analyzeCode}
-              className="w-full"
-              disabled={isPending}
-            >
-              {isPending ? 'Analyzing...' : 'Analyze Code'}
-            </Button>
-
-            <Card className="p-4">
-              <h3 className="text-sm mb-2">Quick Actions</h3>
-              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Select value={analysisType} onValueChange={setAnalysisType}>
+                    <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                      <SelectItem value="explain">Explain Code</SelectItem>
+                      <SelectItem value="debug">Find Bugs</SelectItem>
+                      <SelectItem value="refactor">Refactor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCode(`def factorial(n):
-    if n == 0:
-        return 1
-    return n * factorial(n-1)`)
-                  }
+                  onClick={analyzeCode}
+                  className="w-full rounded-full cursor-pointer"
+                  disabled={isPending}
                 >
-                  Load Example
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => setCode('')}>
-                  Clear
+                  {isPending ? (
+                    <Spinner className="h-4 w-4" />
+                  ) : (
+                    <Sparkles className="h-4 w-4" />
+                  )}
+                  {isPending ? 'Analyzing...' : 'Analyze Code'}
                 </Button>
               </div>
-            </Card>
+            </div>
           </div>
         </Card>
 
-        <Card className="p-8 border-none rounded-3xl">
+        <Card
+          className="p-8 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="pb-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold">Code Analysis</h2>
+            </div>
+          </div>
           <div className="flex items-center justify-between mb-4">
-            <h2>Analysis Results</h2>
             {result && (
               <div className="flex gap-2">
                 <Button variant="outline" size="sm">
@@ -279,7 +269,7 @@ export default function CodeDebugClient() {
               </Tabs>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center min-h-[400px] text-gray-400 border-2 border-dashed rounded-lg">
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-gray-400 rounded-lg">
               <Bug className="h-12 w-12 mb-4" />
               <p>Paste your code and click &quot;Analyze Code&quot;</p>
               <p className="text-sm mt-2">

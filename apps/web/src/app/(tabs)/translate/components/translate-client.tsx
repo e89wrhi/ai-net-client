@@ -11,11 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Languages, ArrowRight, RefreshCw, Copy } from 'lucide-react';
+import { RefreshCw, Copy, Sparkles } from 'lucide-react';
 import { useStreamTranslateText } from '@/lib/api/translate/stream-translate-text';
 import { TranslationDetailLevel } from '@/types/enums/translate';
 import TranslateHeader from './translate-header';
 import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
 
 const languages = [
   { code: 'auto', name: 'Auto-detect' },
@@ -89,105 +90,113 @@ export default function TranslationClient() {
         onSessionReset={handleReset}
       />
 
-      <Card className="p-8 border-none rounded-3xl">
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <div className="flex-1">
-            <label className="text-sm mb-2 block text-center">From</label>
-            <Select value={sourceLang} onValueChange={setSourceLang}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {languages.map((lang) => (
-                  <SelectItem key={lang.code} value={lang.code}>
-                    {lang.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={swapLanguages}
-            className="mt-6"
-            disabled={sourceLang === 'auto'}
-          >
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-
-          <div className="flex-1">
-            <label className="text-sm mb-2 block text-center">To</label>
-            <Select value={targetLang} onValueChange={setTargetLang}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {languages
-                  .filter((lang) => lang.code !== 'auto')
-                  .map((lang) => (
+      <Card
+        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+      >
+        <div className="p-8">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="flex-1">
+              <Select value={sourceLang} onValueChange={setSourceLang}>
+                <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                  {languages.map((lang) => (
                     <SelectItem key={lang.code} value={lang.code}>
                       {lang.name}
                     </SelectItem>
                   ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-sm">Source Text</label>
-              {detectedLang && sourceLang === 'auto' && (
-                <span className="text-xs text-blue-600">
-                  Detected: {detectedLang}
-                </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={swapLanguages}
+              className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black"
+              disabled={sourceLang === 'auto'}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+
+            <div className="flex-1">
+              <Select value={targetLang} onValueChange={setTargetLang}>
+                <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                  {languages
+                    .filter((lang) => lang.code !== 'auto')
+                    .map((lang) => (
+                      <SelectItem key={lang.code} value={lang.code}>
+                        {lang.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm">Source Text</label>
+                {detectedLang && sourceLang === 'auto' && (
+                  <span className="text-xs text-blue-600">
+                    Detected: {detectedLang}
+                  </span>
+                )}
+              </div>
+              <Textarea
+                placeholder="Enter text to translate..."
+                value={sourceText}
+                onChange={(e) => setSourceText(e.target.value)}
+                className="min-h-[250px]"
+              />
+              <div className="text-xs text-gray-500">
+                {sourceText.length} characters
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm">Translation</label>
+                {translatedText && (
+                  <Button variant="ghost" size="sm">
+                    <Copy className="h-3 w-3 mr-1" />
+                    Copy
+                  </Button>
+                )}
+              </div>
+              <Textarea
+                placeholder="Translation will appear here..."
+                value={translatedText}
+                readOnly
+                className="min-h-[250px]"
+              />
+              <div className="text-xs">{translatedText.length} characters</div>
+            </div>
+          </div>
+
+          <div className="flex justify-center mt-6">
+            <Button
+              onClick={translate}
+              size="lg"
+              className="gap-2 w-full rounded-full cursor-pointer"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Spinner className="h-4 w-4" />
+              ) : (
+                <Sparkles className="h-4 w-4" />
               )}
-            </div>
-            <Textarea
-              placeholder="Enter text to translate..."
-              value={sourceText}
-              onChange={(e) => setSourceText(e.target.value)}
-              className="min-h-[250px]"
-            />
-            <div className="text-xs text-gray-500">
-              {sourceText.length} characters
-            </div>
+              {isPending ? 'Translating...' : 'Translate'}
+            </Button>
           </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-sm">Translation</label>
-              {translatedText && (
-                <Button variant="ghost" size="sm">
-                  <Copy className="h-3 w-3 mr-1" />
-                  Copy
-                </Button>
-              )}
-            </div>
-            <Textarea
-              placeholder="Translation will appear here..."
-              value={translatedText}
-              readOnly
-              className="min-h-[250px]"
-            />
-            <div className="text-xs">{translatedText.length} characters</div>
-          </div>
-        </div>
-
-        <div className="flex justify-center mt-6">
-          <Button
-            onClick={translate}
-            size="lg"
-            className="gap-2"
-            disabled={isPending}
-          >
-            <Languages className="h-4 w-4" />
-            {isPending ? 'Translating...' : 'Translate'}
-            {!isPending && <ArrowRight className="h-4 w-4" />}
-          </Button>
         </div>
       </Card>
     </div>

@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { FileText, Sparkles, CheckCircle } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import SimpleMDHeader from './simplemd-header';
 import { toast } from 'sonner';
 
@@ -86,50 +86,55 @@ Suggestions:
         onSessionReset={handleReset}
       />
       {/* Upload Section */}
-      <Card className="p-8 space-y-6 border-none rounded-3xl">
-        <div className="flex items-center gap-2 text-2xl font-bold">
-          <FileText className="h-6 w-6" />
-          Markdown Analyzer
+      <Card
+        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+      >
+        <div className="p-8">
+          <Input
+            type="file"
+            accept=".md,text/markdown"
+            onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+          />
+
+          {mdFile && (
+            <div className="text-sm text-gray-500">Uploaded: {mdFile.name}</div>
+          )}
+
+          <Textarea
+            placeholder="Or paste Markdown content here..."
+            value={mdContent}
+            onChange={(e) => setMdContent(e.target.value)}
+            className="min-h-[250px] border-none shadow-none"
+          />
+
+          <Button
+            onClick={analyzeMarkdown}
+            disabled={!mdContent || isAnalyzing}
+            className="w-full rounded-full cursor-pointer"
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            {isAnalyzing ? 'Analyzing...' : 'Analyze Markdown'}
+          </Button>
         </div>
-
-        <Input
-          type="file"
-          accept=".md,text/markdown"
-          onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
-        />
-
-        {mdFile && (
-          <div className="text-sm text-gray-500">Uploaded: {mdFile.name}</div>
-        )}
-
-        <Textarea
-          placeholder="Or paste Markdown content here..."
-          value={mdContent}
-          onChange={(e) => setMdContent(e.target.value)}
-          className="min-h-[250px]"
-        />
-
-        <Button
-          onClick={analyzeMarkdown}
-          disabled={!mdContent || isAnalyzing}
-          className="w-full"
-        >
-          <Sparkles className="h-4 w-4 mr-2" />
-          {isAnalyzing ? 'Analyzing...' : 'Analyze Markdown'}
-        </Button>
       </Card>
 
       {/* Analysis Output */}
       {analysis && (
-        <Card className="p-8">
-          <div className="flex items-center gap-2 mb-4 text-lg font-semibold">
-            <CheckCircle className="h-5 w-5 text-lime-600" />
-            Analysis Result
+        <Card
+          className="p-8 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="pb-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold">Result</h2>
+            </div>
           </div>
-
-          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
-            {analysis}
-          </div>
+          <div className="whitespace-pre-wrap text-lg">{analysis}</div>
         </Card>
       )}
     </div>

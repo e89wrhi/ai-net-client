@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ImageIcon, Sparkles, CheckCircle } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import ImageCaptionHeader from './image-caption-header';
 import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function ImageCaptioningClient() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -60,49 +61,63 @@ export default function ImageCaptioningClient() {
         onSessionReset={handleReset}
       />
       {/* Upload Section */}
-      <Card className="p-8 space-y-6 border-none rounded-3xl">
-        <div className="flex items-center gap-2 text-2xl font-bold">
-          <ImageIcon className="h-6 w-6" />
-          Image Caption Generator
+      <Card
+        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+      >
+        <div className="p-8">
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e.target.files?.[0] || null)}
+          />
+
+          {previewUrl && (
+            <div className="mt-4 flex justify-center">
+              <Image
+                height={400}
+                width={400}
+                src={previewUrl}
+                alt="Preview"
+                className="max-h-64 rounded-lg border"
+              />
+            </div>
+          )}
+
+          <Button
+            onClick={generateCaption}
+            disabled={!imageFile || isGenerating}
+            className="w-full mt-4 rounded-full cursor-pointer"
+          >
+            {isGenerating ? (
+              <Spinner className="h-4 w-4" />
+            ) : (
+              <Sparkles className="h-4 w-4" />
+            )}
+            {isGenerating ? 'Generating...' : 'Generate Caption'}
+          </Button>
         </div>
-
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleImageUpload(e.target.files?.[0] || null)}
-        />
-
-        {previewUrl && (
-          <div className="mt-4 flex justify-center">
-            <Image
-              height={400}
-              width={400}
-              src={previewUrl}
-              alt="Preview"
-              className="max-h-64 rounded-lg border"
-            />
-          </div>
-        )}
-
-        <Button
-          onClick={generateCaption}
-          disabled={!imageFile || isGenerating}
-          className="w-full mt-4"
-        >
-          <Sparkles className="h-4 w-4 mr-2" />
-          {isGenerating ? 'Generating...' : 'Generate Caption'}
-        </Button>
       </Card>
 
       {/* Caption Output */}
       {caption && (
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex items-center gap-2 mb-4 text-lg font-semibold">
-            <CheckCircle className="h-5 w-5 text-lime-600" />
-            Generated Caption
+        <Card
+          className="p-8 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="pb-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold">Image Caption</h2>
+            </div>
           </div>
-          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
-            {caption}
+          <div className="">
+            <div className="whitespace-pre-wrap text-sm p-4 rounded-lg">
+              {caption}
+            </div>
           </div>
         </Card>
       )}

@@ -11,10 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Image as ImageIcon, Download, RefreshCw } from 'lucide-react';
+import { Image as ImageIcon, Download, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import ImageGenHeader from './image-gen-header';
 import { toast } from 'sonner';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function ImageGenerationClient() {
   const [prompt, setPrompt] = useState('');
@@ -50,151 +51,124 @@ export default function ImageGenerationClient() {
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex items-center gap-2 mb-4">
-            <ImageIcon className="h-5 w-5 text-purple-600" />
-            <h2>Image Prompt</h2>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm mb-2 block">
-                Describe the image you want
-              </label>
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <div className="space-y-4">
               <Textarea
                 placeholder="e.g., A serene mountain landscape at sunset with vibrant colors..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[150px]"
+                className="min-h-[150px] border-none shadow-none"
               />
-            </div>
-
-            <div>
-              <label className="text-sm mb-2 block">Style</label>
-              <Select value={style} onValueChange={setStyle}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="realistic">Realistic</SelectItem>
-                  <SelectItem value="cartoon">Cartoon</SelectItem>
-                  <SelectItem value="abstract">Abstract</SelectItem>
-                  <SelectItem value="artistic">Artistic</SelectItem>
-                  <SelectItem value="anime">Anime</SelectItem>
-                  <SelectItem value="oil-painting">Oil Painting</SelectItem>
-                  <SelectItem value="watercolor">Watercolor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button
-              onClick={generateImage}
-              className="w-full"
-              disabled={isGenerating}
-            >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>Generate Image</>
-              )}
-            </Button>
-
-            <Card className="p-4">
-              <h3 className="text-sm mb-3">Example Prompts</h3>
-              <div className="space-y-2 text-sm">
-                {[
-                  'A futuristic city with flying cars at night',
-                  'Cute cat wearing sunglasses on a beach',
-                  'Abstract geometric patterns in vibrant colors',
-                  'Fantasy forest with magical creatures',
-                ].map((example, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPrompt(example)}
-                    className="block w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-                  >
-                    {example}
-                  </button>
-                ))}
+              <div className="grid grid-cols-1 gap-4 items-center md:grid-cols-2">
+                <Select value={style} onValueChange={setStyle}>
+                  <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                    <SelectItem value="realistic">Realistic</SelectItem>
+                    <SelectItem value="cartoon">Cartoon</SelectItem>
+                    <SelectItem value="abstract">Abstract</SelectItem>
+                    <SelectItem value="artistic">Artistic</SelectItem>
+                    <SelectItem value="anime">Anime</SelectItem>
+                    <SelectItem value="oil-painting">Oil Painting</SelectItem>
+                    <SelectItem value="watercolor">Watercolor</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  onClick={generateImage}
+                  className="w-full rounded-full cursor-pointer"
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? (
+                    <Spinner className="h-4 w-4" />
+                  ) : (
+                    <Sparkles className="h-4 w-4" />
+                  )}
+                  {isGenerating ? <>Generating...</> : <>Generate Image</>}
+                </Button>
               </div>
-            </Card>
-
-            <Card className="p-4">
-              <h3 className="text-sm mb-2">💡 Tips for Better Results</h3>
-              <ul className="text-sm space-y-1">
-                <li>• Be specific about colors, mood, and details</li>
-                <li>• Mention the desired composition</li>
-                <li>• Include lighting and atmosphere preferences</li>
-                <li>• Specify art style or reference artists</li>
-              </ul>
-            </Card>
+            </div>
           </div>
         </Card>
 
-        <Card className="p-8 border-none rounded-3xl">
-          <div className="flex items-center justify-between mb-4">
-            <h2>Generated Image</h2>
-            {generatedImage && (
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                Download
-              </Button>
+        <Card
+          className="p-8 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="pb-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold">Generated Image</h2>
+            </div>
+          </div>
+          <div className="">
+            <div className="flex items-center justify-between mb-4">
+              {generatedImage && (
+                <Button variant="outline" size="sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              )}
+            </div>
+
+            {generatedImage ? (
+              <div className="space-y-4">
+                <div className="rounded-lg overflow-hidden">
+                  <Image
+                    height={200}
+                    width={200}
+                    src={generatedImage}
+                    alt="Generated AI Image"
+                    className="w-full h-auto"
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                  <Card className="p-3">
+                    <div className="text-xl text-purple-600">{style}</div>
+                    <div className="text-gray-600">Style</div>
+                  </Card>
+                  <Card className="p-3">
+                    <div className="text-xl text-purple-600">1024×1024</div>
+                    <div className="text-gray-600">Resolution</div>
+                  </Card>
+                  <Card className="p-3">
+                    <div className="text-xl text-purple-600">2.1s</div>
+                    <div className="text-gray-600">Generated</div>
+                  </Card>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1">
+                    Regenerate
+                  </Button>
+                  <Button variant="outline" className="flex-1">
+                    Create Variation
+                  </Button>
+                </div>
+
+                <Card className="p-4">
+                  <h3 className="text-sm mb-2">Prompt Used</h3>
+                  <p className="text-sm text-gray-700">{prompt}</p>
+                </Card>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center min-h-[500px] text-gray-400 rounded-lg">
+                <ImageIcon className="h-16 w-16 mb-4" />
+                <p>Your generated image will appear here</p>
+                <p className="text-sm mt-2">
+                  Enter a prompt and click &quot;Generate Image&quot;
+                </p>
+              </div>
             )}
           </div>
-
-          {generatedImage ? (
-            <div className="space-y-4">
-              <div className="rounded-lg overflow-hidden border">
-                <Image
-                  height={200}
-                  width={200}
-                  src={generatedImage}
-                  alt="Generated AI Image"
-                  className="w-full h-auto"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 text-center text-sm">
-                <Card className="p-3">
-                  <div className="text-xl text-purple-600">{style}</div>
-                  <div className="text-gray-600">Style</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-xl text-purple-600">1024×1024</div>
-                  <div className="text-gray-600">Resolution</div>
-                </Card>
-                <Card className="p-3">
-                  <div className="text-xl text-purple-600">2.1s</div>
-                  <div className="text-gray-600">Generated</div>
-                </Card>
-              </div>
-
-              <div className="flex gap-2">
-                <Button variant="outline" className="flex-1">
-                  Regenerate
-                </Button>
-                <Button variant="outline" className="flex-1">
-                  Create Variation
-                </Button>
-              </div>
-
-              <Card className="p-4">
-                <h3 className="text-sm mb-2">Prompt Used</h3>
-                <p className="text-sm text-gray-700">{prompt}</p>
-              </Card>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center min-h-[500px] text-gray-400 border-2 border-dashed rounded-lg">
-              <ImageIcon className="h-16 w-16 mb-4" />
-              <p>Your generated image will appear here</p>
-              <p className="text-sm mt-2">
-                Enter a prompt and click &quot;Generate Image&quot;
-              </p>
-            </div>
-          )}
         </Card>
       </div>
     </div>

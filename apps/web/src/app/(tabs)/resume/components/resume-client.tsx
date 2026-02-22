@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Sparkles, FileText, Award } from 'lucide-react';
+import { Sparkles, Award } from 'lucide-react';
 import ResumeHeader from './resume-header';
 import { toast } from 'sonner';
 
@@ -113,109 +113,153 @@ Improvement Recommendations:
         onSessionReset={handleReset}
       />
       {/* Upload Section */}
-      <Card className="p-8 space-y-6 rounded-3xl border-none">
-        <div className="flex items-center gap-2 text-2xl font-bold">
-          <FileText className="h-6 w-6" />
-          Resume Analyzer
+      <Card
+        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+      >
+        <div className="p-8">
+          <Input
+            type="file"
+            accept=".pdf,.doc,.docx,.txt"
+            onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+          />
+
+          {uploadedFileName && (
+            <div className="text-sm text-gray-500">
+              Uploaded: {uploadedFileName}
+            </div>
+          )}
+
+          <Textarea
+            placeholder="Or paste your resume content here..."
+            value={resumeText}
+            onChange={(e) => setResumeText(e.target.value)}
+            className="min-h-[250px] border-none shadow-none"
+          />
+
+          <Button
+            onClick={analyzeResume}
+            disabled={!resumeText || isAnalyzing}
+            className="w-full cursor-pointer rounded-full"
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
+          </Button>
         </div>
-
-        <Input
-          type="file"
-          accept=".pdf,.doc,.docx,.txt"
-          onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
-        />
-
-        {uploadedFileName && (
-          <div className="text-sm text-gray-500">
-            Uploaded: {uploadedFileName}
-          </div>
-        )}
-
-        <Textarea
-          placeholder="Or paste your resume content here..."
-          value={resumeText}
-          onChange={(e) => setResumeText(e.target.value)}
-          className="min-h-[250px]"
-        />
-
-        <Button
-          onClick={analyzeResume}
-          disabled={!resumeText || isAnalyzing}
-          className="w-full"
-        >
-          <Sparkles className="h-4 w-4 mr-2" />
-          {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
-        </Button>
       </Card>
 
       {/* ATS Score */}
       {atsScore !== null && (
-        <Card className="p-6 text-center">
-          <div className="text-sm text-gray-500 mb-2">ATS Score</div>
-          <div className="text-4xl font-bold text-lime-600">{atsScore}/100</div>
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <div className="text-sm text-gray-500 mb-2">ATS Score</div>
+            <div className="text-4xl md:text-5xl font-black text-green-500">
+              {atsScore}/100
+            </div>
+          </div>
         </Card>
       )}
 
       {/* Skills */}
       {skills.length > 0 && (
-        <Card className="p-8 space-y-4">
-          <h2 className="text-xl font-semibold">Skills</h2>
-          <div className="flex flex-wrap gap-2">
-            {skills.map((skill, i) => (
-              <div key={i} className="px-3 py-1 border rounded-full text-sm">
-                {skill}
-              </div>
-            ))}
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <h2 className="text-xl font-semibold">Skills</h2>
+            <div className="flex mt-5 flex-wrap gap-2">
+              {skills.map((skill, i) => (
+                <div key={i} className="px-3 py-1 border rounded-full text-sm">
+                  {skill}
+                </div>
+              ))}
+            </div>
           </div>
         </Card>
       )}
 
       {/* Experience */}
       {experience.length > 0 && (
-        <Card className="p-8 space-y-4">
-          <h2 className="text-xl font-semibold">Experience</h2>
-          {experience.map((exp, i) => (
-            <div key={i} className="border p-4 rounded-lg text-sm">
-              {exp}
-            </div>
-          ))}
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8 space-y-5">
+            <h2 className="text-xl font-semibold">Experience</h2>
+            {experience.map((exp, i) => (
+              <div key={i} className="border p-4 rounded-2xl text-sm">
+                {exp}
+              </div>
+            ))}
+          </div>
         </Card>
       )}
 
       {/* Education */}
       {education.length > 0 && (
-        <Card className="p-8 space-y-4">
-          <h2 className="text-xl font-semibold">Education</h2>
-          {education.map((edu, i) => (
-            <div key={i} className="border p-4 rounded-lg text-sm">
-              {edu}
-            </div>
-          ))}
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8 space-y-5">
+            <h2 className="text-xl font-semibold">Education</h2>
+            {education.map((edu, i) => (
+              <div key={i} className="border p-4 rounded-2xl text-sm">
+                {edu}
+              </div>
+            ))}
+          </div>
         </Card>
       )}
 
       {/* Strengths */}
       {strengths.length > 0 && (
-        <Card className="p-8 space-y-4">
-          <h2 className="text-xl font-semibold">Strengths</h2>
-          {strengths.map((strength, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 border p-3 rounded-lg text-sm"
-            >
-              <Award className="h-4 w-4 text-lime-600" />
-              {strength}
-            </div>
-          ))}
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8 space-y-5">
+            <h2 className="text-xl font-semibold">Strengths</h2>
+            {strengths.map((strength, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 border p-3 rounded-2xl text-sm"
+              >
+                <Award className="h-4 w-4 text-green-400" />
+                {strength}
+              </div>
+            ))}
+          </div>
         </Card>
       )}
 
       {/* Detailed Analysis */}
       {analysis && (
-        <Card className="p-8">
-          <h2 className="text-xl font-semibold mb-4">Detailed Feedback</h2>
-          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
-            {analysis}
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <h2 className="text-xl font-semibold mb-4">Detailed Feedback</h2>
+            <div className="whitespace-pre-wrap text-lg">{analysis}</div>
           </div>
         </Card>
       )}

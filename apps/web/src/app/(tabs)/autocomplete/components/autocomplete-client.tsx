@@ -119,7 +119,12 @@ export default function AutocompleteClient() {
       />
 
       <div className="mt-8 relative group">
-        <Card className="p-0 border-none bg-white dark:bg-zinc-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] rounded-[2.5rem] overflow-hidden ring-1 ring-zinc-200 dark:ring-zinc-800 transition-all duration-500 hover:ring-primary/20">
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
           <div className="p-8">
             <div className="relative min-h-[400px]">
               {/* Ghost Text Overlay */}
@@ -139,7 +144,7 @@ export default function AutocompleteClient() {
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="absolute inset-0 w-full h-full p-0 text-lg border-none focus-visible:ring-0 bg-transparent resize-none leading-relaxed placeholder:text-zinc-400 z-10"
+                className="absolute shadow-none inset-0 w-full h-full p-0 text-lg border-none focus-visible:ring-0 bg-transparent resize-none leading-relaxed placeholder:text-zinc-400 z-10"
               />
             </div>
           </div>
@@ -160,7 +165,7 @@ export default function AutocompleteClient() {
                 variant="ghost"
                 size="icon"
                 onClick={handleCopy}
-                className="h-10 w-10 rounded-xl hover:bg-white dark:hover:bg-zinc-800 shadow-sm transition-all"
+                className="h-10 w-10 rounded-full hover:bg-white dark:hover:bg-zinc-800 shadow-sm transition-all"
               >
                 {isCopied ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -172,13 +177,13 @@ export default function AutocompleteClient() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMessageText('')}
-                className="h-10 w-10 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-500 transition-all"
+                className="h-10 w-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-500 transition-all"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
               <Button
                 onClick={() => generateLiveSuggestion(messageText)}
-                className="rounded-xl px-5 gap-2 shadow-lg shadow-primary/20 ml-2"
+                className="rounded-full px-5 gap-2 shadow-lg shadow-primary/20 ml-2"
               >
                 <Sparkles className="h-4 w-4" />
                 <span>AI completion</span>

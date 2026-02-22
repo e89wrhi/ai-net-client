@@ -21,7 +21,6 @@ import {
   Copy,
   ExternalLink,
   Zap,
-  Clock,
   BarChart3,
   Check,
 } from 'lucide-react';
@@ -152,14 +151,19 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
       <div className="grid gap-8 lg:grid-cols-12 mt-4">
         {/* Left Column: Input & Configuration */}
         <div className="lg:col-span-5 space-y-6">
-          <Card className="p-1 border-none bg-white/50 dark:bg-zinc-900/50 backdrop-blur-xl shadow-2xl rounded-[2rem] ring-1 ring-zinc-200 dark:ring-zinc-800">
+          <Card
+            className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+          >
             <Tabs
               value={inputMethod}
               onValueChange={setInputMethod}
               className="w-full"
             >
               <div className="px-6 pt-6">
-                <TabsList className="grid w-full grid-cols-3 bg-zinc-100 dark:bg-zinc-800 p-1 rounded-2xl h-12">
+                <TabsList className="grid w-full grid-cols-3 bg-transparent rounded-2xl h-13">
                   <TabsTrigger
                     value="text"
                     className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm"
@@ -242,17 +246,13 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
             </Tabs>
 
             <div className="px-6 pb-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-2">
-                    <Zap className="h-3 w-3 text-yellow-500" />
-                    Style
-                  </label>
                   <Select value={summaryType} onValueChange={setSummaryType}>
-                    <SelectTrigger className="rounded-xl border-zinc-200 dark:border-zinc-700">
+                    <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-700">
+                    <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
                       <SelectItem value="paragraph" className="rounded-lg">
                         Paragraph
                       </SelectItem>
@@ -270,15 +270,11 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 flex items-center gap-2">
-                    <Clock className="h-3 w-3 text-blue-500" />
-                    Length
-                  </label>
                   <Select value={length} onValueChange={setLength}>
-                    <SelectTrigger className="rounded-xl border-zinc-200 dark:border-zinc-700">
+                    <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-700">
+                    <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
                       <SelectItem value="short" className="rounded-lg">
                         Short
                       </SelectItem>
@@ -291,35 +287,33 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-
-              <Button
-                onClick={generateSummary}
-                className="w-full h-14 rounded-2xl gap-2 text-lg font-bold shadow-xl shadow-primary/20 relative overflow-hidden group"
-                disabled={isPending || !inputText.trim()}
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 opacity-90 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10 flex items-center gap-2">
+                <Button
+                  onClick={generateSummary}
+                  className="w-full rounded-full gap-2"
+                  disabled={isPending || !inputText.trim()}
+                >
                   {isPending ? (
-                    <Sparkles className="h-5 w-5 animate-pulse" />
+                    <Sparkles className="h-4 w-4" />
                   ) : (
-                    <Sparkles className="h-5 w-5 group-hover:rotate-12 transition-transform" />
+                    <Sparkles className="h-4 w-4" />
                   )}
-                  {isPending ? 'Crafting Summary...' : 'Summarize Document'}
-                </div>
-              </Button>
+                  {isPending ? 'Crafting...' : 'Summarize'}
+                </Button>
+              </div>
             </div>
           </Card>
         </div>
 
         {/* Right Column: Output */}
         <div className="lg:col-span-7 space-y-6">
-          <Card className="min-h-[600px] border-none bg-white dark:bg-zinc-900 shadow-2xl rounded-[2rem] flex flex-col ring-1 ring-zinc-200 dark:ring-zinc-800">
-            <div className="p-8 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+          <Card
+            className="min-h-[600px] p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+          >
+            <div className="p-8 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-primary/10 p-2 rounded-xl">
-                  <FileText className="h-6 w-6 text-primary" />
-                </div>
                 <h2 className="text-xl font-bold">Summary Output</h2>
               </div>
 

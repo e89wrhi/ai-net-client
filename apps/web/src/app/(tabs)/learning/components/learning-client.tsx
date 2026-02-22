@@ -12,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { Check, Sparkles, BookOpen, HelpCircle } from 'lucide-react';
+import { Check, Sparkles, HelpCircle } from 'lucide-react';
 import { useStreamLesson } from '@/lib/api/learning/stream-lesson';
 import { DifficultyLevel, LearningMode } from '@/types/enums/learn';
 import LearningHeader from './learning-header';
@@ -169,136 +169,157 @@ This concept relates to the core principles of ${
         onSessionReset={handleReset}
       />
       {/* Lesson Generator */}
-      <Card className="p-8 border-none rounded-3xl space-y-6">
-        <div className="flex items-center gap-2 text-2xl font-bold">
-          <BookOpen className="h-6 w-6" />
-          Lesson Generator
+      <Card
+        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+      >
+        <div className="p-8">
+          <div className="space-y-4">
+            <div>
+              <Input
+                placeholder="Enter topic (e.g., Photosynthesis)"
+                value={topic}
+                className="min-h-[100px] border-none shadow-none bg-none"
+                onChange={(e) => setTopic(e.target.value)}
+              />
+            </div>
+
+            <div className="items-center grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Select
+                value={difficulty}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onValueChange={(v: any) => setDifficulty(v)}
+              >
+                <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                onClick={generateLesson}
+                className="w-full rounded-full cursor-pointer"
+                disabled={isPending}
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                {isPending ? 'Generating Lesson...' : 'Generate Lesson'}
+              </Button>
+            </div>
+          </div>
+
+          {lesson && (
+            <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg bg-muted">
+              {lesson}
+            </div>
+          )}
         </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm mb-2 block">Topic</label>
-            <Input
-              placeholder="Enter topic (e.g., Photosynthesis)"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="text-sm mb-2 block">Difficulty</label>
-            <Select
-              value={difficulty}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              onValueChange={(v: any) => setDifficulty(v)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <Button
-            onClick={generateLesson}
-            className="w-full"
-            disabled={isPending}
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            {isPending ? 'Generating Lesson...' : 'Generate Lesson'}
-          </Button>
-        </div>
-
-        {lesson && (
-          <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg bg-muted">
-            {lesson}
-          </div>
-        )}
       </Card>
 
       {/* Student Submission */}
       {lesson && (
-        <Card className="p-8 space-y-6 border-none rounded-3xl">
-          <h2 className="text-xl font-semibold">Submit Your Answer</h2>
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <h2 className="text-xl font-semibold">Submit Your Answer</h2>
 
-          <Textarea
-            placeholder="Write your explanation here..."
-            value={studentAnswer}
-            onChange={(e) => setStudentAnswer(e.target.value)}
-            className="min-h-[150px]"
-          />
+            <Textarea
+              placeholder="Write your explanation here..."
+              value={studentAnswer}
+              onChange={(e) => setStudentAnswer(e.target.value)}
+              className="min-h-[150px]"
+            />
 
-          <div className="flex gap-4">
-            <Button onClick={submitAnswer} className="flex-1">
-              <Check className="h-4 w-4 mr-2" />
-              Submit Answer
-            </Button>
+            <div className="flex gap-4">
+              <Button onClick={submitAnswer} className="flex-1">
+                <Check className="h-4 w-4 mr-2" />
+                Submit Answer
+              </Button>
 
-            <Button variant="outline" onClick={generateHints}>
-              <HelpCircle className="h-4 w-4 mr-2" />
-              Get Hints
-            </Button>
+              <Button variant="outline" onClick={generateHints}>
+                <HelpCircle className="h-4 w-4 mr-2" />
+                Get Hints
+              </Button>
+            </div>
+
+            {showHints && (
+              <div className="bg-blue-50 border p-4 rounded-lg text-sm">
+                {hints.map((hint, i) => (
+                  <div key={i}>• {hint}</div>
+                ))}
+              </div>
+            )}
+
+            {feedback && (
+              <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
+                {feedback}
+              </div>
+            )}
+
+            {score !== null && (
+              <div className="text-center text-3xl font-bold text-lime-600">
+                {score}/100
+              </div>
+            )}
           </div>
-
-          {showHints && (
-            <div className="bg-blue-50 border p-4 rounded-lg text-sm">
-              {hints.map((hint, i) => (
-                <div key={i}>• {hint}</div>
-              ))}
-            </div>
-          )}
-
-          {feedback && (
-            <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
-              {feedback}
-            </div>
-          )}
-
-          {score !== null && (
-            <div className="text-center text-3xl font-bold text-lime-600">
-              {score}/100
-            </div>
-          )}
         </Card>
       )}
 
       {/* Ask AI */}
-      <Card className="p-8 space-y-4 rounded-3xl border-none">
-        <div className="text-xl font-semibold">Ask a Question</div>
+      <Card
+        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+      >
+        <div className="p-8">
+          <div className="text-xl font-semibold">Ask a Question</div>
 
-        <Textarea
-          placeholder="Ask anything about the topic..."
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          className="min-h-[100px]"
-        />
+          <Textarea
+            placeholder="Ask anything about the topic..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className="min-h-[100px]"
+          />
 
-        <Button onClick={askAI} className="w-full">
-          Ask AI
-        </Button>
+          <Button onClick={askAI} className="w-full">
+            Ask AI
+          </Button>
+        </div>
       </Card>
 
       {/* Progress Dashboard */}
-      <Card className="p-8 space-y-4 text-center border-none rounded-3xl">
-        <h3 className="text-lg font-semibold">Progress Dashboard</h3>
+      <Card
+        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+      >
+        <div className="p-8">
+          <h3 className="text-lg font-semibold">Progress Dashboard</h3>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <div className="text-3xl font-bold text-lime-600">
-              {completedLessons}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="text-3xl font-bold text-lime-600">
+                {completedLessons}
+              </div>
+              <div className="text-sm text-gray-500">Lessons Completed</div>
             </div>
-            <div className="text-sm text-gray-500">Lessons Completed</div>
-          </div>
 
-          <div>
-            <div className="text-3xl font-bold text-lime-600">
-              {averageScore}%
+            <div>
+              <div className="text-3xl font-bold text-lime-600">
+                {averageScore}%
+              </div>
+              <div className="text-sm text-gray-500">Average Score</div>
             </div>
-            <div className="text-sm text-gray-500">Average Score</div>
           </div>
         </div>
       </Card>

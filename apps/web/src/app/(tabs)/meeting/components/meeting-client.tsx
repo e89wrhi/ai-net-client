@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Check, FileAudio, Sparkles, ClipboardList } from 'lucide-react';
+import { Check, Sparkles, ClipboardList } from 'lucide-react';
 import { useStreamMeetingAnalysis } from '@/lib/api/meeting/stream-meeting-analysis';
 import MeetingHeader from './meeting-header';
 import { toast } from 'sonner';
@@ -100,50 +100,62 @@ Speaker 2: I'll handle the campaign updates.
       />
       <div className="space-y-8">
         {/* Upload Section */}
-        <Card className="p-8 space-y-6 border-none rounded-3xl">
-          <div className="flex items-center gap-2 text-2xl font-bold">
-            <FileAudio className="h-6 w-6" />
-            Meeting Analyzer
-          </div>
+        <Card
+          className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+        >
+          <div className="p-8">
+            <div className="space-y-4">
+              <Input
+                type="file"
+                accept="audio/*"
+                onChange={(e) => handleAudioUpload(e.target.files?.[0] || null)}
+              />
 
-          <div className="space-y-4">
-            <Input
-              type="file"
-              accept="audio/*"
-              onChange={(e) => handleAudioUpload(e.target.files?.[0] || null)}
-            />
+              {audioFile && (
+                <div className="text-sm text-gray-600">
+                  File: {audioFile.name}
+                  {duration && <div>Estimated Duration: {duration} min</div>}
+                </div>
+              )}
 
-            {audioFile && (
-              <div className="text-sm text-gray-600">
-                File: {audioFile.name}
-                {duration && <div>Estimated Duration: {duration} min</div>}
-              </div>
-            )}
-
-            <Button
-              onClick={generateTranscript}
-              disabled={!audioFile || isProcessing}
-              className="w-full"
-            >
-              <Sparkles className="h-4 w-4 mr-2" />
-              {isProcessing ? 'Processing...' : 'Generate Transcript'}
-            </Button>
+              <Button
+                onClick={generateTranscript}
+                disabled={!audioFile || isProcessing}
+                className="w-full cursor-pointer rounded-full"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                {isProcessing ? 'Processing...' : 'Generate Transcript'}
+              </Button>
+            </div>
           </div>
         </Card>
 
         {/* Transcript Section */}
         {transcript && (
-          <Card className="p-8 space-y-4 border-none rounded-3xl">
-            <h2 className="text-xl font-semibold">Transcript</h2>
+          <Card
+            className="p-8 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+                     rounded-[2.5rem] overflow-hidden 
+                     ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
+                     duration-500 hover:ring-primary/20"
+          >
+            <div className="pb-6 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold">Transcript</h2>
+              </div>
+            </div>
+            <div className="">
+              <Textarea
+                value={transcript}
+                onChange={(e) => setTranscript(e.target.value)}
+                className="min-h-[200px] border-none shadow-none"
+              />
 
-            <Textarea
-              value={transcript}
-              onChange={(e) => setTranscript(e.target.value)}
-              className="min-h-[200px]"
-            />
-
-            <div className="text-sm text-gray-500">
-              Word Count: {transcript.split(' ').filter(Boolean).length}
+              <div className="text-sm text-gray-500">
+                Word Count: {transcript.split(' ').filter(Boolean).length}
+              </div>
             </div>
           </Card>
         )}
@@ -151,34 +163,36 @@ Speaker 2: I'll handle the campaign updates.
         {/* Summary Section */}
         {summary && (
           <Card className="p-8 space-y-6">
-            <h2 className="text-xl font-semibold">Meeting Summary</h2>
+            <div className="p-8">
+              <h2 className="text-xl font-semibold">Meeting Summary</h2>
 
-            <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
-              {summary}
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 mb-3 font-semibold">
-                <ClipboardList className="h-5 w-5" />
-                Action Items
+              <div className="whitespace-pre-wrap text-sm border p-4 rounded-lg">
+                {summary}
               </div>
 
-              <div className="space-y-2">
-                {actionItems.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 text-sm border p-3 rounded-lg"
-                  >
-                    <Check className="h-4 w-4 text-lime-600" />
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
+              <div>
+                <div className="flex items-center gap-2 mb-3 font-semibold">
+                  <ClipboardList className="h-5 w-5" />
+                  Action Items
+                </div>
 
-            <Button onClick={exportReport} className="w-full">
-              Export Report
-            </Button>
+                <div className="space-y-2">
+                  {actionItems.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 text-sm border p-3 rounded-lg"
+                    >
+                      <Check className="h-4 w-4 text-lime-600" />
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Button onClick={exportReport} className="w-full">
+                Export Report
+              </Button>
+            </div>
           </Card>
         )}
       </div>
