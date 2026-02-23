@@ -25,6 +25,7 @@ export default function CodeGenerationClient() {
   const [verbosity, setVerbosity] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -153,6 +154,8 @@ int main() {
       <CodeGenHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

@@ -13,6 +13,7 @@ export default function SimpleMDClient() {
   const [mdFile, setMdFile] = useState<File | null>(null);
   const [mdContent, setMdContent] = useState('');
   const [analysis, setAnalysis] = useState('');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
@@ -83,6 +84,8 @@ Suggestions:
       <SimpleMDHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
       {/* Upload Section */}

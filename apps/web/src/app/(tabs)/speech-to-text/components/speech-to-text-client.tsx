@@ -22,6 +22,7 @@ export default function SpeechToTextClient() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');
   const [language, setLanguage] = useState('auto');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [recordingTime, setRecordingTime] = useState(0);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
@@ -86,6 +87,8 @@ export default function SpeechToTextClient() {
       <SpeechToTextHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

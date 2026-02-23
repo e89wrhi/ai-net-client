@@ -3,18 +3,23 @@ import { resumeLink, resumeWhy } from '../../_components/data/resume';
 import WhyDrawer from '../../_components/why-drawer';
 import { ResumeOptions } from './resume-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import OutputTypePicker from '@/components/shared/output-type-picker';
 import { ModelSelector } from '../../_components/model-selector';
 
 interface ResumeHeaderProps {
   selectedModel: string | null;
   onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
+  responseType: 'stream' | 'json';
+  onResponseTypeChange: (type: 'stream' | 'json') => void;
 }
 
 export default function ResumeHeader({
   selectedModel,
   onSessionReset,
   onModelChange,
+  responseType,
+  onResponseTypeChange,
 }: ResumeHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
@@ -39,6 +44,11 @@ export default function ResumeHeader({
           onValueChange={onModelChange}
           className="w-[200px]"
         />
+        <OutputTypePicker
+          type={responseType}
+          onChange={(value) => onResponseTypeChange(value as 'stream' | 'json')}
+        />
+
         <WhyDrawer title="resume" link={resumeLink} items={resumeWhy} />
         <ResumeOptions onSessionReset={onSessionReset} link={resumeLink} />
       </div>

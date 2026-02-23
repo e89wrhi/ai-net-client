@@ -27,6 +27,7 @@ export default function LearningClient() {
   const [lesson, setLesson] = useState('');
   const [studentAnswer, setStudentAnswer] = useState('');
   const [question, setQuestion] = useState('');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
 
   const [feedback, setFeedback] = useState('');
   const [score, setScore] = useState<number | null>(null);
@@ -166,6 +167,8 @@ This concept relates to the core principles of ${
       <LearningHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
       {/* Lesson Generator */}

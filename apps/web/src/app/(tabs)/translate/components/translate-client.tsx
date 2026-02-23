@@ -38,6 +38,7 @@ export default function TranslationClient() {
   const [translatedText, setTranslatedText] = useState('');
   const [sourceLang, setSourceLang] = useState('auto');
   const [targetLang, setTargetLang] = useState('es');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [detectedLang, setDetectedLang] = useState('');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -87,6 +88,8 @@ export default function TranslationClient() {
       <TranslateHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

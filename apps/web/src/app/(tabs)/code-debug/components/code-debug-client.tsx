@@ -24,6 +24,7 @@ export default function CodeDebugClient() {
   const [language, setLanguage] = useState('python');
   const [analysisType, setAnalysisType] = useState('explain');
   const [result, setResult] = useState('');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const { mutateAsync: streamAnalyze, isPending } = useStreamAnalyzeCode();
@@ -81,6 +82,8 @@ export default function CodeDebugClient() {
       <CodeDebugHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

@@ -3,18 +3,23 @@ import { translateLink, translateWhy } from '../../_components/data/translate';
 import WhyDrawer from '../../_components/why-drawer';
 import { TranslateOptions } from './translate-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import OutputTypePicker from '@/components/shared/output-type-picker';
 import { ModelSelector } from '../../_components/model-selector';
 
 interface TranslateHeaderProps {
   selectedModel: string | null;
   onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
+  responseType: 'stream' | 'json';
+  onResponseTypeChange: (type: 'stream' | 'json') => void;
 }
 
 export default function TranslateHeader({
   selectedModel,
   onSessionReset,
   onModelChange,
+  responseType,
+  onResponseTypeChange,
 }: TranslateHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center">
@@ -38,6 +43,11 @@ export default function TranslateHeader({
           value={selectedModel}
           onValueChange={onModelChange}
           className="w-[200px]"
+        />
+
+        <OutputTypePicker
+          type={responseType}
+          onChange={(value) => onResponseTypeChange(value as 'stream' | 'json')}
         />
 
         <WhyDrawer

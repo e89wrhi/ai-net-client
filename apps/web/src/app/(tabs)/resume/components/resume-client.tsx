@@ -13,6 +13,7 @@ export default function ResumeClient() {
   const [resumeText, setResumeText] = useState('');
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [analysis, setAnalysis] = useState('');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [skills, setSkills] = useState<string[]>([]);
   const [experience, setExperience] = useState<string[]>([]);
   const [education, setEducation] = useState<string[]>([]);
@@ -110,6 +111,8 @@ Improvement Recommendations:
       <ResumeHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
       {/* Upload Section */}

@@ -29,6 +29,7 @@ export default function TextGenerationClient() {
   ]);
   const [activeTab, setActiveTab] = useState('1');
   const [input, setInput] = useState('');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const addTab = () => {
@@ -120,6 +121,8 @@ export default function TextGenerationClient() {
       <TextGenHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

@@ -32,7 +32,7 @@ export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
       >
         <SelectValue placeholder="Select AI Model" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="rounded-2xl border-none shadow-lg p-1">
         {AI_MODELS.map((model) => (
           <SelectItem key={model.id ?? 'auto'} value={model.id ?? 'auto'}>
             {model.name}

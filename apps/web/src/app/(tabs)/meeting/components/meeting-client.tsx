@@ -14,6 +14,7 @@ export default function MeetingClient() {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [transcript, setTranscript] = useState('');
   const [summary, setSummary] = useState('');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [actionItems, setActionItems] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
@@ -96,6 +97,8 @@ Speaker 2: I'll handle the campaign updates.
       <MeetingHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
       <div className="space-y-8">

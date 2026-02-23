@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Trash2, Copy, Check, Command } from 'lucide-react';
 import { useStreamAutoComplete } from '@/lib/api/autocomplete/generate-stream';
+import { useGenerateAutoComplete } from '@/lib/api/autocomplete/generate';
 import { CompletionMode } from '@/types/enums/autocomplete';
 import AutocompleteHeader from './autocomplete-header';
 import { toast } from 'sonner';
@@ -14,9 +15,11 @@ export default function AutocompleteClient() {
   const [messageText, setMessageText] = useState('');
   const [suggestion, setSuggestion] = useState('');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [isCopied, setIsCopied] = useState(false);
 
   const { mutateAsync: streamComplete } = useStreamAutoComplete();
+  const { mutateAsync: jsonComplete } = useGenerateAutoComplete();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Toggle this to switch between mock and real API
@@ -63,16 +66,41 @@ export default function AutocompleteClient() {
     try {
       setSuggestion('');
 
-      const stream = USE_MOCK
-        ? mockStreamAutoComplete(prompt)
-        : await streamComplete({
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockStreamAutoComplete(prompt)
+          : await streamComplete({
+              Prompt: prompt,
+              Mode: CompletionMode.Inline,
+              ModelId: selectedModel,
+            });
+
+        for await (const chunk of stream) {
+          setSuggestion((prev) => prev + chunk);
+        }
+      } else {
+        // JSON implementation
+        if (USE_MOCK) {
+          // Simple mock for JSON
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const mockItems = [
+            ' and let me know what you think.',
+            ', I hope this helps!',
+            ' is exactly what we were looking for.',
+          ];
+          setSuggestion(
+            mockItems[Math.floor(Math.random() * mockItems.length)] || ''
+          );
+        } else {
+          const response = await jsonComplete({
             Prompt: prompt,
             Mode: CompletionMode.Inline,
             ModelId: selectedModel,
           });
-
-      for await (const chunk of stream) {
-        setSuggestion((prev) => prev + chunk);
+          if (response?.Completion) {
+            setSuggestion(response.Completion);
+          }
+        }
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -115,6 +143,8 @@ export default function AutocompleteClient() {
       <AutocompleteHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

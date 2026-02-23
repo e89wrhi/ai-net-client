@@ -33,6 +33,7 @@ export default function QuestionAnswerClient() {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [inputMethod, setInputMethod] = useState('text');
   const [isCopied, setIsCopied] = useState(false);
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [isGenerating, setIsGenerating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -127,6 +128,8 @@ If you have a more specific scenario or a document you'd like me to analyze in t
       <QuestionHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

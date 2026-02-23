@@ -20,6 +20,7 @@ export default function SimplePluginClient() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [toolLog, setToolLog] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   // -------------------------
@@ -75,6 +76,8 @@ export default function SimplePluginClient() {
       <SimplePluginHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 

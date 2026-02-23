@@ -37,6 +37,7 @@ export default function SummarizationClient() {
   const [inputMethod, setInputMethod] = useState('text');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [url, setUrl] = useState('');
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [isCopied, setIsCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -145,6 +146,8 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
       <SummaryHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 
