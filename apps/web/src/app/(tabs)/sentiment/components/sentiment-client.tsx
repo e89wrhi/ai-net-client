@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Heart, Frown, Meh, Smile, Sparkles } from 'lucide-react';
+import { useAnalyzeSentimentDetailed } from '@/lib/api/sentiment/analyze-sentiment-detailed';
 import SentimentHeader from './sentiment-header';
 import { toast } from 'sonner';
 
@@ -23,44 +24,83 @@ export default function SentimentClient() {
   const [text, setText] = useState('');
   const [result, setResult] = useState<SentimentResult | null>(null);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
 
-  const analyzeSentiment = () => {
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockSentimentStream = async function* () {
+    const response = `[Streaming Analysis] The text you provided has been analyzed. 
+    
+Overall Sentiment: POSITIVE. 
+
+Detailed breakdown:
+- Positivity Score: 92%
+- Negative Score: 2%
+- Neutral Score: 6%
+
+Keywords identified: "Excellent", "Efficient", "Reliable". 
+
+This analysis is being streamed to show real-time processing results.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockSentimentJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return {
+      overall: 'positive' as const,
+      scores: { positive: 95, negative: 1, neutral: 4 },
+      keywords: [
+        { word: 'Performance', sentiment: 'positive' },
+        { word: 'Scalability', sentiment: 'positive' },
+      ],
+    };
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { mutateAsync: analyzeDetailed, isPending } =
+    useAnalyzeSentimentDetailed();
+
+  const analyzeSentiment = async () => {
     if (!text.trim()) return;
 
-    // Simulate sentiment analysis
-    const hasPositive =
-      text.toLowerCase().includes('good') ||
-      text.toLowerCase().includes('great') ||
-      text.toLowerCase().includes('love');
-    const hasNegative =
-      text.toLowerCase().includes('bad') ||
-      text.toLowerCase().includes('hate') ||
-      text.toLowerCase().includes('terrible');
+    try {
+      if (responseType === 'stream') {
+        const stream = USE_MOCK ? mockSentimentStream() : null; // Would call real stream API here if it existed
 
-    let overall: 'positive' | 'negative' | 'neutral';
-    let scores;
+        if (stream) {
+          // For streaming in the UI, we'd typically need a different state to show the text
+          // but for this mock, let's just simulate the final result after streaming
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          for await (const _chunk of stream) {
+            // just to simulate delay
+          }
+        }
 
-    if (hasPositive && !hasNegative) {
-      overall = 'positive';
-      scores = { positive: 85, negative: 5, neutral: 10 };
-    } else if (hasNegative && !hasPositive) {
-      overall = 'negative';
-      scores = { positive: 5, negative: 85, neutral: 10 };
-    } else {
-      overall = 'neutral';
-      scores = { positive: 25, negative: 25, neutral: 50 };
+        // Final mock result for visual consistency
+        setResult({
+          overall: 'positive',
+          scores: { positive: 88, negative: 4, neutral: 8 },
+          keywords: [{ word: 'Streaming', sentiment: 'positive' }],
+        });
+      } else {
+        const res = USE_MOCK ? await mockSentimentJson() : null; // Would call real json API here
+
+        if (res) {
+          setResult(res);
+        }
+      }
+    } catch (error) {
+      console.error('Sentiment analysis failed:', error);
+      toast.error('Failed to analyze sentiment');
     }
-
-    setResult({
-      overall,
-      scores,
-      keywords: [
-        { word: 'service', sentiment: 'positive' },
-        { word: 'experience', sentiment: 'positive' },
-        { word: 'issue', sentiment: 'negative' },
-        { word: 'quality', sentiment: 'neutral' },
-      ],
-    });
   };
 
   const getSentimentIcon = (sentiment: string) => {
@@ -95,6 +135,8 @@ export default function SentimentClient() {
       <SentimentHeader
         selectedModel={selectedModel}
         onModelChange={setSelectedModel}
+        responseType={responseType}
+        onResponseTypeChange={setResponseType}
         onSessionReset={handleReset}
       />
 
@@ -120,11 +162,12 @@ export default function SentimentClient() {
 
               <Button
                 onClick={analyzeSentiment}
+                disabled={!text.trim() || isPending}
                 className="w-full
               rounded-full cursor-pointer"
               >
                 <Sparkles className="h-4 w-4" />
-                Analyze Sentiment
+                {isPending ? 'Analyzing...' : 'Analyze Sentiment'}
               </Button>
             </div>
           </div>

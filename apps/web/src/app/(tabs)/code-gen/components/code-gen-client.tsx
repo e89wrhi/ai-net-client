@@ -14,6 +14,7 @@ import {
 import { Copy, Check, Sparkles } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { useStreamGenerateCode } from '@/lib/api/code-gen/stream-generate';
+import { useGenerateCode } from '@/lib/api/code-gen/generate';
 import { CodeQualityLevel, CodeStyle } from '@/types/enums/code-gen';
 import CodeGenHeader from './code-gen-header';
 import { toast } from 'sonner';
@@ -27,6 +28,42 @@ export default function CodeGenerationClient() {
   const [copied, setCopied] = useState(false);
   const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockCodeGenStream = async function* (lang: string) {
+    const response = `[Streaming Generation] Generating ${lang} code for your request...
+
+def process_data(data):
+    # This is a sample function generated via streaming
+    results = []
+    for item in data:
+        if item.is_valid():
+            results.append(item.value * 2)
+    return results
+
+# Process and output
+data = [Item(1), Item(2), Item(invalid)]
+print(process_data(data))`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockCodeGenJson = async (lang: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response Generation] Completed ${lang} code generation. 
+    
+function helloWorld() {
+  console.log("Hello from JSON return!");
+}`;
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const codeExamples = {
@@ -113,7 +150,12 @@ int main() {
 }`,
   };
 
-  const { mutateAsync: streamGenerate, isPending } = useStreamGenerateCode();
+  const { mutateAsync: streamGenerate, isPending: isStreamPending } =
+    useStreamGenerateCode();
+  const { mutateAsync: jsonGenerate, isPending: isJsonPending } =
+    useGenerateCode();
+
+  const isPending = isStreamPending || isJsonPending;
 
   const generateCode = async () => {
     if (!prompt.trim()) return;
@@ -121,18 +163,39 @@ int main() {
     setGeneratedCode('');
 
     try {
-      const stream = await streamGenerate({
-        UserId: 'user-1', // Placeholder
-        Prompt: prompt,
-        Language: language,
-        Quality: CodeQualityLevel.ProductionReady,
-        Style: verbosity ? CodeStyle.Standard : CodeStyle.Minimal,
-        IncludeComments: verbosity,
-        ModelId: selectedModel,
-      });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockCodeGenStream(language)
+          : await streamGenerate({
+              UserId: 'user-1', // Placeholder
+              Prompt: prompt,
+              Language: language,
+              Quality: CodeQualityLevel.ProductionReady,
+              Style: verbosity ? CodeStyle.Standard : CodeStyle.Minimal,
+              IncludeComments: verbosity,
+              ModelId: selectedModel,
+            });
 
-      for await (const chunk of stream) {
-        setGeneratedCode((prev) => prev + chunk);
+        for await (const chunk of stream) {
+          setGeneratedCode((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockCodeGenJson(language)
+          : (
+              await jsonGenerate({
+                Prompt: prompt,
+                Language: language,
+                Quality: CodeQualityLevel.ProductionReady,
+                Style: verbosity ? CodeStyle.Standard : CodeStyle.Minimal,
+                IncludeComments: verbosity,
+                ModelId: selectedModel,
+              })
+            )?.Code;
+
+        if (result) {
+          setGeneratedCode(result);
+        }
       }
     } catch (error) {
       console.error('Code generation failed:', error);

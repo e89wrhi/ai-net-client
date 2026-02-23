@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Check, Sparkles, HelpCircle } from 'lucide-react';
 import { useStreamLesson } from '@/lib/api/learning/stream-lesson';
+import { useGenerateLesson } from '@/lib/api/learning/generate-lesson';
 import { DifficultyLevel, LearningMode } from '@/types/enums/learn';
 import LearningHeader from './learning-header';
 import { toast } from 'sonner';
@@ -39,13 +40,47 @@ export default function LearningClient() {
   const [completedLessons, setCompletedLessons] = useState(0);
   const [averageScore, setAverageScore] = useState(0);
 
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockLessonStream = async function* (topic: string) {
+    const response = `[Streaming Lesson] Today we are learning about ${topic}. 
+
+1. Introduction: ${topic} is a fundamental concept in this field. 
+2. Core Principle: It works by integrating several key components into a unified system.
+3. Real-world Application: You can see this in action everywhere from small startups to global enterprises.
+4. Summary: Understanding this will provide a solid base for advanced studies.
+
+This content is being generated via AI streaming for a better learning experience.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockLessonJson = async (topic: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response Lesson] Completed lesson generation for ${topic}. 
+
+Key takeaway: Mastery requires both theory and practice.`;
+  };
+
   // ---------------------------
   // Lesson Generator
   // ---------------------------
   // ---------------------------
   // Lesson Generator
   // ---------------------------
-  const { mutateAsync: streamLesson, isPending } = useStreamLesson();
+  const { mutateAsync: streamLesson, isPending: isStreamPending } =
+    useStreamLesson();
+  const { mutateAsync: jsonLesson, isPending: isJsonPending } =
+    useGenerateLesson();
+
+  const isPending = isStreamPending || isJsonPending;
 
   const generateLesson = async () => {
     if (!topic) return;
@@ -60,16 +95,35 @@ export default function LearningClient() {
     if (difficulty === 'advanced') diffLevel = DifficultyLevel.Hard;
 
     try {
-      const stream = await streamLesson({
-        UserId: 'user-1', // Placeholder
-        Topic: topic,
-        Mode: LearningMode.Guided,
-        DifficultyLevel: diffLevel,
-        ModelId: selectedModel,
-      });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockLessonStream(topic)
+          : await streamLesson({
+              UserId: 'user-1', // Placeholder
+              Topic: topic,
+              Mode: LearningMode.Guided,
+              DifficultyLevel: diffLevel,
+              ModelId: selectedModel,
+            });
 
-      for await (const chunk of stream) {
-        setLesson((prev) => prev + chunk);
+        for await (const chunk of stream) {
+          setLesson((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockLessonJson(topic)
+          : (
+              await jsonLesson({
+                Topic: topic,
+                Mode: LearningMode.Guided,
+                DifficultyLevel: diffLevel,
+                ModelId: selectedModel,
+              })
+            )?.Content;
+
+        if (result) {
+          setLesson(result);
+        }
       }
     } catch (error) {
       console.error('Lesson generation failed:', error);

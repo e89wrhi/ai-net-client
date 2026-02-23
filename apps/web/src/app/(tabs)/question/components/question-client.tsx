@@ -59,6 +59,17 @@ If you have a more specific scenario or a document you'd like me to analyze in t
     }
   };
 
+  const mockAnswerJson = async (q: string, ctx?: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return ctx
+      ? `[JSON Response] Based on the context provided, here's the answer to your question: "${q}". 
+
+The document details how the current architecture supports high-concurrency requests by utilizing a distributed caching layer. It specifically mentions that latency is reduced by nearly 30% when the edge-compute nodes are active.`
+      : `[JSON Response] That's an interesting question about "${q}". 
+
+In general terms, this topic involves understanding the intersection of machine learning and large-scale data processing. Most modern implementations focus on three core pillars: data integrity, model robustness, and ethical alignment.`;
+  };
+
   const askQuestion = async () => {
     if (!question.trim()) {
       toast.error('Please enter a question');
@@ -69,22 +80,35 @@ If you have a more specific scenario or a document you'd like me to analyze in t
     setCurrentAnswer('');
 
     try {
-      let fullAnswer = '';
-      const stream = mockAnswerStream(question, context);
+      if (responseType === 'stream') {
+        let fullAnswer = '';
+        const stream = mockAnswerStream(question, context);
 
-      for await (const chunk of stream) {
-        fullAnswer += chunk;
-        setCurrentAnswer(fullAnswer);
+        for await (const chunk of stream) {
+          fullAnswer += chunk;
+          setCurrentAnswer(fullAnswer);
+        }
+
+        const newEntry = {
+          question,
+          answer: fullAnswer,
+          timestamp: new Date(),
+          context: context || undefined,
+        };
+        setHistory([newEntry, ...history]);
+      } else {
+        const answer = await mockAnswerJson(question, context);
+        setCurrentAnswer(answer);
+
+        const newEntry = {
+          question,
+          answer: answer,
+          timestamp: new Date(),
+          context: context || undefined,
+        };
+        setHistory([newEntry, ...history]);
       }
 
-      const newEntry = {
-        question,
-        answer: fullAnswer,
-        timestamp: new Date(),
-        context: context || undefined,
-      };
-
-      setHistory([newEntry, ...history]);
       toast.success('Answer generated');
     } catch (error) {
       console.error('Q&A failed:', error);

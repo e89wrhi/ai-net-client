@@ -14,6 +14,7 @@ import {
 import { Mic, Upload, Square } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useStreamTranscribeAudio } from '@/lib/api/speech-to-text/stream-transcribe-audio';
+import { useTranscribeAudio } from '@/lib/api/speech-to-text/transcribe-audio';
 import { SpeechToTextDetailLevel } from '@/types/enums/speechtotext';
 import SpeechToTextHeader from './speech-to-text-header';
 import { toast } from 'sonner';
@@ -26,24 +27,72 @@ export default function SpeechToTextClient() {
   const [recordingTime, setRecordingTime] = useState(0);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { mutateAsync: streamTranscribe, isPending } =
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockTranscribeStream = async function* () {
+    const response = `[Streaming Transcript] This is a live transcription of your audio file. 
+    
+The AI is currently processing the signal and extracting linguistic features to identify spoken words accurately. We support 99+ languages with context-aware punctuation and speaker diarization. 
+
+This text is being generated chunk by chunk as the model processes the audio stream.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockTranscribeJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response Transcript] This is the completed transcription of your audio. All words have been verified and processed by the primary neural engine. Speaker labels and timestamps are included in the metadata.`;
+  };
+
+  const { mutateAsync: streamTranscribe, isPending: isStreamPending } =
     useStreamTranscribeAudio();
+  const { mutateAsync: jsonTranscribe, isPending: isJsonPending } =
+    useTranscribeAudio();
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const isPending = isStreamPending || isJsonPending;
 
   const handleTranscribe = async (audioUrl: string) => {
     setTranscription('');
     try {
-      const stream = await streamTranscribe({
-        UserId: 'user-1', // Placeholder
-        AudioUrl: audioUrl,
-        Language: language === 'auto' ? 'en' : language,
-        IncludePunctuation: true,
-        DetailLevel: SpeechToTextDetailLevel.Standard,
-        ModelId: selectedModel,
-      });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockTranscribeStream()
+          : await streamTranscribe({
+              AudioUrl: audioUrl,
+              Language: language === 'auto' ? 'en' : language,
+              IncludePunctuation: true,
+              DetailLevel: SpeechToTextDetailLevel.Standard,
+              ModelId: selectedModel,
+              UserId: '',
+            });
 
-      for await (const chunk of stream) {
-        setTranscription((prev) => prev + chunk);
+        for await (const chunk of stream) {
+          setTranscription((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockTranscribeJson()
+          : (
+              await jsonTranscribe({
+                AudioUrl: audioUrl,
+                Language: language === 'auto' ? 'en' : language,
+                IncludePunctuation: true,
+                DetailLevel: SpeechToTextDetailLevel.Standard,
+                ModelId: selectedModel,
+              })
+            )?.Transcript;
+
+        if (result) {
+          setTranscription(result);
+        }
       }
     } catch (error) {
       console.error('Transcription failed:', error);
@@ -222,45 +271,11 @@ export default function SpeechToTextClient() {
 
             {transcription ? (
               <div className="space-y-4">
-                <Card className="p-4 bg-blue-50 border-blue-200">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Language: English</span>
-                    <span>Confidence: 98%</span>
-                    <span>Duration: 12s</span>
-                  </div>
-                </Card>
-
                 <Textarea
                   value={transcription}
                   onChange={(e) => setTranscription(e.target.value)}
                   className="min-h-[300px]"
                 />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <Card className="p-4 text-center">
-                    <div className="text-2xl text-yellow-600">250</div>
-                    <div className="text-sm text-gray-600">Words</div>
-                  </Card>
-                  <Card className="p-4 text-center">
-                    <div className="text-2xl text-yellow-600">1.2s</div>
-                    <div className="text-sm text-gray-600">Processing Time</div>
-                  </Card>
-                </div>
-
-                <Card className="p-4">
-                  <h3 className="text-sm mb-3">Export Options</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button variant="outline" size="sm">
-                      TXT
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      DOCX
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      SRT
-                    </Button>
-                  </div>
-                </Card>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center min-h-[400px] text-gray-400 rounded-lg">

@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+import { useStreamBingSearch } from '@/lib/api/simple-plugin/stream-bing';
+import { useBingSearch } from '@/lib/api/simple-plugin/bing';
 import SimplePluginHeader from './simpleplugin-header';
 import { toast } from 'sonner';
 
@@ -23,12 +25,19 @@ export default function SimplePluginClient() {
   const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
+  const { mutateAsync: streamBing, isPending: isStreamPending } =
+    useStreamBingSearch();
+  const { mutateAsync: jsonBing, isPending: isJsonPending } = useBingSearch();
+
+  const isPending = isStreamPending || isJsonPending || isRunning;
+
   // -------------------------
   // Simulated Bing Search Plugin
   // -------------------------
   const runBingSearchPlugin = async () => {
     if (!query) return;
 
+    setResults([]);
     setIsRunning(true);
 
     setToolLog((prev) => [
@@ -38,33 +47,41 @@ export default function SimplePluginClient() {
       `⏳ Fetching search results...`,
     ]);
 
-    // Simulated API delay
-    setTimeout(() => {
-      const fakeResults: PluginResult[] = [
-        {
-          title: `Result 1 for "${query}"`,
-          snippet:
-            'This is a simulated Bing search result description explaining relevant information.',
-          url: 'https://example.com/result1',
-        },
-        {
-          title: `Result 2 for "${query}"`,
-          snippet:
-            'Additional contextual information related to your query from trusted sources.',
-          url: 'https://example.com/result2',
-        },
-      ];
+    try {
+      if (responseType === 'stream') {
+        const stream = await streamBing({
+          UserId: 'user-1',
+          Query: query,
+          ModelId: selectedModel,
+        });
 
-      setResults(fakeResults);
+        let accumulated = '';
+        for await (const chunk of stream) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          accumulated += chunk;
+          setToolLog((prev) => [...prev, `🔸 Chunk received: ${chunk}`]);
+          // If the stream contains JSON results at the end, we'd need to parse it.
+          // For now, we just log it as it's a progress stream.
+        }
+        // In a real stream, we might get the results as a final chunk.
+      } else {
+        const response = await jsonBing({
+          Query: query,
+          ModelId: selectedModel,
+        });
+        if (response?.Results) {
+          setResults(response.Results);
+        }
+      }
 
-      setToolLog((prev) => [
-        ...prev,
-        `✅ Plugin execution completed`,
-        `📤 Returned ${fakeResults.length} results`,
-      ]);
-
+      setToolLog((prev) => [...prev, `✅ Plugin execution completed`]);
+    } catch (error) {
+      console.error('Plugin execution failed:', error);
+      toast.error('Plugin execution failed');
+      setToolLog((prev) => [...prev, `❌ Error: Failed to execute plugin`]);
+    } finally {
       setIsRunning(false);
-    }, 1500);
+    }
   };
 
   const handleReset = () => {
@@ -99,11 +116,11 @@ export default function SimplePluginClient() {
 
           <Button
             onClick={runBingSearchPlugin}
-            disabled={!query || isRunning}
+            disabled={!query || isPending}
             className="w-full cursor-pointer rounded-full"
           >
             <Search className="h-4 w-4 mr-2" />
-            {isRunning ? 'Searching...' : 'Search'}
+            {isPending ? 'Searching...' : 'Search'}
           </Button>
         </div>
       </Card>

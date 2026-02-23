@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Send, Plus, X } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useGenerateStream } from '@/lib/api/chat/generate-stream';
+import { useGenerateResponse } from '@/lib/api/chat/generate';
 import { useSendMessage } from '@/lib/api/chat/send-message';
 import TextGenHeader from './text-gen-header';
 import { toast } from 'sonner';
@@ -32,6 +33,33 @@ export default function TextGenerationClient() {
   const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockChatStream = async function* () {
+    const response = `This is a simulated AI response. 
+
+The text is being streamed chunk by chunk to demonstrate how the UI handles real-time data arrival. You can continue the conversation or try switching to JSON mode for a static response.
+
+Key features demonstrated:
+- Real-time text appending
+- Smooth UI updates
+- State management across multiple tabs`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockChatJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response] This is a static response returned at once after processing. JSON mode is useful for structured data or when you don't need real-time feedback.`;
+  };
+
   const addTab = () => {
     const newId = (tabs.length + 1).toString();
     setTabs([...tabs, { id: newId, name: `Chat ${newId}`, messages: [] }]);
@@ -49,6 +77,7 @@ export default function TextGenerationClient() {
 
   const { mutateAsync: sendMsgApi } = useSendMessage();
   const { mutateAsync: generateStreamApi } = useGenerateStream();
+  const { mutateAsync: generateResponseApi } = useGenerateResponse();
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -75,35 +104,71 @@ export default function TextGenerationClient() {
     setInput('');
 
     try {
-      await sendMsgApi({ SessionId: currentTabId, Content: input });
+      if (!USE_MOCK) {
+        await sendMsgApi({ SessionId: currentTabId, Content: input });
+      }
 
-      const stream = await generateStreamApi({
-        SessionId: currentTabId,
-        ModelId: selectedModel,
-      });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockChatStream()
+          : await generateStreamApi({
+              SessionId: currentTabId,
+              ModelId: selectedModel,
+            });
 
-      let accumulatedContent = '';
-      for await (const chunk of stream) {
-        accumulatedContent += chunk;
-        setTabs((curr) =>
-          curr.map((tab) => {
-            if (tab.id === currentTabId) {
-              const msgs = [...tab.messages];
-              // Update last message (ai placeholder)
-              if (
-                msgs.length > 0 &&
-                msgs[msgs.length - 1]!.role === 'assistant'
-              ) {
-                msgs[msgs.length - 1] = {
-                  role: 'assistant',
-                  content: accumulatedContent,
-                };
+        let accumulatedContent = '';
+        for await (const chunk of stream) {
+          accumulatedContent += chunk;
+          setTabs((curr) =>
+            curr.map((tab) => {
+              if (tab.id === currentTabId) {
+                const msgs = [...tab.messages];
+                // Update last message (ai placeholder)
+                if (
+                  msgs.length > 0 &&
+                  msgs[msgs.length - 1]!.role === 'assistant'
+                ) {
+                  msgs[msgs.length - 1] = {
+                    role: 'assistant',
+                    content: accumulatedContent,
+                  };
+                }
+                return { ...tab, messages: msgs };
               }
-              return { ...tab, messages: msgs };
-            }
-            return tab;
-          })
-        );
+              return tab;
+            })
+          );
+        }
+      } else {
+        const content = USE_MOCK
+          ? await mockChatJson()
+          : (
+              await generateResponseApi({
+                SessionId: currentTabId,
+                ModelId: selectedModel,
+              })
+            )?.Content;
+
+        if (content) {
+          setTabs((curr) =>
+            curr.map((tab) => {
+              if (tab.id === currentTabId) {
+                const msgs = [...tab.messages];
+                if (
+                  msgs.length > 0 &&
+                  msgs[msgs.length - 1]!.role === 'assistant'
+                ) {
+                  msgs[msgs.length - 1] = {
+                    role: 'assistant',
+                    content: content,
+                  };
+                }
+                return { ...tab, messages: msgs };
+              }
+              return tab;
+            })
+          );
+        }
       }
     } catch (error) {
       console.error('Chat generation failed:', error);

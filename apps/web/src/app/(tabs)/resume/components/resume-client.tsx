@@ -7,13 +7,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Sparkles, Award } from 'lucide-react';
 import ResumeHeader from './resume-header';
+import { useAnalyzeResume } from '@/lib/api/resume/analyze-resume';
 import { toast } from 'sonner';
 
 export default function ResumeClient() {
   const [resumeText, setResumeText] = useState('');
   const [uploadedFileName, setUploadedFileName] = useState('');
   const [analysis, setAnalysis] = useState('');
-  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [skills, setSkills] = useState<string[]>([]);
   const [experience, setExperience] = useState<string[]>([]);
   const [education, setEducation] = useState<string[]>([]);
@@ -21,6 +21,47 @@ export default function ResumeClient() {
   const [atsScore, setAtsScore] = useState<number | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
+
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockResumeStream = async function* () {
+    const response = `[Streaming Analysis] Your resume is being processed...
+    
+Summary: Experienced software engineer with a focus on React and Node.js.
+Estimated ATS Score: 85/100.
+
+Identified Strengths:
+- Proficiency in modern frontend frameworks.
+- Strong understanding of cloud architecture.
+- Excellent communication skills.
+
+Recommendations for Improvement:
+- Add more quantifiable achievements.
+- Include a section for industry certifications.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockResumeJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return {
+      Summary: `[JSON Response Analysis] Your resume demonstrates solid experience in the tech industry. Key skills identified include React, TypeScript, and MongoDB.`,
+      Score: 82,
+    };
+  };
+
+  const { mutateAsync: jsonAnalyze, isPending: isJsonPending } =
+    useAnalyzeResume();
+
+  const isPending = isJsonPending || isAnalyzing;
 
   // ----------------------------
   // Handle File Upload
@@ -47,59 +88,51 @@ export default function ResumeClient() {
   // ----------------------------
   // Resume Analysis
   // ----------------------------
-  const analyzeResume = () => {
+  const analyzeResume = async () => {
     if (!resumeText) return;
 
+    setAnalysis('');
+    setAtsScore(null);
+    setSkills([]);
+    setExperience([]);
+    setEducation([]);
+    setStrengths([]);
     setIsAnalyzing(true);
 
-    const extractedSkills = [
-      'JavaScript',
-      'React',
-      'Node.js',
-      'Leadership',
-      'Communication',
-    ];
+    try {
+      if (responseType === 'stream') {
+        const stream = USE_MOCK ? mockResumeStream() : null; // Would call real stream API if it existed
 
-    const extractedExperience = [
-      'Frontend Developer (2+ years)',
-      'Full Stack Developer (1.5+ years)',
-    ];
+        if (stream) {
+          for await (const chunk of stream) {
+            setAnalysis((prev) => prev + chunk);
+          }
+        }
+        setAtsScore(85);
+        setSkills(['React', 'Node.js', 'TypeScript']);
+      } else {
+        const res = USE_MOCK
+          ? await mockResumeJson()
+          : await jsonAnalyze({
+              ResumeContent: resumeText,
+              IncludeSkill: true,
+              IncludeEducation: true,
+              IncludeExpireance: true,
+              ModelId: selectedModel,
+            });
 
-    const extractedEducation = [
-      'Bachelor’s Degree in Computer Science',
-      'Web Development Certification',
-    ];
-
-    const extractedStrengths = [
-      'Strong technical foundation',
-      'Experience with production systems',
-      'Team collaboration',
-    ];
-
-    const wordCount = resumeText.split(' ').filter(Boolean).length;
-    const calculatedScore = wordCount > 400 ? 90 : wordCount > 250 ? 80 : 70;
-
-    const generatedAnalysis = `
-Resume Analysis Summary:
-
-Your resume demonstrates strong technical expertise and solid experience.
-
-Improvement Recommendations:
-• Add measurable achievements (e.g., increased performance by 30%)
-• Include more action-driven verbs
-• Optimize keywords for ATS systems
-• Ensure consistent formatting
-    `;
-
-    setTimeout(() => {
-      setSkills(extractedSkills);
-      setExperience(extractedExperience);
-      setEducation(extractedEducation);
-      setStrengths(extractedStrengths);
-      setAtsScore(calculatedScore);
-      setAnalysis(generatedAnalysis);
+        if (res) {
+          setAnalysis(res.Summary);
+          setAtsScore(res.Score);
+          setSkills(['React', 'Node.js', 'Cloud Architecture']);
+        }
+      }
+    } catch (error) {
+      console.error('Resume analysis failed:', error);
+      toast.error('Failed to analyze resume');
+    } finally {
       setIsAnalyzing(false);
-    }, 1200);
+    }
   };
 
   const handleReset = () => {
@@ -144,11 +177,11 @@ Improvement Recommendations:
 
           <Button
             onClick={analyzeResume}
-            disabled={!resumeText || isAnalyzing}
+            disabled={!resumeText || isPending}
             className="w-full cursor-pointer rounded-full"
           >
             <Sparkles className="h-4 w-4 mr-2" />
-            {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
+            {isPending ? 'Analyzing...' : 'Analyze Resume'}
           </Button>
         </div>
       </Card>

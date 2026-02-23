@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { RefreshCw, Copy, Sparkles } from 'lucide-react';
 import { useStreamTranslateText } from '@/lib/api/translate/stream-translate-text';
+import { useTranslateText } from '@/lib/api/translate/translate-text';
 import { TranslationDetailLevel } from '@/types/enums/translate';
 import TranslateHeader from './translate-header';
 import { toast } from 'sonner';
@@ -43,7 +44,37 @@ export default function TranslationClient() {
   const [detectedLang, setDetectedLang] = useState('');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  const { mutateAsync: streamTranslate, isPending } = useStreamTranslateText();
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockTranslateStream = async function* (text: string, to: string) {
+    const response = `[Streaming] This is a translated version of your text in ${to}:
+    
+Original: "${text}"
+Translated: The quick brown fox jumps over the lazy dog. 
+
+Translation remains accurate across multiple contexts and maintains the original tone of the message. We provide high-fidelity output for professional documentation and creative writing alike.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockTranslateJson = async (text: string, to: string) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response] Translated to ${to}: The quick brown fox jumps over the lazy dog. Original text: "${text}"`;
+  };
+
+  const { mutateAsync: streamTranslate, isPending: isStreamPending } =
+    useStreamTranslateText();
+  const { mutateAsync: jsonTranslate, isPending: isJsonPending } =
+    useTranslateText();
+
+  const isPending = isStreamPending || isJsonPending;
 
   const translate = async () => {
     if (!sourceText.trim()) return;
@@ -53,16 +84,36 @@ export default function TranslationClient() {
     // For now, let's just stream the translation.
 
     try {
-      const stream = await streamTranslate({
-        Text: sourceText,
-        SourceLanguage: sourceLang,
-        TargetLanguage: targetLang,
-        DetailLevel: TranslationDetailLevel.Standard,
-        ModelId: selectedModel,
-      });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockTranslateStream(sourceText, targetLang)
+          : await streamTranslate({
+              Text: sourceText,
+              SourceLanguage: sourceLang,
+              TargetLanguage: targetLang,
+              DetailLevel: TranslationDetailLevel.Standard,
+              ModelId: selectedModel,
+            });
 
-      for await (const chunk of stream) {
-        setTranslatedText((prev) => prev + chunk);
+        for await (const chunk of stream) {
+          setTranslatedText((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockTranslateJson(sourceText, targetLang)
+          : (
+              await jsonTranslate({
+                Text: sourceText,
+                SourceLanguage: sourceLang,
+                TargetLanguage: targetLang,
+                DetailLevel: TranslationDetailLevel.Standard,
+                ModelId: selectedModel,
+              })
+            )?.TranslatedText;
+
+        if (result) {
+          setTranslatedText(result);
+        }
       }
     } catch (error) {
       console.error('Translation failed:', error);

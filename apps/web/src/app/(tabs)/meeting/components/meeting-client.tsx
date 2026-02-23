@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Check, Sparkles, ClipboardList } from 'lucide-react';
 import { useStreamMeetingAnalysis } from '@/lib/api/meeting/stream-meeting-analysis';
+import { useAnalyzeMeetingTranscript } from '@/lib/api/meeting/analyze-meeting-transcript';
 import MeetingHeader from './meeting-header';
 import { toast } from 'sonner';
 
@@ -19,6 +20,36 @@ export default function MeetingClient() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockMeetingStream = async function* () {
+    const response = `[Streaming Meeting Analysis] 
+
+Summary:
+The meeting centered around the launch of the new product line. Key areas discussed were marketing strategies and budget allocation.
+
+Key Decisions:
+- Approved the increased budget for social media campaigns.
+- Decided to delay the launch by one week to ensure documentation is finalized.
+
+Timeline:
+The revised launch date is now set for October 15th.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockMeetingJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response Meeting Analysis] Meeting summary generated. Focus points: Team expansion, project milestones, and resource optimization.`;
+  };
 
   // ----------------------------
   // Handle Audio Upload
@@ -57,24 +88,49 @@ Speaker 2: I'll handle the campaign updates.
   };
 
   // ----------------------------
-  const { mutateAsync: analyzeMeetingStream } = useStreamMeetingAnalysis();
+  const { mutateAsync: analyzeMeetingStream, isPending: isStreamPending } =
+    useStreamMeetingAnalysis();
+  const { mutateAsync: analyzeMeetingJson, isPending: isJsonPending } =
+    useAnalyzeMeetingTranscript();
+
+  const isAnalysisPending = isStreamPending || isJsonPending;
 
   const generateSummary = async (text: string) => {
     setSummary('');
     setActionItems([]); // Clear actions as we stream the full analysis into summary
 
     try {
-      const stream = await analyzeMeetingStream({
-        UserId: 'user-1',
-        Transcript: text,
-        IncludeActionItems: true,
-        IncludeDescisions: true,
-        Language: 'en',
-        ModelId: selectedModel,
-      });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockMeetingStream()
+          : await analyzeMeetingStream({
+              UserId: 'user-1',
+              Transcript: text,
+              IncludeActionItems: true,
+              IncludeDescisions: true,
+              Language: 'en',
+              ModelId: selectedModel,
+            });
 
-      for await (const chunk of stream) {
-        setSummary((prev) => prev + chunk);
+        for await (const chunk of stream) {
+          setSummary((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockMeetingJson()
+          : (
+              await analyzeMeetingJson({
+                Transcript: text,
+                IncludeActionItems: true,
+                IncludeDescisions: true,
+                Language: 'en',
+                ModelId: selectedModel,
+              })
+            )?.Summary;
+
+        if (result) {
+          setSummary(result);
+        }
       }
     } catch (error) {
       console.error('Meeting analysis failed:', error);
@@ -126,11 +182,13 @@ Speaker 2: I'll handle the campaign updates.
 
               <Button
                 onClick={generateTranscript}
-                disabled={!audioFile || isProcessing}
+                disabled={!audioFile || isProcessing || isAnalysisPending}
                 className="w-full cursor-pointer rounded-full"
               >
                 <Sparkles className="h-4 w-4 mr-2" />
-                {isProcessing ? 'Processing...' : 'Generate Transcript'}
+                {isProcessing || isAnalysisPending
+                  ? 'Processing...'
+                  : 'Generate Transcript'}
               </Button>
             </div>
           </div>

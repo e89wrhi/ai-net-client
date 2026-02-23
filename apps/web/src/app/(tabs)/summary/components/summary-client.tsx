@@ -25,6 +25,7 @@ import {
   Check,
 } from 'lucide-react';
 import { useStreamSummarizeText } from '@/lib/api/summary/stream-summarize-text';
+import { useSummarizeText } from '@/lib/api/summary/summarize-text';
 import { SummaryDetailLevel } from '@/types/enums/summary';
 import SummaryHeader from './summary-header';
 import { toast } from 'sonner';
@@ -41,7 +42,12 @@ export default function SummarizationClient() {
   const [isCopied, setIsCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutateAsync: streamSummarize, isPending } = useStreamSummarizeText();
+  const { mutateAsync: streamSummarize, isPending: isStreamPending } =
+    useStreamSummarizeText();
+  const { mutateAsync: jsonSummarize, isPending: isJsonPending } =
+    useSummarizeText();
+
+  const isPending = isStreamPending || isJsonPending;
 
   // Toggle for development
   const USE_MOCK = true;
@@ -63,6 +69,18 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
       );
       yield chunk;
     }
+  };
+
+  const mockSummarizeJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response] Based on the content provided, here are the key takeaways:
+
+1. Core Objective: The primary goal of this initiative is to streamline the document analysis process using advanced AI models.
+2. Technical Infrastructure: The system utilizes a distributed architecture with low-latency streaming capabilities for real-time feedback.
+3. User Experience: By focusing on minimalist UI design and predictive features like Tab-to-accept, productivity is expected to increase by 40%.
+4. Future Roadmap: Upcoming updates will include multi-language support and integration with external cloud storage providers.
+
+In conclusion, the proposed solution addresses current bottlenecks while providing a scalable foundation for future growth.`;
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,17 +130,33 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
     if (length === 'detailed') detailLevel = SummaryDetailLevel.Detailed;
 
     try {
-      const stream = USE_MOCK
-        ? mockSummarizeStream()
-        : await streamSummarize({
-            Text: inputText,
-            DetailLevel: detailLevel,
-            Language: 'en',
-            ModelId: selectedModel,
-          });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockSummarizeStream()
+          : await streamSummarize({
+              Text: inputText,
+              DetailLevel: detailLevel,
+              Language: 'en',
+              ModelId: selectedModel,
+            });
 
-      for await (const chunk of stream) {
-        setSummary((prev) => prev + chunk);
+        for await (const chunk of stream) {
+          setSummary((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockSummarizeJson()
+          : (
+              await jsonSummarize({
+                Text: inputText,
+                DetailLevel: detailLevel,
+                Language: 'en',
+                ModelId: selectedModel,
+              })
+            )?.Summary;
+        if (result) {
+          setSummary(result);
+        }
       }
     } catch (error) {
       console.error('Summarization failed:', error);

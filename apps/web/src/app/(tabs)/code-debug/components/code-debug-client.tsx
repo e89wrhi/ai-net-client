@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Bug, Lightbulb, RefreshCw, Sparkles } from 'lucide-react';
 import { useStreamAnalyzeCode } from '@/lib/api/code-debug/stream-analyze-code';
+import { useAnalyzeCode } from '@/lib/api/code-debug/analyze-code';
 import { DebugDepth, ProgrammingLanguage } from '@/types/enums/code-debug';
 import CodeDebugHeader from './code-debug-header';
 import { toast } from 'sonner';
@@ -27,7 +28,45 @@ export default function CodeDebugClient() {
   const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
-  const { mutateAsync: streamAnalyze, isPending } = useStreamAnalyzeCode();
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockDebugStream = async function* () {
+    const response = `[Streaming Analysis] Analyzing your code snippet...
+    
+Foundations:
+- The logic appears to follow the expected patterns for this language.
+- Initial check for syntax errors: PASSED.
+
+Detailed Explanation:
+The provided code implements a recursive function to traverse a binary tree. It correctly handles the base case (null node) and recursively visits left and right children.
+
+Potential Issues:
+- Stack overflow risk for very deep trees.
+- Lack of type checking for node values.
+
+Refactoring Suggestion: Consider using an iterative approach with a stack to improve performance and avoid recursion limits.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockDebugJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response Analysis] Analysis complete. Code quality score: 8.5/10. Complexity: O(n). Suggestions: Improve error handling and add unit tests.`;
+  };
+
+  const { mutateAsync: streamAnalyze, isPending: isStreamPending } =
+    useStreamAnalyzeCode();
+  const { mutateAsync: jsonAnalyze, isPending: isJsonPending } =
+    useAnalyzeCode();
+
+  const isPending = isStreamPending || isJsonPending;
 
   const getLanguageEnum = (lang: string): ProgrammingLanguage => {
     switch (lang) {
@@ -56,17 +95,37 @@ export default function CodeDebugClient() {
     setResult('');
 
     try {
-      const stream = await streamAnalyze({
-        UserId: 'user-1', // Placeholder
-        Code: code,
-        Language: getLanguageEnum(language),
-        Depth: DebugDepth.Standard,
-        IncludeSuggestion: true,
-        ModelId: selectedModel,
-      });
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockDebugStream()
+          : await streamAnalyze({
+              UserId: 'user-1', // Placeholder
+              Code: code,
+              Language: getLanguageEnum(language),
+              Depth: DebugDepth.Standard,
+              IncludeSuggestion: true,
+              ModelId: selectedModel,
+            });
 
-      for await (const chunk of stream) {
-        setResult((prev) => prev + chunk);
+        for await (const chunk of stream) {
+          setResult((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockDebugJson()
+          : (
+              await jsonAnalyze({
+                Code: code,
+                Language: getLanguageEnum(language),
+                Depth: DebugDepth.Standard,
+                IncludeSuggestion: true,
+                ModelId: selectedModel,
+              })
+            )?.Summary;
+
+        if (result) {
+          setResult(result);
+        }
       }
     } catch (error) {
       console.error('Analysis failed:', error);

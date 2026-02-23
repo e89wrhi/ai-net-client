@@ -49,7 +49,6 @@ export default function SimplePluginHeader({
           type={responseType}
           onChange={(value) => onResponseTypeChange(value as 'stream' | 'json')}
         />
-
         <WhyDrawer
           title="simpleplugin"
           link={simplepluginLink}

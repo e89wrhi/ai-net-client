@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Sparkles } from 'lucide-react';
+import { useStreamSummarizeMarkdown } from '@/lib/api/simple-md/stream-summarize';
+import { useSummarizeMarkdown } from '@/lib/api/simple-md/summarize';
 import SimpleMDHeader from './simplemd-header';
 import { toast } from 'sonner';
 
@@ -14,8 +16,46 @@ export default function SimpleMDClient() {
   const [mdContent, setMdContent] = useState('');
   const [analysis, setAnalysis] = useState('');
   const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+
+  // Toggle for development
+  const USE_MOCK = true;
+
+  const mockMDStream = async function* () {
+    const response = `[Streaming MD Analysis] Your markdown file has been parsed. 
+    
+Key Sections:
+# Introduction
+# Functional Requirements
+# Implementation Details
+
+The document uses standard CommonMark syntax and includes 3 code blocks. 
+Recommended improvements:
+- Add a table of contents.
+- Use more descriptive link text.`;
+
+    const chunks = response.split(/(?<= )/);
+    for (const chunk of chunks) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 30 + Math.random() * 50)
+      );
+      yield chunk;
+    }
+  };
+
+  const mockMDJson = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `[JSON Response MD Analysis] Markdown analysis complete. Word count: 450. Suggested tags: Documentation, Frontend, API.`;
+  };
+
+  const { mutateAsync: streamSummarize, isPending: isStreamPending } =
+    useStreamSummarizeMarkdown();
+  const { mutateAsync: jsonSummarize, isPending: isJsonPending } =
+    useSummarizeMarkdown();
+
+  const isPending = isStreamPending || isJsonPending;
 
   // ----------------------------
   // Handle .md file upload
@@ -36,43 +76,45 @@ export default function SimpleMDClient() {
   // ----------------------------
   // Analyze Markdown
   // ----------------------------
-  const analyzeMarkdown = () => {
+  const analyzeMarkdown = async () => {
     if (!mdContent) return;
 
+    setAnalysis('');
     setIsAnalyzing(true);
 
-    // Mock analysis logic
-    const headings = mdContent
-      .split('\n')
-      .filter((line) => line.startsWith('#'))
-      .map((h) => h.replace(/^#+\s*/, ''));
+    try {
+      if (responseType === 'stream') {
+        const stream = USE_MOCK
+          ? mockMDStream()
+          : await streamSummarize({
+              UserId: 'user-1',
+              Content: mdContent,
+              ModelId: selectedModel,
+            });
 
-    const wordCount = mdContent.split(' ').filter(Boolean).length;
+        for await (const chunk of stream) {
+          setAnalysis((prev) => prev + chunk);
+        }
+      } else {
+        const result = USE_MOCK
+          ? await mockMDJson()
+          : (
+              await jsonSummarize({
+                Content: mdContent,
+                ModelId: selectedModel,
+              })
+            )?.Summary;
 
-    const keyPoints = headings.length
-      ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        headings.map((h, i) => `• ${h}`)
-      : ['• No headings found'];
-
-    const generatedAnalysis = `
-Markdown Analysis Summary:
-
-Word count: ${wordCount}
-Number of headings: ${headings.length}
-
-Key Points:
-${keyPoints.join('\n')}
-
-Suggestions:
-- Add more descriptive headings
-- Ensure consistent formatting
-- Include code blocks or lists where relevant
-    `;
-
-    setTimeout(() => {
-      setAnalysis(generatedAnalysis);
+        if (result) {
+          setAnalysis(result);
+        }
+      }
+    } catch (error) {
+      console.error('Markdown analysis failed:', error);
+      toast.error('Failed to analyze markdown');
+    } finally {
       setIsAnalyzing(false);
-    }, 800);
+    }
   };
 
   const handleReset = () => {
@@ -115,11 +157,11 @@ Suggestions:
 
           <Button
             onClick={analyzeMarkdown}
-            disabled={!mdContent || isAnalyzing}
+            disabled={!mdContent || isPending}
             className="w-full rounded-full cursor-pointer"
           >
             <Sparkles className="h-4 w-4 mr-2" />
-            {isAnalyzing ? 'Analyzing...' : 'Analyze Markdown'}
+            {isPending ? 'Analyzing...' : 'Analyze Markdown'}
           </Button>
         </div>
       </Card>
