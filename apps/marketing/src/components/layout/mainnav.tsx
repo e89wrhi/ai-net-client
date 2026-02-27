@@ -19,18 +19,11 @@ export function Navigation({}: NavigationProps) {
             <Image
               height={100}
               width={100}
-              src={'/logo_dark.png'}
-              className="hidden dark:block h-7 w-7"
+              src={'/ai.png'}
+              className="h-10 w-10"
               alt="logo"
             />
-            <Image
-              height={100}
-              width={100}
-              src={'/logo_light.png'}
-              className="block dark:hidden h-7 w-7"
-              alt="logo"
-            />
-            <p>AI-net</p>
+            <p className="text-green-500 text-lg">AI-net</p>
           </Link>
         </div>
 

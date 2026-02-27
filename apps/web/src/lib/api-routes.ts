@@ -110,4 +110,18 @@ export const api_paths = {
     regenerate: (): string => `${base_url}/v1/codegen/regenerate`,
     generate: (): string => `${base_url}/v1/codegen/generate`,
   },
+  orchestration: {
+    models: (): string => `${base_url}/v1/orchestration/models`,
+    keys: (): string => `${base_url}/v1/orchestration/keys`,
+    remove_key: (id: string): string => `${base_url}/v1/orchestration/keys/${id}`,
+    usage: (from?: string, to?: string): string => {
+      let url = `${base_url}/v1/orchestration/usage`;
+      const params = new URLSearchParams();
+      if (from) params.append('from', from);
+      if (to) params.append('to', to);
+      const queryString = params.toString();
+      return queryString ? `${url}?${queryString}` : url;
+    },
+  },
 };
+

@@ -9,6 +9,7 @@ import React from 'react';
 import Image from 'next/image';
 import {
   ChevronUp,
+  KeyIcon,
   LogOut,
   Pencil,
   Settings,
@@ -110,23 +111,27 @@ export default function SidebarFooterLayout(props: Props) {
                 <User className="mr-2 size-4" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push('/setting')}>
+              <DropdownMenuItem onClick={() => router.push('/api-keys')}>
+                <KeyIcon className="mr-2 size-4" />
+                Manage Api Keys
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push('/settings')}>
                 <Settings className="mr-2 size-4" />
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleAnalyzeActivity}>
+              <DropdownMenuItem onClick={() => router.push('/activity')}>
                 <Sparkle className="mr-2 size-4" />
                 Analyze Activity
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleAnalyzeUsage}>
+              <DropdownMenuItem onClick={() => router.push('/usage')}>
                 <Sparkles className="mr-2 size-4" />
                 Analyze Usage
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleGeneratePersona}>
+              <DropdownMenuItem onClick={() => router.push('/persona')}>
                 <User className="mr-2 size-4" />
                 Generate Persona
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit}>
+              <DropdownMenuItem onClick={() => router.push('/account')}>
                 <Pencil className="mr-2 size-4" />
                 Edit
               </DropdownMenuItem>
