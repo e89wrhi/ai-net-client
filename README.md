@@ -3,6 +3,7 @@
 AI-Net is a platform designed to showcase powerful AI features powered by the [.NET Framework](https://dotnet.microsoft.com/) and [Microsoft Extensions AI](https://learn.microsoft.com/en-us/dotnet/core/extensions/ai).
 
 This repository contains the client-side code, built using modern web development tools:
+
 - **[Turborepo](https://turbo.build/repo)** for high-performance monorepo management
 - **[Next.js](https://nextjs.org/)** for fast, React-based web applications
 - **[TypeScript](https://www.typescriptlang.org/)** for robust, statically typed code
@@ -37,6 +38,7 @@ The AI-Net platform includes the following demonstration modules:
 
 1. **Install Dependencies:**
    Ensure you have Node.js and npm installed, then run:
+
    ```bash
    npm install
    ```
@@ -50,8 +52,8 @@ The AI-Net platform includes the following demonstration modules:
 
 ## Backend Repository
 
-The APIs powering this client application are housed in our dedicated backend repository. 
-*(Please add the backend GitHub repository link here)*
+The APIs powering this client application are housed in our dedicated backend repository.
+_(Please add the backend GitHub repository link here)_
 
 ## More About AI-Net
 

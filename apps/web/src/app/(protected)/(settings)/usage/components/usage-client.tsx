@@ -8,38 +8,46 @@ import DetailHeader from '@/components/layout/detail-header';
 import GenericHeader from '../../_components/generic-header';
 
 export default function UsageClient() {
-    const { data: usage, isLoading } = useGetUserUsageSummary();
+  const { data: usage, isLoading } = useGetUserUsageSummary();
 
-    return (
-        <DetailWidthWrapper>
-            <DetailHeader />
-            <GenericHeader title="Usage" />
+  return (
+    <DetailWidthWrapper>
+      <DetailHeader />
+      <GenericHeader title="Usage" />
 
-            <div className="mt-8">
-                {isLoading ? (
-                    <div>Loading usage summary...</div>
-                ) : (
-                    <div className="grid gap-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Current Period: {usage?.Period || 'N/A'}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-4 border rounded-lg">
-                                        <div className="text-sm text-muted-foreground">Tokens Used</div>
-                                        <div className="text-2xl font-bold">{usage?.TokenUsed || 0}</div>
-                                    </div>
-                                    <div className="p-4 border rounded-lg">
-                                        <div className="text-sm text-muted-foreground">Total Requests</div>
-                                        <div className="text-2xl font-bold">{usage?.RequestsCount || 0}</div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+      <div className="mt-8">
+        {isLoading ? (
+          <div>Loading usage summary...</div>
+        ) : (
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Current Period: {usage?.Period || 'N/A'}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 border rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Tokens Used
                     </div>
-                )}
-            </div>
-        </DetailWidthWrapper>
-    );
+                    <div className="text-2xl font-bold">
+                      {usage?.TokenUsed || 0}
+                    </div>
+                  </div>
+                  <div className="p-4 border rounded-lg">
+                    <div className="text-sm text-muted-foreground">
+                      Total Requests
+                    </div>
+                    <div className="text-2xl font-bold">
+                      {usage?.RequestsCount || 0}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </div>
+    </DetailWidthWrapper>
+  );
 }

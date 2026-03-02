@@ -5,6 +5,7 @@ This application covers the public-facing promotional material for the AI-Net pl
 ## Overview
 
 The Marketing Site is built with:
+
 - **Next.js** for static and dynamic rendering.
 - **Tailwind CSS** for responsive, mobile-first design.
 - Animated with `framer-motion` and `gsap` (where applicable) for modern presentations.

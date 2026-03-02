@@ -27,7 +27,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
 
 interface Props {
   name: string;
@@ -39,22 +38,6 @@ interface Props {
 export default function SidebarFooterLayout(props: Props) {
   const { name, image, status, onOpen } = props;
   const router = useRouter();
-
-  const handleAnalyzeActivity = () => {
-    toast('comming soon..');
-  };
-
-  const handleAnalyzeUsage = () => {
-    toast('comming soon..');
-  };
-
-  const handleGeneratePersona = () => {
-    toast('comming soon..');
-  };
-
-  const handleEdit = () => {
-    toast('comming soon..');
-  };
 
   return (
     <SidebarMenu>

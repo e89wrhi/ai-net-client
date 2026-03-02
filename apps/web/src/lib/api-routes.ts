@@ -113,7 +113,8 @@ export const api_paths = {
   orchestration: {
     models: (): string => `${base_url}/v1/orchestration/models`,
     keys: (): string => `${base_url}/v1/orchestration/keys`,
-    remove_key: (id: string): string => `${base_url}/v1/orchestration/keys/${id}`,
+    remove_key: (id: string): string =>
+      `${base_url}/v1/orchestration/keys/${id}`,
     usage: (from?: string, to?: string): string => {
       let url = `${base_url}/v1/orchestration/usage`;
       const params = new URLSearchParams();
@@ -124,4 +125,3 @@ export const api_paths = {
     },
   },
 };
-
