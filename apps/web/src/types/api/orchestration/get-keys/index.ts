@@ -4,6 +4,8 @@ export interface ApiKeyDto {
   label: string;
   isActive: boolean;
   lastUsedAt?: string;
+  maskedKey?: string;
+  fullKey?: string;
 }
 
 export type GetApiKeysResponseDto = ApiKeyDto[];

@@ -4,6 +4,10 @@ import { UserUsageSummaryDto } from '@/types/api/user/get-user-usage-summary';
 import { useQuery } from '@tanstack/react-query';
 
 export async function getUserUsageSummary(): Promise<UserUsageSummaryDto | null> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    return getMockUserUsageSummary();
+  }
+
   const url = api_paths.user.usage_summary();
 
   return fetchClient<UserUsageSummaryDto | null>(url, {
@@ -17,4 +21,13 @@ export function useGetUserUsageSummary() {
     queryKey: ['user-usage-summary'],
     queryFn: () => getUserUsageSummary(),
   });
+}
+
+function getMockUserUsageSummary(): UserUsageSummaryDto {
+  return {
+    Id: 'usage-001',
+    Period: 'March 2026',
+    TokenUsed: '12400',
+    RequestsCount: 456,
+  };
 }

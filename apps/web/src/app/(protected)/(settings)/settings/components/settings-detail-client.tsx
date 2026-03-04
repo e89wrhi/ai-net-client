@@ -12,11 +12,11 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import React, { useState } from 'react';
-import DetailWidthWrapper from '@/components/layout/detail-width-wrapper';
-import DetailHeader from '@/components/layout/detail-header';
-import SettingsHeader from './settings-detail-header';
+import GenericHeader from '../../_components/generic-header';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
+import { useResetUsageCounters } from '@/lib/api/user/reset-usage-counters';
 import {
   Card,
   CardContent,
@@ -34,40 +34,50 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useTheme } from 'next-themes';
-import { useRouter } from 'next/navigation';
 
 export default function SettingsClient() {
-  const { setTheme } = useTheme();
-  const router = useRouter();
+  const { setTheme, theme } = useTheme();
   const [historyEnabled, setHistoryEnabled] = useState(true);
+  const { mutate: resetUsage } = useResetUsageCounters();
 
-  const handleOpenHistory = () => {
-    router.push(`/history`);
+  const handleClearHistory = () => {
+    resetUsage(
+      { UserId: 'usr-001' },
+      {
+        onSuccess: () => {
+          localStorage.clear();
+          toast.success('All history and local data cleared.');
+        },
+        onError: () => toast.error('Failed to clear history.'),
+      }
+    );
   };
 
   return (
-    <DetailWidthWrapper>
-      <DetailHeader />
-      <SettingsHeader />
+    <div className="space-y-8">
+      <GenericHeader
+        title="Settings"
+        description="Configure your preferences for appearance, history tracking, and local data."
+      />
 
       <div className="grid gap-6">
         {/* Theme & Language Card */}
-        <Card className="border-none shadow-sm rounded-3xl overflow-hidden">
-          <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2">
+        <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-muted/30">
+          <CardHeader className="bg-muted/20">
+            <CardTitle className="text-lg flex items-center gap-2">
               General
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 pt-6">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label className="text-base font-bold">Appearance</Label>
                 <p className="text-sm text-muted-foreground">
-                  Customize how the app looks.
+                  Customize how the app looks on your device.
                 </p>
               </div>
-              <Select onValueChange={(e) => setTheme(e)} defaultValue="system">
-                <SelectTrigger className="w-[140px] rounded-full border-none">
+              <Select onValueChange={(e) => setTheme(e)} value={theme || 'system'}>
+                <SelectTrigger className="w-[140px] rounded-full bg-background border-none shadow-sm">
                   <SelectValue placeholder="Theme" />
                 </SelectTrigger>
                 <SelectContent>
@@ -82,11 +92,11 @@ export default function SettingsClient() {
               <div className="space-y-0.5">
                 <Label className="text-base font-bold">Language</Label>
                 <p className="text-sm text-muted-foreground">
-                  Select your interface language.
+                  Select your preferred interface language.
                 </p>
               </div>
               <Select defaultValue="en">
-                <SelectTrigger className="w-[140px] rounded-full border-none">
+                <SelectTrigger className="w-[140px] rounded-full bg-background border-none shadow-sm">
                   <SelectValue placeholder="Language" />
                 </SelectTrigger>
                 <SelectContent>
@@ -98,22 +108,22 @@ export default function SettingsClient() {
         </Card>
 
         {/* History Card */}
-        <Card className="border-none shadow-sm rounded-3xl overflow-hidden">
-          <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2">
+        <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-muted/30">
+          <CardHeader className="bg-muted/20">
+            <CardTitle className="text-lg flex items-center gap-2">
               History
             </CardTitle>
-            <CardDescription>
-              We use <code>localStorage</code> with a unique project key to save
-              your progress.
+            <CardDescription className="text-xs">
+              Interaction history is stored locally in your browser's{' '}
+              <code>localStorage</code>.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 pt-6">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label className="text-base font-bold">Enable Tracking</Label>
                 <p className="text-sm text-muted-foreground">
-                  Save articles to your history page.
+                  Save your interactions to the history page.
                 </p>
               </div>
               <Switch
@@ -121,40 +131,30 @@ export default function SettingsClient() {
                 onCheckedChange={setHistoryEnabled}
               />
             </div>
-            <div
-              onClick={handleOpenHistory}
-              className="flex items-center justify-between"
-            >
-              <div className="space-y-0.5">
-                <Label className="text-base font-bold">View History</Label>
-                <p className="text-sm text-muted-foreground">
-                  view watch hitory
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 border-t flex items-center justify-between">
+
+            <div className="pt-6 border-t flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label className="text-base font-bold text-destructive">
                   Danger Zone
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  Clear all items from your local storage.
+                  Permanently clear all data from local storage.
                 </p>
               </div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="secondary"
-                    className="rounded-full hover:bg-destructive/10"
+                    className="rounded-full bg-destructive/5 text-destructive hover:bg-destructive/10 border-none transition-colors"
                   >
-                    Clear
+                    Clear Data
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-3xl">
                   <AlertDialogHeader>
                     <AlertDialogTitle className="flex items-center gap-2">
                       <AlertTriangle className="h-5 w-5 text-destructive" />
-                      Are you absolutely sure?
+                      Clear all history?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                       This will permanently delete your entire history from this
@@ -165,8 +165,11 @@ export default function SettingsClient() {
                     <AlertDialogCancel className="rounded-full">
                       Cancel
                     </AlertDialogCancel>
-                    <AlertDialogAction className="rounded-full hover:bg-destructive/90">
-                      Clear
+                    <AlertDialogAction
+                      className="rounded-full bg-destructive hover:bg-destructive/90"
+                      onClick={handleClearHistory}
+                    >
+                      Clear Everything
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -175,6 +178,6 @@ export default function SettingsClient() {
           </CardContent>
         </Card>
       </div>
-    </DetailWidthWrapper>
+    </div>
   );
 }

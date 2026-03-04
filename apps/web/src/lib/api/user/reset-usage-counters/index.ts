@@ -9,6 +9,13 @@ import { useMutation } from '@tanstack/react-query';
 export async function resetUsageCounters(
   payload: ResetUsageCounterRequest
 ): Promise<ResetUsageCounterRequestResponse | null> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    return {
+      message: 'Usage counters reset successfully',
+      status: 200,
+    } as any;
+  }
+
   const url = api_paths.user.reset_usage();
 
   return fetchClient<ResetUsageCounterRequestResponse | null>(url, {

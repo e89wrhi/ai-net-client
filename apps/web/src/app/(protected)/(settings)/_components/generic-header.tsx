@@ -5,23 +5,25 @@ import React from 'react';
 
 interface Props {
   title: string;
+  description?: string;
+  action?: React.ReactNode;
 }
 
-export default function GenericHeader({ title }: Props) {
+export default function GenericHeader({ title, description, action }: Props) {
   return (
-    <div>
-      <div className="bg-white dark:bg-black w-full">
-        {/* Main Content Row */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <h1 className="text-4xl md:text-6xl tracking-[0em] font-bold">
-              {title}
-            </h1>
-          </div>
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+          {description && (
+            <p className="text-muted-foreground text-sm max-w-2xl">
+              {description}
+            </p>
+          )}
         </div>
-
-        <Separator className="mt-7 md:mt-10" />
+        {action && <div>{action}</div>}
       </div>
+      <Separator />
     </div>
   );
 }

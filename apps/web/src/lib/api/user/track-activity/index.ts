@@ -9,6 +9,14 @@ import { useMutation } from '@tanstack/react-query';
 export async function trackActivity(
   payload: TrackActivityRequest
 ): Promise<TrackActivityRequestResponse | null> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    return {
+      Id: Math.random().toString(36).substr(2, 9),
+      ...payload,
+      TimeStamp: new Date(),
+    } as any;
+  }
+
   const url = api_paths.user.track_activity();
 
   return fetchClient<TrackActivityRequestResponse | null>(url, {

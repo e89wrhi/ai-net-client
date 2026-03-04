@@ -9,6 +9,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 export async function addApiKey(
   data: AddApiKeyRequestDto
 ): Promise<AddApiKeyResponseDto | null> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    return {
+      id: Math.random().toString(36).substr(2, 9),
+      provider: data.provider,
+      label: data.label,
+    };
+  }
+
   const url = api_paths.orchestration.keys();
 
   return fetchClient<AddApiKeyResponseDto | null>(url, {
