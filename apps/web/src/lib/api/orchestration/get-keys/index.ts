@@ -32,7 +32,8 @@ function getMockApiKeys(): GetApiKeysResponseDto {
       isActive: true,
       lastUsedAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
       maskedKey: 'sk-proj-••••••••••••••••3aB2',
-      fullKey: 'sk-proj-7x8v9w0z1y2x3w4v5u6t7s8r9q0p1o2n3m4l5k6j7i8h9g0f1e2d3c4b5a2',
+      fullKey:
+        'sk-proj-7x8v9w0z1y2x3w4v5u6t7s8r9q0p1o2n3m4l5k6j7i8h9g0f1e2d3c4b5a2',
     },
     {
       id: 'key-002',
@@ -41,7 +42,8 @@ function getMockApiKeys(): GetApiKeysResponseDto {
       isActive: true,
       lastUsedAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
       maskedKey: 'sk-ant-••••••••••••••••f9Wz',
-      fullKey: 'sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789-abcdefghijklmnopqrstuvwxyz0123456789f9Wz',
+      fullKey:
+        'sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789-abcdefghijklmnopqrstuvwxyz0123456789f9Wz',
     },
     {
       id: 'key-003',

@@ -13,6 +13,7 @@ export async function resetUsageCounters(
     return {
       message: 'Usage counters reset successfully',
       status: 200,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
   }
 

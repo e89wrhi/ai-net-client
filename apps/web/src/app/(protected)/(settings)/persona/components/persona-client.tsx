@@ -37,7 +37,9 @@ export default function PersonaClient() {
             onClick={handleRegenerate}
             disabled={isPending}
           >
-            <RefreshCw className={`size-4 ${isPending ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`size-4 ${isPending ? 'animate-spin' : ''}`}
+            />
             Regenerate
           </Button>
         }
@@ -104,19 +106,6 @@ export default function PersonaClient() {
               style.
             </p>
           </div>
-          <style jsx global>{`
-            @keyframes spin-slow {
-              from {
-                transform: rotate(0deg);
-              }
-              to {
-                transform: rotate(360deg);
-              }
-            }
-            .animate-spin-slow {
-              animation: spin-slow 8s linear infinite;
-            }
-          `}</style>
         </div>
       </div>
     </div>

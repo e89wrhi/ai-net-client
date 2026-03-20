@@ -91,7 +91,9 @@ export default function UsageClient() {
                 >
                   <CardContent className="pt-6">
                     <div className="flex items-center gap-4">
-                      <div className={`p-3 rounded-2xl bg-background border ${stat.color}`}>
+                      <div
+                        className={`p-3 rounded-2xl bg-background border ${stat.color}`}
+                      >
                         <stat.icon className="size-5" />
                       </div>
                       <div className="space-y-0.5">

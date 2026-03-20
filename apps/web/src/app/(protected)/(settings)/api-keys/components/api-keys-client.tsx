@@ -122,7 +122,9 @@ export default function ApiKeysClient() {
                 placeholder="e.g. Production OpenAI Key"
                 className="rounded-full"
                 value={newKey.label}
-                onChange={(e) => setNewKey({ ...newKey, label: e.target.value })}
+                onChange={(e) =>
+                  setNewKey({ ...newKey, label: e.target.value })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -199,11 +201,11 @@ export default function ApiKeysClient() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Remove API Key?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete the key "
+                          This will permanently delete the key &quot;
                           <span className="font-semibold text-foreground">
                             {key.label}
                           </span>
-                          ". Any services using this key will stop working.
+                          &quot;. Any services using this key will stop working.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -260,7 +262,9 @@ export default function ApiKeysClient() {
                   <div className="space-y-2">
                     <div className="flex justify-between items-center text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">
                       <span>Provider</span>
-                      <span className="text-foreground">{key.providerName}</span>
+                      <span className="text-foreground">
+                        {key.providerName}
+                      </span>
                     </div>
                     {key.lastUsedAt && (
                       <div className="flex justify-between items-center text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">

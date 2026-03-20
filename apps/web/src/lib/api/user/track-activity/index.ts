@@ -14,6 +14,7 @@ export async function trackActivity(
       Id: Math.random().toString(36).substr(2, 9),
       ...payload,
       TimeStamp: new Date(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
   }
 

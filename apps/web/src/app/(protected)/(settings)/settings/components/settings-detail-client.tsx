@@ -76,7 +76,10 @@ export default function SettingsClient() {
                   Customize how the app looks on your device.
                 </p>
               </div>
-              <Select onValueChange={(e) => setTheme(e)} value={theme || 'system'}>
+              <Select
+                onValueChange={(e) => setTheme(e)}
+                value={theme || 'system'}
+              >
                 <SelectTrigger className="w-[140px] rounded-full bg-background border-none shadow-sm">
                   <SelectValue placeholder="Theme" />
                 </SelectTrigger>
@@ -114,7 +117,7 @@ export default function SettingsClient() {
               History
             </CardTitle>
             <CardDescription className="text-xs">
-              Interaction history is stored locally in your browser's{' '}
+              Interaction history is stored locally in your browser&apos;s{' '}
               <code>localStorage</code>.
             </CardDescription>
           </CardHeader>

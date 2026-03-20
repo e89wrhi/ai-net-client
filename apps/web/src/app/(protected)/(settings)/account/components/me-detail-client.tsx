@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Mail, Shield, User, Camera } from 'lucide-react';
+import { Shield, User, Camera } from 'lucide-react';
 import { toast } from 'sonner';
 import { useUpdateUser } from '@/lib/api/user/update-user';
 
@@ -17,7 +17,10 @@ export default function AccountClient() {
 
   const handleUpdateProfile = () => {
     updateProfile(
-      { id: user?.userId || 'usr-001', payload: { name: user?.name + ' (Updated)' } },
+      {
+        id: user?.userId || 'usr-001',
+        payload: { name: user?.name + ' (Updated)' },
+      },
       {
         onSuccess: () => toast.success('Profile updated successfully (mock)'),
         onError: () => toast.error('Failed to update profile'),
@@ -71,7 +74,9 @@ export default function AccountClient() {
                   <User className="size-3" />
                   User ID
                 </div>
-                <p className="font-semibold text-sm truncate">{user?.userId || 'N/A'}</p>
+                <p className="font-semibold text-sm truncate">
+                  {user?.userId || 'N/A'}
+                </p>
               </div>
               <div className="space-y-1.5 p-4 bg-background/50 rounded-2xl border border-border/50">
                 <div className="flex items-center gap-2 text-muted-foreground text-xs font-bold uppercase tracking-widest">
