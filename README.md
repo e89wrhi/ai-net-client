@@ -1,5 +1,12 @@
+<p align="center">
+  <img src="assets/ai_logo.png" alt="AI-Net-Client-Logo" width="120">
+</p>
+
 # AI-Net Platform
 
+<p align="center">
+  <img src="assets/ai_banner.png" alt="AI-Net Platform Banner" width="100%">
+</p>
 AI-Net is a platform designed to showcase powerful AI features powered by the [.NET Framework](https://dotnet.microsoft.com/) and [Microsoft Extensions AI](https://learn.microsoft.com/en-us/dotnet/core/extensions/ai).
 
 This repository contains the client-side code, built using modern web development tools:
