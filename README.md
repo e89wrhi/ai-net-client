@@ -9,6 +9,14 @@
 </p>
 AI-Net is a platform designed to showcase powerful AI features powered by the [.NET Framework](https://dotnet.microsoft.com/) and [Microsoft Extensions AI](https://learn.microsoft.com/en-us/dotnet/core/extensions/ai).
 
+## 🧩 More
+
+Related Visit
+
+- 🖥️ Frontend → https://github.com/username/project-frontend  
+- ⚙️ Backend → https://github.com/username/project-backend  
+- ☁️ Site → https://github.com/username/project-devops  
+
 This repository contains the client-side code, built using modern web development tools:
 
 - **[Turborepo](https://turbo.build/repo)** for high-performance monorepo management
