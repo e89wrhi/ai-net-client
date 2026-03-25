@@ -41,6 +41,18 @@ The AI-Net platform includes the following demonstration modules:
 │   └── typescript-config/ # Base tsconfig configuration
 ```
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="assets/ss/ss1.png" width="45%" />
+  <img src="assets/ss/ss2.png" width="45%" />
+</p>
+
+<p align="center">
+  <img src="assets/ss/ss3.png" width="45%" />
+  <img src="assets/ss/ss4.png" width="45%" />
+</p>
+
 ## Getting Started
 
 1. **Install Dependencies:**
