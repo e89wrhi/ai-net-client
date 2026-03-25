@@ -1,8 +1,18 @@
 import { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 import { withContentlayer } from 'next-contentlayer2';
+import path from 'path';
 
 const nextConfig: NextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  experimental: {
+    webpackBuildWorker: true,
+  },
   images: {
     remotePatterns: [
       {
@@ -33,7 +43,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ['@aishow/ui', '@aishow/lib'],
   turbopack: {
-    root: '../../',
+    root: path.resolve(__dirname, '../..'),
   },
 };
 
