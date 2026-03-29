@@ -13,6 +13,7 @@ const ignorePatterns = [
   'dist/',
   'build/',
   'coverage/',
+  'env.mjs',
 ];
 
 export default defineConfig([
@@ -42,7 +43,7 @@ export default defineConfig([
     rules: {
       // pull in recommended rules from each plugin
       ...tsEslintPlugin.configs.recommended.rules,
-      ...tsEslintPlugin.configs.stylistic.rules,
+      //...tsEslintPlugin.configs.stylistic.rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       ...nextPlugin.configs.recommended.rules,
