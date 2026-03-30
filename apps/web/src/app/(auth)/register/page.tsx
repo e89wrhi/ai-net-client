@@ -15,7 +15,8 @@ export default function RegisterPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    const isMock = process.env.NODE_ENV === 'development';
+    // Use NEXT_PUBLIC_USE_MOCK_AUTH so mock works in Vercel production too
+    const isMock = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === 'true';
 
     if (!isMock) {
       const issuer =
