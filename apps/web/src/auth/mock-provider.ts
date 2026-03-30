@@ -72,7 +72,7 @@ export const MockDuendeProvider: any = {
 // Aligned with mock user data from src/mock/users/index.ts
 export const MOCK_USERS = {
   user: {
-    sub: 'adm-001', // Matches Elias Mekonnen
+    sub: 'usr-001',
     userId: 'usr-001',
     name: 'Elias Mekonnen',
     email: 'elias.mekonnen@gmail.local',
