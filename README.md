@@ -13,9 +13,8 @@ AI-Net is a platform designed to showcase powerful AI features powered by the [.
 
 Related Visit
 
-- 🖥️ Frontend → https://github.com/username/project-frontend
-- ⚙️ Backend → https://github.com/username/project-backend
-- ☁️ Site → https://github.com/username/project-devops
+- ⚙️ Backend → https://github.com/e89wrhi/ai-net
+- ☁️ Site → https:/
 
 This repository contains the client-side code, built using modern web development tools:
 
