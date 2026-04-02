@@ -3,7 +3,7 @@ import ActivityClient from './components/activity-client';
 
 export default async function ActivityPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white dark:bg-black">
       <ActivityClient />
     </div>
   );

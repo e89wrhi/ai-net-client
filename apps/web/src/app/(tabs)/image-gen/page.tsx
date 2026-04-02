@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default async function ImageGenerationPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white dark:bg-black">
       <Suspense fallback={<LoadingView />}>
         <DataLoader />
       </Suspense>

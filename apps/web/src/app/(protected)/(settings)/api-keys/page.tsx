@@ -3,7 +3,7 @@ import ApiKeysClient from './components/api-keys-client';
 
 export default async function ApiKeysPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white dark:bg-black">
       <ApiKeysClient />
     </div>
   );
