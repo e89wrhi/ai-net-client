@@ -37,11 +37,11 @@ const featuredGroup: NavGroup = {
   title: 'Featured',
   items: [
     { title: 'Chat', icon: MessageCircle, url: '/', enabled: true },
-    { 
-      title: 'Home', 
-      icon: Home, 
-      url: process.env.NEXT_PUBLIC_HOME_URL || 'http://localhost:3001/', 
-      enabled: true 
+    {
+      title: 'Home',
+      icon: Home,
+      url: process.env.NEXT_PUBLIC_HOME_URL || 'http://localhost:3001/',
+      enabled: true,
     },
   ],
 };
