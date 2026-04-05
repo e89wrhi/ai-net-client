@@ -20,27 +20,28 @@ export default function ImageGenHeader({
   onModelChange,
 }: ImageHeaderProps) {
   return (
-    <div className="flex flex-row justify-between items-center">
-      <div className="flex flex-row">
+    <div className="flex flex-row justify-between items-center gap-2">
+      <div className="flex flex-row items-center min-w-0">
         <SidebarTrigger
           size={'lg'}
-          className="mr-3 block md:hidden 
-        scale-112 mt-2"
+          className="mr-1 md:mr-3 block md:hidden scale-112"
         />
-        <div className="mb-8">
-          <h1 className="mb-2 font-bold text-4xl">Generate Image</h1>
-          <p className="text-gray-600">
+        <div className="flex flex-col min-w-0">
+          <h1 className="font-bold text-2xl md:text-4xl truncate">
+            Generate Image
+          </h1>
+          <p className="text-gray-600 hidden md:block">
             Smart text suggestions for emails, forms, and messages with style
             adjustments
           </p>
         </div>
       </div>
 
-      <div className="flex flex-row items-center space-x-3">
+      <div className="flex flex-row items-center space-x-1.5 md:space-x-3 flex-shrink-0 flex-nowrap">
         <ModelSelector
           value={selectedModel}
           onValueChange={onModelChange}
-          className="w-[200px]"
+          className="w-[110px] md:w-[200px]"
         />
 
         <WhyDrawer

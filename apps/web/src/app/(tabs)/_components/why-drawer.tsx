@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/drawer';
 import { WhyItem } from '@/types';
 import Link from 'next/link';
-import React from 'react';
+import { Info } from 'lucide-react';
 
 export interface WhyProps {
   title: string;
@@ -22,8 +22,12 @@ export default function WhyDrawer({ title, link, items }: WhyProps) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant="secondary" className="rounded-full">
-          Learn
+        <Button
+          variant="secondary"
+          className="rounded-full h-9 w-9 md:h-auto p-0 md:px-4"
+        >
+          <Info className="h-4 w-4 md:mr-2" />
+          <span className="hidden md:inline">Learn</span>
         </Button>
       </DrawerTrigger>
 
