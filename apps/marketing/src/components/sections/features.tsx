@@ -25,7 +25,7 @@ const Steps = () => {
             alt="Chat Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -47,7 +47,7 @@ const Steps = () => {
             alt="Autocomplete Feature"
             height={1300}
             width={1300}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -69,7 +69,7 @@ const Steps = () => {
             alt="Debug Code Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -91,7 +91,7 @@ const Steps = () => {
             alt="Generate Code Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -113,7 +113,7 @@ const Steps = () => {
             alt="Image Caption Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -135,7 +135,7 @@ const Steps = () => {
             alt="Edit Image Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-77"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -157,7 +157,7 @@ const Steps = () => {
             alt="Generate Image Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -179,7 +179,7 @@ const Steps = () => {
             alt="Learning Assistant Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-80"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -201,7 +201,7 @@ const Steps = () => {
             alt="Meeting Summarizer Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -223,7 +223,7 @@ const Steps = () => {
             alt="Resume Analyzer Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -245,7 +245,7 @@ const Steps = () => {
             alt="Sentiment Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -266,7 +266,7 @@ const Steps = () => {
             alt="Speech to Text Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -287,7 +287,7 @@ const Steps = () => {
             alt="Text to Speech Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-80"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -308,7 +308,7 @@ const Steps = () => {
             alt="Translate Feature"
             height={1500}
             width={1500}
-            className="h-70 mt-5 w-70"
+            className="h-60 w-60 mt-5"
           />
         </div>
       ),
@@ -320,8 +320,10 @@ const Steps = () => {
 
 export function Features() {
   return (
-    <div className="relative w-full overflow-clip">
-      <h1 className="font-bold text-4xl mt-10 md:mt-15">Features</h1>
+    <div className="relative w-full overflow-clip bg-white dark:bg-black">
+      <div className="container mx-auto px-4">
+        <h1 className="font-bold text-4xl mt-10 md:mt-15">Features</h1>
+      </div>
       <Timeline data={Steps()} />
     </div>
   );

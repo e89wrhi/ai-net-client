@@ -57,7 +57,7 @@ export function TechStack() {
   };
 
   return (
-    <section className="py-20">
+    <section className="py-20 bg-white dark:bg-black">
       <div className="container mx-auto px-4">
         <div className="text-center space-y-4 mb-16">
           <h2 className="text-4xl md:text-5xl">Poweered By</h2>
