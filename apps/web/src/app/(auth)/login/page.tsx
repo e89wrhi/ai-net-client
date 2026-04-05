@@ -9,11 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion, AnimatePresence } from 'motion/react';
 import { Chrome } from 'lucide-react';
+import { env } from '../../../../env.mjs';
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const error = searchParams.get('error');
+  const callbackUrl = searchParams.get('callbackUrl') || env.NEXT_PUBLIC_APP_URL;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,7 +68,7 @@ export default function LoginPage() {
 
       <motion.div variants={itemVariants} className="space-y-4">
         <Button
-          onClick={() => signIn('google')}
+          onClick={() => signIn('google', { callbackUrl })}
           variant="outline"
           className="cursor-pointer w-full h-12 transition-all duration-300 rounded-full flex items-center justify-center gap-3 group"
           disabled={isLoading}
@@ -93,7 +95,7 @@ export default function LoginPage() {
           await signIn('credentials', {
             email: formData.get('email') as string,
             password: formData.get('password') as string,
-            callbackUrl: '/',
+            callbackUrl,
             redirect: true,
           });
         }}
