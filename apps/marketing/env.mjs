@@ -6,10 +6,12 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().min(1).optional().default('http://localhost:3001'),
+    NEXT_PUBLIC_HOME_URL: z.string().min(1).optional().default('http://localhost:3000'),
   },
   runtimeEnv: {
     // Client-side
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_HOME_URL: process.env.NEXT_PUBLIC_HOME_URL,
   },
   // Skip validation during CI/build if SKIP_ENV_VALIDATION is set
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

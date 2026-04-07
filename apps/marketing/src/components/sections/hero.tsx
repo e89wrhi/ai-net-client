@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Sparkle, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { env } from '../../../env.mjs';
 import { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -113,7 +114,7 @@ export function Hero() {
             </div>
 
             <div className="flex flex-wrap gap-4 items-center" ref={buttonsRef}>
-              <Link href={'http://localhost:3000/'}>
+              <Link href={`${env.NEXT_PUBLIC_HOME_URL}/`}>
                 <Button size="lg" className="rounded-full gap-2">
                   Try Features
                   <Sparkle className="h-4 w-4" />

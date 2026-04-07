@@ -1,10 +1,11 @@
 'use client';
-
+ 
 import React from 'react';
 import { Timeline } from '@/components/ui/timeline';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { env } from '../../../env.mjs';
 
 const Steps = () => {
   const data = [
@@ -17,7 +18,7 @@ const Steps = () => {
             Interact with an AI-powered chatbot that remembers your conversation
             and provides contextual responses.
           </p>
-          <Link href={`http://localhost:3000/`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/`}>
             <Button className="rounded-full">Start Chat</Button>
           </Link>
           <Image
@@ -39,7 +40,7 @@ const Steps = () => {
             Enhance your writing experience with AI suggestions for text,
             emails, or documents.
           </p>
-          <Link href={`http://localhost:3000/autocomplete/`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/autocomplete/`}>
             <Button className="rounded-full">Try Autocomplete</Button>
           </Link>
           <Image
@@ -61,7 +62,7 @@ const Steps = () => {
             Identify and fix errors in your code efficiently using AI-powered
             debugging suggestions.
           </p>
-          <Link href={`http://localhost:3000/code-debug`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/code-debug`}>
             <Button className="rounded-full">Try Debugging</Button>
           </Link>
           <Image
@@ -83,7 +84,7 @@ const Steps = () => {
             Quickly generate boilerplate or complex code snippets using AI based
             on your requirements.
           </p>
-          <Link href={`http://localhost:3000/code-gen`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/code-gen`}>
             <Button className="rounded-full">Try Coding</Button>
           </Link>
           <Image
@@ -105,7 +106,7 @@ const Steps = () => {
             Upload an image and let AI generate a descriptive caption
             automatically.
           </p>
-          <Link href={`http://localhost:3000/image-caption`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/image-caption`}>
             <Button className="rounded-full">Try Captions</Button>
           </Link>
           <Image
@@ -127,7 +128,7 @@ const Steps = () => {
             Edit images, remove backgrounds, or apply AI-powered enhancements in
             seconds.
           </p>
-          <Link href={`http://localhost:3000/image-edit`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/image-edit`}>
             <Button className="rounded-full">Try Editing</Button>
           </Link>
           <Image
@@ -149,7 +150,7 @@ const Steps = () => {
             Generate original images from text prompts using AI-powered image
             generation.
           </p>
-          <Link href={`http://localhost:3000/image-gen`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/image-gen`}>
             <Button className="rounded-full">Try Images</Button>
           </Link>
           <Image
@@ -171,7 +172,7 @@ const Steps = () => {
             Create lessons, quizzes, and learning material automatically using
             AI.
           </p>
-          <Link href={`http://localhost:3000/learning`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/learning`}>
             <Button className="rounded-full">Try Learning</Button>
           </Link>
           <Image
@@ -193,7 +194,7 @@ const Steps = () => {
             Upload audio or video of meetings and generate transcripts and
             summaries automatically.
           </p>
-          <Link href={`http://localhost:3000/meeting`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/meeting`}>
             <Button className="rounded-full">Try Summary</Button>
           </Link>
           <Image
@@ -215,7 +216,7 @@ const Steps = () => {
             Analyze resumes to extract skills, experience, and suggestions for
             improvement.
           </p>
-          <Link href={`http://localhost:3000/resume`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/resume`}>
             <Button className="rounded-full">Try Analyzing</Button>
           </Link>
           <Image
@@ -237,7 +238,7 @@ const Steps = () => {
             Analyze text content to detect positive, negative, or neutral
             sentiment automatically.
           </p>
-          <Link href={`http://localhost:3000/sentiment`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/sentiment`}>
             <Button className="rounded-full">Try Sentiment</Button>
           </Link>
           <Image
@@ -258,7 +259,7 @@ const Steps = () => {
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
             Convert audio speech into written text quickly and accurately.
           </p>
-          <Link href={`http://localhost:3000/speech-to-text`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/speech-to-text`}>
             <Button className="rounded-full">Try Converting</Button>
           </Link>
           <Image
@@ -279,7 +280,7 @@ const Steps = () => {
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
             Convert written text into natural-sounding speech audio.
           </p>
-          <Link href={`http://localhost:3000/text-to-speech`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/text-to-speech`}>
             <Button className="rounded-full">Try Converting</Button>
           </Link>
           <Image
@@ -300,7 +301,7 @@ const Steps = () => {
           <p className="mb-8 text-md md:text-xl text-neutral-700 dark:text-neutral-300">
             Translate text into multiple languages quickly and accurately.
           </p>
-          <Link href={`http://localhost:3000/translate`}>
+          <Link href={`${env.NEXT_PUBLIC_HOME_URL}/translate`}>
             <Button className="rounded-full">Try Translation</Button>
           </Link>
           <Image
