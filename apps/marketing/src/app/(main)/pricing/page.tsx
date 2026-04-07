@@ -6,12 +6,12 @@ import { PricingFaq } from '@/components/pricing/pricing-faq';
 export const metadata = constructMetadata({
   title: 'Pricing – AInet',
   description:
-    'Choose the perfect plan to try ai features. Free starter plan available.',
+    'Choose the perfect plan for your AI workflows. Scale from a hobbyist to enterprise with AInet.',
 });
 
 export default async function PricingPage() {
   return (
-    <div className="flex w-full flex-col gap-16 py-8 md:py-8">
+    <div className="bg-white dark:bg-black flex w-full flex-col gap-16 py-8 md:py-8">
       <PricingCards />
       <hr className="container" />
       <PricingFaq />

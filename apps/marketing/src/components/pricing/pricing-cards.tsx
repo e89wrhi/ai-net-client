@@ -26,8 +26,8 @@ export default function PricingCards() {
       <section className="flex flex-col">
         <HeaderSection
           label={'Pricing'}
-          title={'Prcing more info'}
-          subtitle=""
+          title={'Transparent Pricing for Every Scale'}
+          subtitle="Simple, flexible pricing tiers designed to grow with you. Choose the plan that fits your needs."
         />
 
         <div className="mb-8 mt-10 flex justify-center items-center gap-5">
@@ -131,7 +131,7 @@ export default function PricingCards() {
         </div>
 
         <p className="mt-6 text-balance text-center text-base text-muted-foreground">
-          this is pricing footer
+          Need a custom solution for your enterprise? <a href="/contact" className="text-primary underline">Contact us</a> for a tailored plan.
         </p>
       </section>
     </MaxWidthWrapper>
