@@ -15,7 +15,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const error = searchParams.get('error');
-  const callbackUrl = searchParams.get('callbackUrl') || env.NEXT_PUBLIC_APP_URL;
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const containerVariants = {
     hidden: { opacity: 0 },
