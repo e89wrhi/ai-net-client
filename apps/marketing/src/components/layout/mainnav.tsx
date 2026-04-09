@@ -19,7 +19,7 @@ export function Navigation({}: NavigationProps) {
             <Image
               height={100}
               width={100}
-              src={'/ai.png'}
+              src={'/logo.png'}
               className="h-10 w-10"
               alt="logo"
             />
