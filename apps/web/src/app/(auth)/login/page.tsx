@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion, AnimatePresence } from 'motion/react';
 import { Chrome } from 'lucide-react';
-import { env } from '../../../../env.mjs';
 
 export default function LoginPage() {
   const searchParams = useSearchParams();

@@ -33,16 +33,10 @@ export const HomeHeader = ({ className, ...props }: HeaderProps) => {
       >
         <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-green-400 flex items-center justify-center shadow-lg shadow-green-400/20 group-hover:scale-110 transition-transform">
           <Image
-            src={'/l3.png'}
+            src={'/logo.png'}
             fill
             alt="nolimit"
-            className="object-contain p-1.5 hidden dark:block"
-          />
-          <Image
-            src={'/l1.png'}
-            fill
-            alt="nolimit"
-            className="object-contain p-1.5 block dark:hidden"
+            className="object-contain p-1.5"
           />
           {/* Fallback Initial if no image */}
           <span className="text-black font-black text-xl">N</span>
