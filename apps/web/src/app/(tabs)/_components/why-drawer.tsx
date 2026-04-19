@@ -31,7 +31,7 @@ export default function WhyDrawer({ title, link, items }: WhyProps) {
         </Button>
       </DrawerTrigger>
 
-      <DrawerContent className="mt-5 mx-5 p-6 rounded-2xl max-h-[90vh]">
+      <DrawerContent className="mt-5 mx-5 p-6 bg-white dark:bg-black rounded-2xl max-h-[90vh]">
         <div className="overflow-y-auto">
           <MaxWidthWrapper>
             <DrawerHeader>
