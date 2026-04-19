@@ -1,6 +1,7 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { AppSidebar } from './_components/home-sidebar';
+import { MobileBottomNav } from './_components/mobile-bottom-nav';
 import { cookies } from 'next/headers';
 import { auth } from '@/auth';
 import { getCurrentUser } from '@/lib/api/user/get-current';
@@ -34,15 +35,22 @@ export default async function FeaturesLayout({
       defaultOpen={defaultOpen}
       className="flex min-h-screen flex-col"
     >
-      <AppSidebar userProfile={userProfile} />
+      {/* Sidebar: hidden on mobile, visible md+ */}
+      <div className="hidden md:contents">
+        <AppSidebar userProfile={userProfile} />
+      </div>
+
       <div
         id="content"
         className={cn(
           'ml-auto w-full max-w-full',
-          'peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]',
-          'peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]',
+          // On desktop, account for the sidebar width
+          'md:peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]',
+          'md:peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]',
           'sm:transition-[width] sm:duration-200 sm:ease-linear',
           'flex h-svh flex-col',
+          // On mobile add bottom padding so content isn't hidden behind the floating bar
+          'pb-[4.5rem] md:pb-0',
           'group-data-[scroll-locked=1]/body:h-full',
           'has-[main.fixed-main]:group-data-[scroll-locked=1]/body:h-svh'
         )}
@@ -50,6 +58,9 @@ export default async function FeaturesLayout({
         <NotificationBar />
         {children}
       </div>
+
+      {/* Mobile-only floating bottom nav */}
+      <MobileBottomNav userProfile={userProfile} />
     </SidebarProvider>
   );
 }
