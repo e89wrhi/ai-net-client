@@ -34,19 +34,49 @@ export default function TextToSpeechClient() {
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
 
   const generateSpeech = () => {
-    if (!text.trim()) return;
+    if (!text.trim()) {
+      toast.error('Please enter some text first');
+      return;
+    }
+    toast.success('Audio generated successfully');
     setAudioGenerated(true);
   };
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-    // Simulate audio playback
-    if (!isPlaying) {
-      setTimeout(() => setIsPlaying(false), 3000);
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      toast.error('Your browser does not support text to speech');
+      return;
+    }
+    
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+    } else {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = speed[0] || 1;
+      utterance.pitch = pitch[0] || 1;
+      
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const matchedVoice = voices.find(v => v.name.toLowerCase().includes(voice));
+        if (matchedVoice) utterance.voice = matchedVoice;
+      }
+      
+      utterance.onend = () => setIsPlaying(false);
+      utterance.onerror = () => {
+        setIsPlaying(false);
+      };
+      
+      window.speechSynthesis.speak(utterance);
+      setIsPlaying(true);
     }
   };
 
   const handleReset = () => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsPlaying(false);
     toast('Session Reset');
   };
 
@@ -161,7 +191,13 @@ export default function TextToSpeechClient() {
           <div className="">
             <div className="flex items-center justify-between mb-4">
               {audioGenerated && (
-                <Button variant="outline" size="sm" className="rounded-full">
+                <Button variant="outline" size="sm" className="rounded-full" onClick={() => {
+                  const a = document.createElement('a'); 
+                  a.href = URL.createObjectURL(new Blob(["Mock MP3 Data for " + text], {type: 'audio/mp3'})); 
+                  a.download = 'generated-speech.mp3'; 
+                  a.click(); 
+                  toast.success('Audio downloaded'); 
+                }}>
                   <Download className="h-4 w-4 mr-2" />
                   Download MP3
                 </Button>

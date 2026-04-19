@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,6 +26,16 @@ export default function SpeechToTextClient() {
   const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [recordingTime, setRecordingTime] = useState(0);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const mediaChunks = useRef<Blob[]>([]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
 
   // Toggle for development
   const USE_MOCK = true;
@@ -99,32 +109,53 @@ This text is being generated chunk by chunk as the model processes the audio str
     }
   };
 
-  const startRecording = () => {
-    setIsRecording(true);
-    setRecordingTime(0);
-    // Simulate recording timer
-    const interval = setInterval(() => {
-      setRecordingTime((prev) => {
-        if (prev >= 10) {
-          stopRecording();
-          clearInterval(interval);
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, 1000);
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      
+      mediaChunks.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) mediaChunks.current.push(e.data);
+      };
+      
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(mediaChunks.current, { type: 'audio/webm' });
+        const url = URL.createObjectURL(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+        await handleTranscribe(url);
+      };
+      
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+      setRecordingTime(0);
+
+      timerRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } catch (err) {
+      toast.error('Microphone access denied or unavailable.');
+    }
   };
 
-  const stopRecording = async () => {
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+    if (timerRef.current) clearInterval(timerRef.current);
     setIsRecording(false);
-    // In a real app, we would upload the recorded blob and get a URL
-    // For now, we simulate a URL
-    await handleTranscribe('https://example.com/recorded-audio.wav');
   };
 
-  const uploadAudio = async () => {
-    // In a real app, we would upload the file and get a URL
-    await handleTranscribe('https://example.com/uploaded-file.mp3');
+  const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    toast.success(`Loaded ${file.name}`);
+    await handleTranscribe(URL.createObjectURL(file)); 
+  };
+
+  const uploadAudio = () => {
+    fileInputRef.current?.click();
   };
 
   const handleReset = () => {
@@ -222,18 +253,18 @@ This text is being generated chunk by chunk as the model processes the audio str
               </div>
 
               <Card className="p-0 border-none shadow-none">
-                <div className="p-8">
+                <div className="p-8 cursor-pointer group hover:bg-neutral-50 dark:hover:bg-neutral-800/50 rounded-2xl transition-all" onClick={uploadAudio}>
                   <div className="text-center space-y-3">
-                    <Upload className="h-12 w-12 mx-auto" />
+                    <Upload className="h-12 w-12 mx-auto group-hover:scale-110 transition-transform" />
                     <div>
                       <p className="text-gray-600 mb-1">Upload Audio File</p>
                       <p className="text-sm text-gray-400">
                         MP3, WAV, M4A (Max 25MB)
                       </p>
                     </div>
+                    <input type="file" accept="audio/*" ref={fileInputRef} onChange={handleAudioUpload} className="hidden" />
                     <Button
-                      onClick={uploadAudio}
-                      className="rounded-full cursor-pointer"
+                      className="rounded-full pointer-events-none"
                     >
                       Choose File
                     </Button>
@@ -259,10 +290,16 @@ This text is being generated chunk by chunk as the model processes the audio str
             <div className="flex items-center justify-between mb-4">
               {transcription && (
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(transcription); toast.success('Copied'); }}>
                     Copy
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => {
+                     const a = document.createElement('a'); 
+                     a.href = URL.createObjectURL(new Blob([transcription], {type: 'text/plain'})); 
+                     a.download = 'transcript.txt'; 
+                     a.click(); 
+                     toast.success('Exported'); 
+                  }}>
                     Export
                   </Button>
                 </div>
