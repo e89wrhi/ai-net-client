@@ -11,7 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Copy, Check, Sparkles } from 'lucide-react';
+import { Copy, Check, Sparkles, Download } from 'lucide-react';
+import CodeMirror from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import { javascript } from '@codemirror/lang-javascript';
+import { java } from '@codemirror/lang-java';
+import { cpp } from '@codemirror/lang-cpp';
+import { go } from '@codemirror/lang-go';
+import { rust } from '@codemirror/lang-rust';
 import { Switch } from '@/components/ui/switch';
 import { useStreamGenerateCode } from '@/lib/api/code-gen/stream-generate';
 import { useGenerateCode } from '@/lib/api/code-gen/generate';
@@ -150,6 +157,19 @@ int main() {
 }`,
   };
 
+  const getLanguageExtension = (lang: string) => {
+    switch (lang) {
+      case 'python': return [python()];
+      case 'javascript': return [javascript()];
+      case 'typescript': return [javascript({ typescript: true })];
+      case 'java': return [java()];
+      case 'cpp': return [cpp()];
+      case 'go': return [go()];
+      case 'rust': return [rust()];
+      default: return [];
+    }
+  };
+
   const { mutateAsync: streamGenerate, isPending: isStreamPending } =
     useStreamGenerateCode();
   const { mutateAsync: jsonGenerate, isPending: isJsonPending } =
@@ -210,6 +230,18 @@ int main() {
 
   const handleReset = () => {
     toast('Session Reset');
+  };
+
+  const handleExport = () => {
+    if (!generatedCode) return;
+    const element = document.createElement('a');
+    const file = new Blob([generatedCode], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = `generated-code.${language === 'python' ? 'py' : language === 'javascript' ? 'js' : language === 'typescript' ? 'ts' : language === 'java' ? 'java' : language === 'cpp' ? 'cpp' : language === 'go' ? 'go' : language === 'rust' ? 'rs' : 'txt'}`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    toast('Code downloaded');
   };
 
   return (
@@ -315,10 +347,14 @@ int main() {
 
             {generatedCode ? (
               <div className="space-y-4">
-                <div className="p-4 rounded-lg overflow-x-auto">
-                  <pre className="text-sm">
-                    <code>{generatedCode}</code>
-                  </pre>
+                <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 bg-[#282c34]">
+                  <CodeMirror
+                    value={generatedCode}
+                    extensions={getLanguageExtension(language)}
+                    theme="dark"
+                    editable={false}
+                    className="text-sm font-mono"
+                  />
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 text-center text-sm">
@@ -342,7 +378,8 @@ int main() {
                   <Button variant="outline" className="flex-1">
                     Test Code
                   </Button>
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick={handleExport}>
+                    <Download className="h-4 w-4 mr-2" />
                     Download
                   </Button>
                 </div>
