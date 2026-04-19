@@ -5,7 +5,7 @@ import {
 } from '../../_components/data/image-gen';
 import WhyDrawer from '../../_components/why-drawer';
 import { ImageGenOptions } from './image-gen-options';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+
 import { ModelSelector } from '../../_components/model-selector';
 
 interface ImageHeaderProps {
@@ -22,10 +22,7 @@ export default function ImageGenHeader({
   return (
     <div className="flex flex-row justify-between items-center gap-2">
       <div className="flex flex-row items-center min-w-0">
-        <SidebarTrigger
-          size={'lg'}
-          className="mr-1 md:mr-3 block md:hidden scale-112"
-        />
+        
         <div className="flex flex-col min-w-0">
           <h1 className="font-bold text-2xl md:text-4xl truncate">
             Generate Image

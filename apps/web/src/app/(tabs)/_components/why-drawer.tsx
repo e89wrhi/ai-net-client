@@ -22,10 +22,10 @@ export default function WhyDrawer({ title, link, items }: WhyProps) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button
-          variant="secondary"
-          className="rounded-full h-9 w-9 md:h-auto p-0 md:px-4"
-        >
+          <Button
+            variant="secondary"
+            className="rounded-full w-8 md:w-auto h-8 md:h-10 px-0 md:px-4 text-xs md:text-sm"
+          >
           <Info className="h-4 w-4 md:mr-2" />
           <span className="hidden md:inline">Learn</span>
         </Button>

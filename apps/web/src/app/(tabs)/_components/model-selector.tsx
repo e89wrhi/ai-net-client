@@ -21,14 +21,14 @@ const AI_MODELS = [
   { id: 'gemini-pro', name: 'Gemini Pro' },
 ];
 
-export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
+export function ModelSelector({ value, onValueChange, className }: ModelSelectorProps) {
   return (
     <Select
       value={value ?? 'auto'}
       onValueChange={(v) => onValueChange(v === 'auto' ? null : v)}
     >
       <SelectTrigger
-        className={`rounded-full bg-neutral-200 dark:bg-neutral-800 border-none`}
+        className={`min-w-[130px] md:min-w-[200px] px-3 md:px-4 rounded-full bg-neutral-200 dark:bg-neutral-800 border-none h-8 md:h-10 text-xs md:text-sm ${className || ''}`}
       >
         <SelectValue placeholder="Select AI Model" />
       </SelectTrigger>

@@ -2,7 +2,7 @@ import React from 'react';
 import { simplemdLink, simplemdWhy } from '../../_components/data/simplemd';
 import WhyDrawer from '../../_components/why-drawer';
 import { SimpleMDOptions } from './simplemd-options';
-import { SidebarTrigger } from '@/components/ui/sidebar';
+
 import OutputTypePicker from '@/components/shared/output-type-picker';
 import { ModelSelector } from '../../_components/model-selector';
 
@@ -24,10 +24,7 @@ export default function SimpleMDHeader({
   return (
     <div className="flex flex-row justify-between items-center gap-2">
       <div className="flex flex-row items-center min-w-0">
-        <SidebarTrigger
-          size={'lg'}
-          className="mr-1 md:mr-3 block md:hidden scale-112"
-        />
+        
         <div className="flex flex-col min-w-0">
           <h1 className="font-bold text-2xl md:text-4xl truncate">SimpleMD</h1>
           <p className="text-gray-600 hidden md:block">
@@ -43,14 +40,12 @@ export default function SimpleMDHeader({
           onValueChange={onModelChange}
           className="w-[110px] md:w-[200px]"
         />
-        <div className="hidden sm:block">
-          <OutputTypePicker
+        <OutputTypePicker
             type={responseType}
             onChange={(value) =>
               onResponseTypeChange(value as 'stream' | 'json')
             }
           />
-        </div>
 
         <WhyDrawer title="simplemd" link={simplemdLink} items={simplemdWhy} />
 
