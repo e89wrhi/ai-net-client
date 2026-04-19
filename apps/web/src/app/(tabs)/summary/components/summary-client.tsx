@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
@@ -11,15 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
 import {
-  FileText,
-  Upload,
-  Link as LinkIcon,
   Sparkles,
   Copy,
-  ExternalLink,
   Zap,
   BarChart3,
   Check,
@@ -35,12 +29,9 @@ export default function SummarizationClient() {
   const [summary, setSummary] = useState('');
   const [summaryType, setSummaryType] = useState('paragraph');
   const [length, setLength] = useState('medium');
-  const [inputMethod, setInputMethod] = useState('text');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
-  const [url, setUrl] = useState('');
   const [responseType, setResponseType] = useState<'stream' | 'json'>('stream');
   const [isCopied, setIsCopied] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: streamSummarize, isPending: isStreamPending } =
     useStreamSummarizeText();
@@ -83,38 +74,7 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
 In conclusion, the proposed solution addresses current bottlenecks while providing a scalable foundation for future growth.`;
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    if (file.type !== 'text/plain' && !file.name.endsWith('.txt')) {
-      toast.error(
-        'Only .txt files are supported in this demo. PDF/DOCX require server-side parsing.'
-      );
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const content = event.target?.result as string;
-      setInputText(content);
-      toast.success(`Loaded ${file.name}`);
-    };
-    reader.readAsText(file);
-  };
-
-  const handleUrlFetch = () => {
-    if (!url) return;
-    toast.loading('Fetching content...', { id: 'url-fetch' });
-
-    // Simulate URL content fetching
-    setTimeout(() => {
-      setInputText(
-        `This is mock content fetched from ${url}. In a production environment, we would use a library like Cheerio or a dedicated scraper service to extract the main article text, removing ads, navigation, and other boilerplate.`
-      );
-      toast.success('Content fetched successfully', { id: 'url-fetch' });
-    }, 1500);
-  };
 
   const generateSummary = async () => {
     if (!inputText.trim()) {
@@ -194,93 +154,14 @@ In conclusion, the proposed solution addresses current bottlenecks while providi
                      ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
                      duration-500 hover:ring-primary/20"
           >
-            <Tabs
-              value={inputMethod}
-              onValueChange={setInputMethod}
-              className="w-full"
-            >
-              <div className="px-6 pt-6">
-                <TabsList className="grid w-full grid-cols-3 bg-transparent rounded-2xl h-13">
-                  <TabsTrigger
-                    value="text"
-                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm"
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    Text
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="file"
-                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm"
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    File
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="url"
-                    className="rounded-xl data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 data-[state=active]:shadow-sm"
-                  >
-                    <LinkIcon className="h-4 w-4 mr-2" />
-                    URL
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
-              <div className="p-6">
-                <TabsContent value="text" className="mt-0">
-                  <Textarea
-                    placeholder="Paste the text you want to distill into a summary..."
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    className="min-h-[350px] border-none bg-transparent resize-none text-base focus-visible:ring-0 placeholder:text-zinc-400"
-                  />
-                </TabsContent>
-
-                <TabsContent value="file" className="mt-0">
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-3xl p-12 text-center cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all group"
-                  >
-                    <div className="bg-primary/10 p-4 rounded-2xl inline-block mb-4 group-hover:scale-110 transition-transform">
-                      <Upload className="h-8 w-8 text-primary" />
-                    </div>
-                    <p className="text-zinc-900 dark:text-zinc-100 font-semibold mb-1 text-lg">
-                      Select a file
-                    </p>
-                    <p className="text-sm text-zinc-500 max-w-[200px] mx-auto">
-                      PDF, DOCX, or TXT documents (Max 10MB)
-                    </p>
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      className="hidden"
-                      onChange={handleFileUpload}
-                      accept=".txt"
-                    />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="url" className="mt-0 space-y-4">
-                  <div className="relative">
-                    <Input
-                      type="url"
-                      placeholder="https://article.com/interesting-story"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      className="h-14 rounded-2xl pl-12 bg-zinc-100 dark:bg-zinc-800 border-none"
-                    />
-                    <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
-                  </div>
-                  <Button
-                    onClick={handleUrlFetch}
-                    className="w-full h-12 rounded-2xl gap-2 font-bold"
-                    variant="secondary"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Extract Document Text
-                  </Button>
-                </TabsContent>
-              </div>
-            </Tabs>
+            <div className="p-6">
+              <Textarea
+                placeholder="Paste the text you want to distill into a summary..."
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                className="min-h-[350px] border-none bg-transparent resize-none text-base focus-visible:ring-0 placeholder:text-zinc-400"
+              />
+            </div>
 
             <div className="px-6 pb-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
