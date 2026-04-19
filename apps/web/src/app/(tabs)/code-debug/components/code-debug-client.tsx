@@ -12,7 +12,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bug, Lightbulb, RefreshCw, Sparkles } from 'lucide-react';
+import { Bug, Lightbulb, RefreshCw, Sparkles, Copy, Download } from 'lucide-react';
+import CodeMirror from '@uiw/react-codemirror';
+import { python } from '@codemirror/lang-python';
+import { javascript } from '@codemirror/lang-javascript';
+import { java } from '@codemirror/lang-java';
+import { cpp } from '@codemirror/lang-cpp';
+import { go } from '@codemirror/lang-go';
+import { rust } from '@codemirror/lang-rust';
 import { useStreamAnalyzeCode } from '@/lib/api/code-debug/stream-analyze-code';
 import { useAnalyzeCode } from '@/lib/api/code-debug/analyze-code';
 import { DebugDepth, ProgrammingLanguage } from '@/types/enums/code-debug';
@@ -89,6 +96,19 @@ Refactoring Suggestion: Consider using an iterative approach with a stack to imp
     }
   };
 
+  const getLanguageExtension = (lang: string) => {
+    switch (lang) {
+      case 'python': return [python()];
+      case 'javascript': return [javascript()];
+      case 'typescript': return [javascript({ typescript: true })];
+      case 'java': return [java()];
+      case 'cpp': return [cpp()];
+      case 'go': return [go()];
+      case 'rust': return [rust()];
+      default: return [];
+    }
+  };
+
   const analyzeCode = async () => {
     if (!code.trim()) return;
 
@@ -136,6 +156,24 @@ Refactoring Suggestion: Consider using an iterative approach with a stack to imp
     toast('Session Reset');
   };
 
+  const handleCopy = () => {
+    if (!result) return;
+    navigator.clipboard.writeText(result);
+    toast('Result copied to clipboard');
+  };
+
+  const handleExport = () => {
+    if (!result) return;
+    const element = document.createElement('a');
+    const file = new Blob([result], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'code-analysis.txt';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    toast('Result exported');
+  };
+
   return (
     <div className="container mx-auto py-2">
       <CodeDebugHeader
@@ -155,12 +193,17 @@ Refactoring Suggestion: Consider using an iterative approach with a stack to imp
         >
           <div className="p-8">
             <div className="space-y-4">
-              <Textarea
-                placeholder="Enter your code snippet..."
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                className="min-h-[300px] border-none shadow-none font-mono text-sm"
-              />
+              <div className="min-h-[300px] border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-[#282c34]">
+                <CodeMirror
+                  value={code}
+                  minHeight="300px"
+                  extensions={getLanguageExtension(language)}
+                  onChange={(val) => setCode(val)}
+                  theme="dark"
+                  className="text-sm font-mono"
+                  placeholder="Enter your code snippet..."
+                />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
@@ -222,10 +265,12 @@ Refactoring Suggestion: Consider using an iterative approach with a stack to imp
           <div className="flex items-center justify-between mb-4">
             {result && (
               <div className="flex gap-2">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleCopy}>
+                  <Copy className="h-4 w-4 mr-2" />
                   Copy
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleExport}>
+                  <Download className="h-4 w-4 mr-2" />
                   Export
                 </Button>
               </div>
