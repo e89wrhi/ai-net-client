@@ -17,7 +17,7 @@ interface Props {
   link: string;
   onSessionReset?: () => void;
 }
-export function ChatOptions(props: Props) {
+export function TextGenOptions(props: Props) {
   const { link, onSessionReset } = props;
   const router = useRouter();
   const handleOpenLink = () => {

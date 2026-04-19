@@ -1,21 +1,29 @@
 import React from 'react';
-import { chatLink, chatWhy } from '../../(tabs)/_components/data/chat';
-import WhyDrawer from '../../(tabs)/_components/why-drawer';
-import { ChatOptions } from './chat-options';
+import {
+  chatLink,
+  chatWhy,
+} from '../_components/data/chat';
+import WhyDrawer from '../_components/why-drawer';
+import { TextGenOptions } from './chat-options';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import OutputTypePicker from '@/components/shared/output-type-picker';
 import { ModelSelector } from '../_components/model-selector';
 
-interface ChatHeaderProps {
+interface TextGenHeaderProps {
   selectedModel: string | null;
   onSessionReset?: () => void;
   onModelChange: (model: string | null) => void;
+  responseType: 'stream' | 'json';
+  onResponseTypeChange: (type: 'stream' | 'json') => void;
 }
 
-export default function ChatHeader({
+export default function TextGenHeader({
   selectedModel,
   onSessionReset,
   onModelChange,
-}: ChatHeaderProps) {
+  responseType,
+  onResponseTypeChange,
+}: TextGenHeaderProps) {
   return (
     <div className="flex flex-row justify-between items-center gap-2">
       <div className="flex flex-row items-center min-w-0">
@@ -26,8 +34,7 @@ export default function ChatHeader({
         <div className="flex flex-col min-w-0">
           <h1 className="font-bold text-2xl md:text-4xl truncate">Chat</h1>
           <p className="text-gray-600 hidden md:block">
-            Smart text suggestions for emails, forms, and messages with style
-            adjustments
+            Intellegent Conversation
           </p>
         </div>
       </div>
@@ -39,9 +46,25 @@ export default function ChatHeader({
           className="w-[110px] md:w-[200px]"
         />
 
-        <WhyDrawer title="chat" link={chatLink} items={chatWhy} />
+        <div className="hidden sm:block">
+          <OutputTypePicker
+            type={responseType}
+            onChange={(value) =>
+              onResponseTypeChange(value as 'stream' | 'json')
+            }
+          />
+        </div>
 
-        <ChatOptions onSessionReset={onSessionReset} link={chatLink} />
+        <WhyDrawer
+          title="chat"
+          link={chatLink}
+          items={chatWhy}
+        />
+
+        <TextGenOptions
+          onSessionReset={onSessionReset}
+          link={chatLink}
+        />
       </div>
     </div>
   );

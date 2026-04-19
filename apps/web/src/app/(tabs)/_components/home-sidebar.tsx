@@ -60,7 +60,6 @@ const imagesGroup: NavGroup = {
 const textGroup: NavGroup = {
   title: 'Text',
   items: [
-    { title: 'Generate', icon: FileText, url: '/text-gen', enabled: true },
     {
       title: 'Text to Speech',
       icon: Speaker,
