@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,6 +16,15 @@ export default function ImageEditingClient() {
   const [editedImage, setEditedImage] = useState('');
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('upload');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadedImage(URL.createObjectURL(file));
+    setActiveTab('edit');
+    toast.success('Image loaded successfully');
+  };
 
   const handleEdit = () => {
     if (!editPrompt.trim()) return;
@@ -66,14 +75,10 @@ export default function ImageEditingClient() {
                   <p className="text-sm text-gray-400 mb-4">
                     JPG, PNG, WEBP (Max 10MB)
                   </p>
+                  <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileUpload} />
                   <Button
                     className="rounded-full"
-                    onClick={() => {
-                      setUploadedImage(
-                        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80'
-                      );
-                      setActiveTab('edit');
-                    }}
+                    onClick={() => fileInputRef.current?.click()}
                   >
                     Choose File
                   </Button>
@@ -194,10 +199,15 @@ export default function ImageEditingClient() {
                     </Card>
 
                     <div className="flex gap-2">
-                      <Button variant="outline" className="flex-1">
+                      <Button variant="outline" className="flex-1" onClick={() => {
+                        fetch(editedImage).then(r => r.blob()).then(blob => {
+                          const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+                          a.download = `edited_${Date.now()}.jpg`; a.click(); toast.success('Downloaded');
+                        });
+                      }}>
                         Download
                       </Button>
-                      <Button variant="outline" className="flex-1">
+                      <Button variant="outline" className="flex-1" onClick={() => { setEditedImage(''); setActiveTab('edit'); }}>
                         Try Another Edit
                       </Button>
                     </div>

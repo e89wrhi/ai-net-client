@@ -20,6 +20,7 @@ import { Spinner } from '@/components/ui/spinner';
 export default function ImageGenerationClient() {
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState('realistic');
+  const [resolution, setResolution] = useState('1024x1024');
   const [generatedImage, setGeneratedImage] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
@@ -65,7 +66,7 @@ export default function ImageGenerationClient() {
                 onChange={(e) => setPrompt(e.target.value)}
                 className="min-h-[150px] border-none shadow-none"
               />
-              <div className="grid grid-cols-1 gap-4 items-center md:grid-cols-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 items-center">
                 <Select value={style} onValueChange={setStyle}>
                   <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
                     <SelectValue />
@@ -80,6 +81,16 @@ export default function ImageGenerationClient() {
                     <SelectItem value="watercolor">Watercolor</SelectItem>
                   </SelectContent>
                 </Select>
+                <Select value={resolution} onValueChange={setResolution}>
+                  <SelectTrigger className="px-4 rounded-full border-none shadow-none bg-neutral-100 dark:bg-black">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="p-4 rounded-3xl space-y-3 border-none shadow-none bg-neutral-100 dark:bg-black">
+                    <SelectItem value="1024x1024">1:1 Square</SelectItem>
+                    <SelectItem value="1024x576">16:9 Wide</SelectItem>
+                    <SelectItem value="576x1024">9:16 Tall</SelectItem>
+                  </SelectContent>
+                </Select>
                 <Button
                   onClick={generateImage}
                   className="w-full rounded-full cursor-pointer"
@@ -90,7 +101,7 @@ export default function ImageGenerationClient() {
                   ) : (
                     <Sparkles className="h-4 w-4" />
                   )}
-                  {isGenerating ? <>Generating...</> : <>Generate Image</>}
+                  {isGenerating ? <>Generating</> : <>Generate</>}
                 </Button>
               </div>
             </div>
@@ -111,7 +122,15 @@ export default function ImageGenerationClient() {
           <div className="">
             <div className="flex items-center justify-between mb-4">
               {generatedImage && (
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => {
+                  fetch(generatedImage).then(r => r.blob()).then(blob => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `ai_${Date.now()}.jpg`;
+                    a.click();
+                    toast.success('Downloaded Image');
+                  }).catch(() => toast.error('Download Failed'));
+                }}>
                   <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>
@@ -136,7 +155,7 @@ export default function ImageGenerationClient() {
                     <div className="text-gray-600">Style</div>
                   </Card>
                   <Card className="p-3">
-                    <div className="text-xl text-purple-600">1024×1024</div>
+                    <div className="text-lg md:text-xl text-purple-600">{resolution}</div>
                     <div className="text-gray-600">Resolution</div>
                   </Card>
                   <Card className="p-3">
