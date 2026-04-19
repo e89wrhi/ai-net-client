@@ -110,11 +110,17 @@ export default function AutocompleteClient() {
     }
   };
 
+  const handleAcceptSuggestion = () => {
+    if (suggestion) {
+      setMessageText((prev) => prev + suggestion);
+      setSuggestion('');
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Tab' && suggestion) {
       e.preventDefault();
-      setMessageText((prev) => prev + suggestion);
-      setSuggestion('');
+      handleAcceptSuggestion();
     }
     // Clear suggestion on any key press if needed, but usually we just want to hide it if they keep typing
     if (
@@ -179,44 +185,52 @@ export default function AutocompleteClient() {
             </div>
           </div>
 
-          <div className="px-8 py-5 bg-zinc-50 dark:bg-zinc-800/50 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-medium px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+          <div className="px-4 sm:px-8 py-4 sm:py-5 bg-zinc-50 dark:bg-zinc-800/50 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center justify-between w-full sm:w-auto gap-2 sm:gap-4 flex-shrink-0">
+              <button 
+                onClick={handleAcceptSuggestion}
+                disabled={!suggestion}
+                className="flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-300 font-medium px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-sm transition-all hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <Command className="h-3 w-3" />
-                <span>Tab to Accept</span>
-              </div>
+                <span className="hidden sm:inline">Tab to Accept</span>
+                <span className="sm:hidden">Accept</span>
+              </button>
               <div className="text-xs text-zinc-400">
                 {messageText.length} chars
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleCopy}
-                className="h-10 w-10 rounded-full hover:bg-white dark:hover:bg-zinc-800 shadow-sm transition-all"
-              >
-                {isCopied ? (
-                  <Check className="h-4 w-4 text-green-500" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMessageText('')}
-                className="h-10 w-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-500 transition-all"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+            <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleCopy}
+                  className="h-10 w-10 rounded-full hover:bg-white dark:hover:bg-zinc-800 shadow-sm transition-all"
+                >
+                  {isCopied ? (
+                    <Check className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setMessageText('')}
+                  className="h-10 w-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-500 transition-all"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
               <Button
                 onClick={() => generateLiveSuggestion(messageText)}
-                className="rounded-full px-5 gap-2 shadow-lg shadow-primary/20 ml-2"
+                className="rounded-full px-4 sm:px-5 gap-2 shadow-lg shadow-primary/20 sm:ml-2"
               >
                 <Sparkles className="h-4 w-4" />
-                <span>AI completion</span>
+                <span className="hidden sm:inline">AI completion</span>
+                <span className="sm:hidden">AI</span>
               </Button>
             </div>
           </div>
