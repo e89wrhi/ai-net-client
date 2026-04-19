@@ -50,7 +50,7 @@ export default function ImageGenerationClient() {
         onSessionReset={handleReset}
       />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 mt-10">
         <Card
           className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
                      rounded-[2.5rem] overflow-hidden 

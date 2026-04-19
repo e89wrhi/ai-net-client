@@ -145,7 +145,7 @@ Translation remains accurate across multiple contexts and maintains the original
       />
 
       <Card
-        className="p-0 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
+        className="p-0 mt-10 border-none bg-white dark:bg-neutral-900 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] 
                      rounded-[2.5rem] overflow-hidden 
                      ring-1 ring-neutral-200 dark:ring-neutral-800 transition-all 
                      duration-500 hover:ring-primary/20"
