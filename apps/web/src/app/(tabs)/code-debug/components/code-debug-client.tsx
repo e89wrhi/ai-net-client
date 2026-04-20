@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import {
   Select,
@@ -12,7 +11,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bug, Lightbulb, RefreshCw, Sparkles, Copy, Download } from 'lucide-react';
+import {
+  Bug,
+  Lightbulb,
+  RefreshCw,
+  Sparkles,
+  Copy,
+  Download,
+} from 'lucide-react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { javascript } from '@codemirror/lang-javascript';
@@ -98,14 +104,22 @@ Refactoring Suggestion: Consider using an iterative approach with a stack to imp
 
   const getLanguageExtension = (lang: string) => {
     switch (lang) {
-      case 'python': return [python()];
-      case 'javascript': return [javascript()];
-      case 'typescript': return [javascript({ typescript: true })];
-      case 'java': return [java()];
-      case 'cpp': return [cpp()];
-      case 'go': return [go()];
-      case 'rust': return [rust()];
-      default: return [];
+      case 'python':
+        return [python()];
+      case 'javascript':
+        return [javascript()];
+      case 'typescript':
+        return [javascript({ typescript: true })];
+      case 'java':
+        return [java()];
+      case 'cpp':
+        return [cpp()];
+      case 'go':
+        return [go()];
+      case 'rust':
+        return [rust()];
+      default:
+        return [];
     }
   };
 

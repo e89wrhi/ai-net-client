@@ -75,7 +75,13 @@ export default function ImageEditingClient() {
                   <p className="text-sm text-gray-400 mb-4">
                     JPG, PNG, WEBP (Max 10MB)
                   </p>
-                  <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileUpload} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                  />
                   <Button
                     className="rounded-full"
                     onClick={() => fileInputRef.current?.click()}
@@ -199,15 +205,31 @@ export default function ImageEditingClient() {
                     </Card>
 
                     <div className="flex gap-2">
-                      <Button variant="outline" className="flex-1" onClick={() => {
-                        fetch(editedImage).then(r => r.blob()).then(blob => {
-                          const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-                          a.download = `edited_${Date.now()}.jpg`; a.click(); toast.success('Downloaded');
-                        });
-                      }}>
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => {
+                          fetch(editedImage)
+                            .then((r) => r.blob())
+                            .then((blob) => {
+                              const a = document.createElement('a');
+                              a.href = URL.createObjectURL(blob);
+                              a.download = `edited_${Date.now()}.jpg`;
+                              a.click();
+                              toast.success('Downloaded');
+                            });
+                        }}
+                      >
                         Download
                       </Button>
-                      <Button variant="outline" className="flex-1" onClick={() => { setEditedImage(''); setActiveTab('edit'); }}>
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => {
+                          setEditedImage('');
+                          setActiveTab('edit');
+                        }}
+                      >
                         Try Another Edit
                       </Button>
                     </div>

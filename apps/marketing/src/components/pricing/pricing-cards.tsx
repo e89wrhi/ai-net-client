@@ -14,6 +14,7 @@ import { HeaderSection } from '@/components/layout/header-section';
 import { Icons } from '../icons';
 import MaxWidthWrapper from '@/components/layout/content-width-wrapper';
 import { PricingData } from '@/config/subscription';
+import Link from 'next/link';
 
 export default function PricingCards() {
   const [isYearly, setIsYearly] = useState(false);
@@ -131,7 +132,11 @@ export default function PricingCards() {
         </div>
 
         <p className="mt-6 text-balance text-center text-base text-muted-foreground">
-          Need a custom solution for your enterprise? <a href="/contact" className="text-primary underline">Contact us</a> for a tailored plan.
+          Need a custom solution for your enterprise?{' '}
+          <Link href="/contact" className="text-primary underline">
+            Contact us
+          </Link>{' '}
+          for a tailored plan.
         </p>
       </section>
     </MaxWidthWrapper>

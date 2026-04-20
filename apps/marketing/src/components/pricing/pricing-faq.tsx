@@ -12,27 +12,32 @@ const PricingFaqs = () => {
     {
       id: 'item1',
       question: 'Can I change my plan later?',
-      answer: 'Yes, you can upgrade or downgrade your plan at any time through your dashboard. Changes to your billing will be applied on the next billing cycle.',
+      answer:
+        'Yes, you can upgrade or downgrade your plan at any time through your dashboard. Changes to your billing will be applied on the next billing cycle.',
     },
     {
       id: 'item2',
       question: 'Is there a free trial available?',
-      answer: 'We offer a Free Starter plan that allows you to explore our basic AI features with no credit card required. It is a great way to test the platform before committing to a paid plan.',
+      answer:
+        'We offer a Free Starter plan that allows you to explore our basic AI features with no credit card required. It is a great way to test the platform before committing to a paid plan.',
     },
     {
       id: 'item3',
       question: 'What happens if I reach my generation limit?',
-      answer: 'If you reach your limit, you can either upgrade to a higher tier or wait until your next billing cycle for your limit to reset. We will notify you when you are close to your limit.',
+      answer:
+        'If you reach your limit, you can either upgrade to a higher tier or wait until your next billing cycle for your limit to reset. We will notify you when you are close to your limit.',
     },
     {
       id: 'item4',
       question: 'Do you offer custom enterprise solutions?',
-      answer: 'Absolutely! For large-scale requirements, custom model training, or specific compliance needs, please contact our sales team for a custom Enterprise quote.',
+      answer:
+        'Absolutely! For large-scale requirements, custom model training, or specific compliance needs, please contact our sales team for a custom Enterprise quote.',
     },
     {
       id: 'item5',
       question: 'What payment methods do you accept?',
-      answer: 'We accept all major credit cards including Visa, Mastercard, and American Express. For Enterprise plans, we also support bank transfers and custom invoicing.',
+      answer:
+        'We accept all major credit cards including Visa, Mastercard, and American Express. For Enterprise plans, we also support bank transfers and custom invoicing.',
     },
   ];
 
@@ -61,4 +66,3 @@ export function PricingFaq() {
     </section>
   );
 }
-

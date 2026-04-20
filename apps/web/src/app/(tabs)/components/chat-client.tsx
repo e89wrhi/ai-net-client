@@ -216,7 +216,11 @@ Key features demonstrated:
       >
         {/* Tab bar */}
         <div className="flex items-center gap-2 px-6 pt-5 pb-3 border-b border-neutral-100 dark:border-neutral-800 flex-shrink-0">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 min-w-0">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="flex-1 min-w-0"
+          >
             <TabsList className="bg-neutral-100 dark:bg-neutral-800 rounded-full p-1 flex gap-1">
               {tabs.map((tab) => (
                 <TabsTrigger
@@ -227,7 +231,10 @@ Key features demonstrated:
                   {tab.name}
                   {tabs.length > 1 && (
                     <button
-                      onClick={(e) => { e.stopPropagation(); closeTab(tab.id); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        closeTab(tab.id);
+                      }}
                       className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-600 p-0.5"
                     >
                       <X className="h-2.5 w-2.5" />
@@ -255,8 +262,12 @@ Key features demonstrated:
                 <Sparkles className="h-10 w-10 text-neutral-300 dark:text-neutral-600" />
               </div>
               <div className="text-center">
-                <p className="font-semibold text-neutral-500">Start a conversation</p>
-                <p className="text-sm text-neutral-400 mt-1">Press Enter to send · Shift+Enter for new line</p>
+                <p className="font-semibold text-neutral-500">
+                  Start a conversation
+                </p>
+                <p className="text-sm text-neutral-400 mt-1">
+                  Press Enter to send · Shift+Enter for new line
+                </p>
               </div>
             </div>
           ) : (
@@ -278,10 +289,13 @@ Key features demonstrated:
                       ? 'bg-primary text-primary-foreground rounded-br-sm shadow-sm'
                       : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 rounded-bl-sm'
                   } ${
-                    message.content === '' ? 'animate-pulse min-w-[60px] min-h-[36px]' : ''
+                    message.content === ''
+                      ? 'animate-pulse min-w-[60px] min-h-[36px]'
+                      : ''
                   }`}
                 >
-                  {message.content || (message.role === 'assistant' ? '...' : '')}
+                  {message.content ||
+                    (message.role === 'assistant' ? '...' : '')}
                 </div>
                 {message.role === 'user' && (
                   <div className="w-7 h-7 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center flex-shrink-0 mb-0.5">
@@ -317,7 +331,9 @@ Key features demonstrated:
               rows={1}
             />
             <div className="flex items-center gap-2 flex-shrink-0 pb-1">
-              <span className="text-[10px] text-neutral-400 hidden sm:block tabular-nums">{input.length > 0 ? `${input.length}` : ''}</span>
+              <span className="text-[10px] text-neutral-400 hidden sm:block tabular-nums">
+                {input.length > 0 ? `${input.length}` : ''}
+              </span>
               <Button
                 onClick={handleSend}
                 disabled={!input.trim() || isStreaming}
