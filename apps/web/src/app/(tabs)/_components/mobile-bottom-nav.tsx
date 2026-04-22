@@ -18,17 +18,9 @@ import {
   Image as ImageIcon,
   Edit3,
   FileText,
-  Speaker,
-  Mic,
-  AlignJustify,
   Globe,
-  Smile,
-  FileQuestion,
   Code,
   Bug,
-  Users,
-  FileDigit,
-  Plug,
   LayoutGrid,
   KeyIcon,
   Settings,
@@ -69,13 +61,7 @@ const textGroup: NavGroup = {
   title: 'Text',
   items: [
     { title: 'Generate', icon: FileText, url: '/text-gen', enabled: true },
-    { title: 'Text to Speech', icon: Speaker, url: '/text-to-speech', enabled: true },
-    { title: 'Speech to Text', icon: Mic, url: '/speech-to-text', enabled: true },
-    { title: 'Summary', icon: AlignJustify, url: '/summary', enabled: true },
     { title: 'Translate', icon: Globe, url: '/translate', enabled: true },
-    { title: 'Sentiment', icon: Smile, url: '/sentiment', enabled: true },
-    { title: 'Q&A', icon: FileQuestion, url: '/question', enabled: true },
-    { title: 'Autocomplete', icon: FileQuestion, url: '/autocomplete', enabled: true },
   ],
 };
 const codeGroup: NavGroup = {
@@ -87,18 +73,11 @@ const codeGroup: NavGroup = {
 };
 const advanceGroup: NavGroup = {
   title: 'Advance',
-  items: [
-    { title: 'Meeting Analyzer', icon: Users, url: '/meeting', enabled: true },
-    { title: 'Resume Analyzer', icon: FileDigit, url: '/resume', enabled: true },
-    { title: 'Learning Assistant', icon: Plug, url: '/learning', enabled: true },
-  ],
+  items: [],
 };
 const moreGroup: NavGroup = {
   title: 'More',
-  items: [
-    { title: 'MD', icon: FileText, url: '/simple-md', enabled: true },
-    { title: 'Plugin', icon: Plug, url: '/simple-plugin', enabled: true },
-  ],
+  items: [{ title: 'MD', icon: FileText, url: '/simple-md', enabled: true }],
 };
 
 const navGroups: NavGroup[] = [
@@ -183,7 +162,9 @@ export function MobileBottomNav({ userProfile }: Props) {
                 )}
               >
                 <Icon className="h-5 w-5" />
-                <span className="text-[10px] mt-0.5 font-medium">{item.title}</span>
+                <span className="text-[10px] mt-0.5 font-medium">
+                  {item.title}
+                </span>
               </Link>
             );
           })}
@@ -239,7 +220,10 @@ export function MobileBottomNav({ userProfile }: Props) {
                       .filter((i) => i.enabled)
                       .map((item) => {
                         const Icon = item.icon || Sparkles;
-                        const active = checkIsActive(pathname ?? '', item.url || ``);
+                        const active = checkIsActive(
+                          pathname ?? '',
+                          item.url || ``
+                        );
                         return (
                           <button
                             key={item.url}
@@ -252,7 +236,9 @@ export function MobileBottomNav({ userProfile }: Props) {
                             )}
                           >
                             <Icon className="h-4 w-4 shrink-0" />
-                            <span className="text-sm truncate">{item.title}</span>
+                            <span className="text-sm truncate">
+                              {item.title}
+                            </span>
                           </button>
                         );
                       })}
@@ -305,18 +291,36 @@ export function MobileBottomNav({ userProfile }: Props) {
                     />
                     <div>
                       <p className="font-semibold">{userProfile.name}</p>
-                      <p className="text-xs text-muted-foreground">{userProfile.status}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {userProfile.status}
+                      </p>
                     </div>
                   </div>
 
                   <div className="space-y-1">
                     {[
                       { icon: User, label: 'Account', href: '/account' },
-                      { icon: KeyIcon, label: 'Manage Api Keys', href: '/api-keys' },
+                      {
+                        icon: KeyIcon,
+                        label: 'Manage Api Keys',
+                        href: '/api-keys',
+                      },
                       { icon: Settings, label: 'Settings', href: '/settings' },
-                      { icon: Sparkle, label: 'Analyze Activity', href: '/activity' },
-                      { icon: Sparkles, label: 'Analyze Usage', href: '/usage' },
-                      { icon: User, label: 'Generate Persona', href: '/persona' },
+                      {
+                        icon: Sparkle,
+                        label: 'Analyze Activity',
+                        href: '/activity',
+                      },
+                      {
+                        icon: Sparkles,
+                        label: 'Analyze Usage',
+                        href: '/usage',
+                      },
+                      {
+                        icon: User,
+                        label: 'Generate Persona',
+                        href: '/persona',
+                      },
                       { icon: Pencil, label: 'Edit Profile', href: '/account' },
                     ].map(({ icon: Icon, label, href }) => (
                       <button

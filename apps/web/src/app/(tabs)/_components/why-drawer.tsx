@@ -22,10 +22,10 @@ export default function WhyDrawer({ title, link, items }: WhyProps) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-          <Button
-            variant="secondary"
-            className="rounded-full w-8 md:w-auto h-8 md:h-10 px-0 md:px-4 text-xs md:text-sm"
-          >
+        <Button
+          variant="secondary"
+          className="rounded-full w-8 md:w-auto h-8 md:h-10 px-0 md:px-4 text-xs md:text-sm"
+        >
           <Info className="h-4 w-4 md:mr-2" />
           <span className="hidden md:inline">Learn</span>
         </Button>
@@ -69,7 +69,7 @@ export default function WhyDrawer({ title, link, items }: WhyProps) {
                   Ready to Integrate .NET?
                 </h3>
                 <p className="text-gray-700 dark:text-gray-300 mb-4 md:text-lg">
-                  Start adding AI-powered Autocomplete to your app today.
+                  Start adding AI-powered tool to your app today.
                 </p>
                 <Link href={`${link}`} passHref>
                   <Button className="px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-md">

@@ -49,7 +49,6 @@ import {
   Sparkle,
   ChartBar,
   Users,
-  CheckCircle,
   MessageCircleCode,
   Bug,
   Code,
@@ -57,16 +56,11 @@ import {
   Brush,
   Quote,
   AtSign,
-  AudioLines,
-  SunSnow,
-  AlignEndHorizontal,
-  Regex,
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
-  autocomplete: CheckCircle,
   chat: MessageCircleCode,
   debug: Bug,
   code: Code,
@@ -75,10 +69,6 @@ export const Icons = {
   playground: Brush,
   question: Quote,
   senti: AtSign,
-  speech: AudioLines,
-  summary: SunSnow,
-  textgen: AlignEndHorizontal,
-  textspeech: Regex,
   add: Plus,
   sparkles: Sparkle,
   chart: ChartBar,
