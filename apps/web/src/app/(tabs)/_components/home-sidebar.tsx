@@ -16,17 +16,9 @@ import {
   Image,
   Edit3,
   FileText,
-  Speaker,
-  Mic,
-  AlignJustify,
   Globe,
-  Smile,
-  FileQuestion,
   Code,
   Bug,
-  Users,
-  FileDigit,
-  Plug,
 } from 'lucide-react';
 import { UserDto } from '@/types/api/user/current-user';
 import SidebarFooterLayout from './sidebar-footer';
@@ -51,7 +43,6 @@ const imagesGroup: NavGroup = {
   title: 'Image',
   items: [
     { title: 'Edit', icon: Edit3, url: '/image-edit', enabled: true },
-    { title: 'Caption', icon: FileText, url: '/image-caption', enabled: true },
     { title: 'Generate', icon: Image, url: '/image-gen', enabled: true },
   ],
 };
@@ -60,28 +51,7 @@ const imagesGroup: NavGroup = {
 const textGroup: NavGroup = {
   title: 'Text',
   items: [
-    {
-      title: 'Text to Speech',
-      icon: Speaker,
-      url: '/text-to-speech',
-      enabled: true,
-    },
-    {
-      title: 'Speech to Text',
-      icon: Mic,
-      url: '/speech-to-text',
-      enabled: true,
-    },
-    { title: 'Summary', icon: AlignJustify, url: '/summary', enabled: true },
     { title: 'Translate', icon: Globe, url: '/translate', enabled: true },
-    { title: 'Sentiment', icon: Smile, url: '/sentiment', enabled: true },
-    { title: 'Q&A', icon: FileQuestion, url: '/question', enabled: true },
-    {
-      title: 'Autocomplete',
-      icon: FileQuestion,
-      url: '/autocomplete',
-      enabled: true,
-    },
   ],
 };
 
@@ -97,30 +67,13 @@ const codeGroup: NavGroup = {
 // Advance
 const advanceGroup: NavGroup = {
   title: 'Advance',
-  items: [
-    { title: 'Meeting Analyzer', icon: Users, url: '/meeting', enabled: true },
-    {
-      title: 'Resume Analyzer',
-      icon: FileDigit,
-      url: '/resume',
-      enabled: true,
-    },
-    {
-      title: 'Learning Assistant',
-      icon: Plug,
-      url: '/learning',
-      enabled: true,
-    },
-  ],
+  items: [],
 };
 
 // More
 const moreGroup: NavGroup = {
   title: 'More',
-  items: [
-    { title: 'MD', icon: FileText, url: '/simple-md', enabled: true },
-    { title: 'Plugin', icon: Plug, url: '/simple-plugin', enabled: true },
-  ],
+  items: [{ title: 'MD', icon: FileText, url: '/simple-md', enabled: true }],
 };
 
 interface AppSidebarProps {
